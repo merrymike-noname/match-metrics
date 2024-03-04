@@ -1,4 +1,10 @@
-package com.matchmetrics.matchmomentummetrics;
+
+/*
+ * Copyright (c) 2024.
+ * Created by Mykhailo Kovalenko
+ */
+
+package com.matchmomentummetrics;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
