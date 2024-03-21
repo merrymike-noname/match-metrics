@@ -1,4 +1,4 @@
-package com.matchmomentummetrics.client;
+package com.matchmetrics.client;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -44,5 +44,4 @@ public class EloCsvClient {
         }
         return null;
     }
-
 }

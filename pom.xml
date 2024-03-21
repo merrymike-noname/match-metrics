@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.matchmetrics</groupId>
-    <artifactId>match-momentum-metrics</artifactId>
+    <artifactId>match-metrics</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>match-momentum-metrics</name>
-    <description>match-momentum-metrics</description>
+    <name>match-metrics</name>
+    <description>match-metrics</description>
     <properties>
         <java.version>21</java.version>
     </properties>
