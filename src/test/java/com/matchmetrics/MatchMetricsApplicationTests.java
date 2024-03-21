@@ -1,10 +1,10 @@
-package com.matchmomentummetrics;
+package com.matchmetrics;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MatchMomentumMetricsApplicationTests {
+class MatchMetricsApplicationTests {
 
     @Test
     void contextLoads() {
