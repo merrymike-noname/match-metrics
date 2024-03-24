@@ -1,22 +1,17 @@
 package com.matchmetrics.service;
 
 import com.matchmetrics.entity.Match;
-import com.matchmetrics.entity.Probability;
-import com.matchmetrics.entity.Team;
 
 import java.util.List;
 
 public interface MatchService {
     List<Match> getAllMatches();
     Match getMatchById(int id);
-    Probability getProbabilityById(int id);
-    Team getAwayTeamById(int id);
-    Team getHomeTeamById(int id);
     Match addMatch(Match match);
     Match updateMatch(int id, Match match);
     void deleteMatch(int id);
-    Match getMatchByDate(String date);
-    Match getMatchByLeague(String league);
-    Match getMatchByTeam(String team);
-    Match getMatchByTeamSpecified(String team, Boolean isHome);
+    List<Match> getMatchesByDate(String date);
+    List<Match> getMatchesByLeague(String league);
+    List<Match> getMatchesByTeam(String team);
+    List<Match> getMatchesByTeamSpecified(String team, boolean isHome);
 }

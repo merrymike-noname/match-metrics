@@ -1,8 +1,7 @@
-package com.matchmetrics.implementation;
+package com.matchmetrics.service.implementation;
 
 import com.matchmetrics.entity.Match;
-import com.matchmetrics.entity.Probability;
-import com.matchmetrics.entity.Team;
+import com.matchmetrics.exceptions.MatchUpdateException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,21 +31,6 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public Probability getProbabilityById(int id) {
-        return null;
-    }
-
-    @Override
-    public Team getAwayTeamById(int id) {
-        return null;
-    }
-
-    @Override
-    public Team getHomeTeamById(int id) {
-        return null;
-    }
-
-    @Override
     public Match addMatch(Match match) {
         return matchRepository.save(match);
     }
@@ -57,7 +41,7 @@ public class MatchServiceImpl implements MatchService {
             match.setId(id);
             return matchRepository.save(match);
         } else {
-            return null;
+            throw new MatchUpdateException(id);
         }
     }
 
@@ -69,22 +53,26 @@ public class MatchServiceImpl implements MatchService {
     // TODO: Methods below
 
     @Override
-    public Match getMatchByDate(String date) {
+    public List<Match> getMatchesByDate(String date) {
         return null;
     }
 
     @Override
-    public Match getMatchByLeague(String league) {
+    public List<Match> getMatchesByLeague(String league) {
         return null;
     }
 
     @Override
-    public Match getMatchByTeam(String team) {
-        return null;
+    public List<Match> getMatchesByTeam(String team) {
+        return matchRepository.findMatchesByTeam(team);
     }
 
     @Override
-    public Match getMatchByTeamSpecified(String team, Boolean isHome) {
-        return null;
+    public List<Match> getMatchesByTeamSpecified(String team, boolean isHome) {
+        if (isHome) {
+            return matchRepository.findHomeMatchesByTeam(team);
+        } else {
+            return matchRepository.findAwayMatchesByTeam(team);
+        }
     }
 }

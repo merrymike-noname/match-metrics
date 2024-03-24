@@ -1,8 +1,6 @@
 package com.matchmetrics.controller;
 
 import com.matchmetrics.entity.Match;
-import com.matchmetrics.entity.Probability;
-import com.matchmetrics.entity.Team;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/matches/api")
+@RequestMapping("matchmetrics/v0/matches/api")
 public class MatchController {
 
     private final MatchService matchService;
@@ -30,39 +28,30 @@ public class MatchController {
         return matchService.getMatchById(id);
     }
 
-    @GetMapping("/{date}")
-    public Match getMatchesByDate(@PathVariable String date) {
-        return matchService.getMatchByDate(date);
+    @GetMapping("/date")
+    public List<Match> getMatchesByDate(
+            @RequestParam(name = "date") String date) {
+        return matchService.getMatchesByDate(date);
     }
 
-    @GetMapping("/{league}")
-    public Match getMatchesByLeague(@PathVariable String league) {
-        return matchService.getMatchByLeague(league);
+    @GetMapping("/league")
+    public List<Match> getMatchesByLeague(
+            @RequestParam(name = "league") String league) {
+        return matchService.getMatchesByLeague(league);
     }
 
-    @GetMapping("/{team}")
-    public Match getMatchesByTeam(@PathVariable String team) {
-        return matchService.getMatchByTeam(team);
+    @GetMapping("/team")
+    public List<Match> getMatchesByTeam(
+            @RequestParam(name = "name") String team) {
+        return matchService.getMatchesByTeam(team);
     }
 
-    @GetMapping("/{team}/{isHome}")
-    public Match getMatchesByTeamSpecified(@PathVariable String team, @PathVariable Boolean isHome ) {
-        return matchService.getMatchByTeamSpecified(team, isHome);
-    }
-
-    @GetMapping("/probability/{id}")
-    public Probability getProbabilityById(@PathVariable int id) {
-        return matchService.getProbabilityById(id);
-    }
-
-    @GetMapping("/homeTeam/{id}")
-    public Team getHomeTeamById(@PathVariable int id) {
-        return matchService.getHomeTeamById(id);
-    }
-
-    @GetMapping("/awayTeam/{id}")
-    public Team getAwayTeamById(@PathVariable int id) {
-        return matchService.getAwayTeamById(id);
+    @GetMapping("/teamSpecified")
+    public List<Match> getMatchesByTeamSpecified(
+            @RequestParam(name = "name") String team,
+            @RequestParam(name = "isHome", required = false, defaultValue = "0") boolean isHome) {
+        System.out.println(team + " " + isHome);
+        return matchService.getMatchesByTeamSpecified(team, isHome);
     }
 
     @PostMapping
@@ -79,4 +68,5 @@ public class MatchController {
     public void deleteMatch(@PathVariable int id) {
         matchService.deleteMatch(id);
     }
+
 }
