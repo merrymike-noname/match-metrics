@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("matchmetrics/v0/matches/api")
+@RequestMapping("matchmetrics/api/v0/matches")
 public class MatchController {
 
     private final MatchService matchService;
@@ -18,9 +18,19 @@ public class MatchController {
         this.matchService = matchService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Match> getAllMatches() {
         return matchService.getAllMatches();
+    }
+
+    @GetMapping()
+    public List<Match> getMatches(
+            @RequestParam(name = "team", required = false) String team,
+            @RequestParam(name = "isHome", required = false) Boolean isHome,
+            @RequestParam(name = "date", required = false) String date,
+            @RequestParam(name = "league", required = false) String league
+            ) {
+        return matchService.getMatchesByCriteria(team, isHome, date, league);
     }
 
     @GetMapping("/{id}")
@@ -28,31 +38,6 @@ public class MatchController {
         return matchService.getMatchById(id);
     }
 
-    @GetMapping("/date")
-    public List<Match> getMatchesByDate(
-            @RequestParam(name = "date") String date) {
-        return matchService.getMatchesByDate(date);
-    }
-
-    @GetMapping("/league")
-    public List<Match> getMatchesByLeague(
-            @RequestParam(name = "league") String league) {
-        return matchService.getMatchesByLeague(league);
-    }
-
-    @GetMapping("/team")
-    public List<Match> getMatchesByTeam(
-            @RequestParam(name = "name") String team) {
-        return matchService.getMatchesByTeam(team);
-    }
-
-    @GetMapping("/teamSpecified")
-    public List<Match> getMatchesByTeamSpecified(
-            @RequestParam(name = "name") String team,
-            @RequestParam(name = "isHome", required = false, defaultValue = "0") boolean isHome) {
-        System.out.println(team + " " + isHome);
-        return matchService.getMatchesByTeamSpecified(team, isHome);
-    }
 
     @PostMapping
     public Match addMatch(@RequestBody Match match) {

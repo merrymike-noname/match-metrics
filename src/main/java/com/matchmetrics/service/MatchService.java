@@ -10,8 +10,5 @@ public interface MatchService {
     Match addMatch(Match match);
     Match updateMatch(int id, Match match);
     void deleteMatch(int id);
-    List<Match> getMatchesByDate(String date);
-    List<Match> getMatchesByLeague(String league);
-    List<Match> getMatchesByTeam(String team);
-    List<Match> getMatchesByTeamSpecified(String team, boolean isHome);
+    List<Match> getMatchesByCriteria(String team, Boolean isHome, String date, String league);
 }

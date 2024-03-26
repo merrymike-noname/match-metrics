@@ -1,11 +1,16 @@
 package com.matchmetrics.service.implementation;
 
 import com.matchmetrics.entity.Match;
+import com.matchmetrics.entity.searchCriteria.MatchSearchCriteria;
 import com.matchmetrics.exceptions.MatchUpdateException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,27 +57,24 @@ public class MatchServiceImpl implements MatchService {
 
     // TODO: Methods below
 
-    @Override
-    public List<Match> getMatchesByDate(String date) {
-        return null;
-    }
 
     @Override
-    public List<Match> getMatchesByLeague(String league) {
-        return null;
+    public List<Match> getMatchesByCriteria(String team, Boolean isHome, String date, String league) {
+        return matchRepository.findMatches(new MatchSearchCriteria(team, isHome, convertStringToDate(date), league));
     }
 
-    @Override
-    public List<Match> getMatchesByTeam(String team) {
-        return matchRepository.findMatchesByTeam(team);
-    }
-
-    @Override
-    public List<Match> getMatchesByTeamSpecified(String team, boolean isHome) {
-        if (isHome) {
-            return matchRepository.findHomeMatchesByTeam(team);
-        } else {
-            return matchRepository.findAwayMatchesByTeam(team);
+    public Date convertStringToDate(String strDate) {
+        if(strDate == null) {
+            return null;
+        }
+        try {
+            String pattern = "yyyy-MM-dd";
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+            return simpleDateFormat.parse(strDate);
+        } catch (ParseException e) {
+            // todo custom exception
+            e.printStackTrace();
+            return null;
         }
     }
 }
