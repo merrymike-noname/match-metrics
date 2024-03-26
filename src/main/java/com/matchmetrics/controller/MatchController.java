@@ -5,6 +5,7 @@ import com.matchmetrics.service.MatchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,13 +44,13 @@ public class MatchController {
 
 
     @PostMapping("/add")
-    public MatchMainDto addMatch(@RequestBody MatchMainDto match) {
-        return matchService.addMatch(match);
+    public MatchMainDto addMatch(@RequestBody MatchMainDto match, BindingResult result) {
+        return matchService.addMatch(match, result);
     }
 
     @PutMapping("/update/{id}")
-    public MatchMainDto updateMatch(@PathVariable int id, @RequestBody MatchMainDto match) {
-        return matchService.updateMatch(id, match);
+    public MatchMainDto updateMatch(@PathVariable int id, @RequestBody MatchMainDto match, BindingResult result) {
+        return matchService.updateMatch(id, match, result);
     }
 
     @DeleteMapping("/delete/{id}")
