@@ -2,7 +2,9 @@ package com.matchmetrics.repository;
 
 import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.searchCriteria.MatchSearchCriteria;
+import jakarta.persistence.criteria.Fetch;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,11 +19,12 @@ public interface MatchRepository extends JpaRepository<Match, Integer>, JpaSpeci
     default List<Match> findMatches(MatchSearchCriteria searchCriteria) {
         return findAll((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-
+            Fetch<Object, Object> homeTeamFetch = root.fetch("homeTeam", JoinType.LEFT);
+            Fetch<Object, Object> awayTeamFetch = root.fetch("awayTeam", JoinType.LEFT);
+            Join<Object, Object> homeTeam = (Join<Object, Object>) homeTeamFetch;
+            Join<Object, Object> awayTeam = (Join<Object, Object>) awayTeamFetch;
+            root.fetch("probability", JoinType.LEFT);
             if (searchCriteria.getTeam() != null) {
-                Join<Object, Object> homeTeam = root.join("homeTeam");
-                Join<Object, Object> awayTeam = root.join("awayTeam");
-
                 if (searchCriteria.getIsHome() != null) {
                     predicates.add(
                             searchCriteria.getIsHome() ?
