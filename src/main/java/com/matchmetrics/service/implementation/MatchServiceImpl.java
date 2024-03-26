@@ -2,6 +2,7 @@ package com.matchmetrics.service.implementation;
 
 import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.searchCriteria.MatchSearchCriteria;
+import com.matchmetrics.exceptions.DateConversionException;
 import com.matchmetrics.exceptions.MatchUpdateException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.MatchService;
@@ -55,9 +56,6 @@ public class MatchServiceImpl implements MatchService {
         matchRepository.deleteById(id);
     }
 
-    // TODO: Methods below
-
-
     @Override
     public List<Match> getMatchesByCriteria(String team, Boolean isHome, String date, String league) {
         return matchRepository.findMatches(new MatchSearchCriteria(team, isHome, convertStringToDate(date), league));
@@ -72,9 +70,7 @@ public class MatchServiceImpl implements MatchService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             return simpleDateFormat.parse(strDate);
         } catch (ParseException e) {
-            // todo custom exception
-            e.printStackTrace();
-            return null;
+            throw new DateConversionException(e);
         }
     }
 }
