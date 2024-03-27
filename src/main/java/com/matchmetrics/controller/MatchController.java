@@ -1,6 +1,5 @@
 package com.matchmetrics.controller;
 
-import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.dto.main.MatchMainDto;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +39,13 @@ public class MatchController {
     }
 
 
-    @PostMapping
-    public Match addMatch(@RequestBody Match match) {
+    @PostMapping("/add")
+    public MatchMainDto addMatch(@RequestBody MatchMainDto match) {
         return matchService.addMatch(match);
     }
 
     @PutMapping("/update/{id}")
-    public Match updateMatch(@PathVariable int id, @RequestBody Match match) {
+    public MatchMainDto updateMatch(@PathVariable int id, @RequestBody MatchMainDto match) {
         return matchService.updateMatch(id, match);
     }
 

@@ -43,15 +43,18 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public Match addMatch(Match match) {
-        return matchRepository.save(match);
+    public MatchMainDto addMatch(MatchMainDto match) {
+        // todo exception for unsuccessful save (use BindingResult)
+        return matchMainMapper.toDto(matchRepository.save(matchMainMapper.toEntity(match)));
     }
 
     @Override
-    public Match updateMatch(int id, Match match) {
+    public MatchMainDto updateMatch(int id, MatchMainDto match) {
         if (matchRepository.existsById(id)) {
-            match.setId(id);
-            return matchRepository.save(match);
+            //todo exception if some fields are invalid (use BindingResult)
+            Match matchEntity = matchMainMapper.toEntity(match);
+            matchEntity.setId(id);
+            return matchMainMapper.toDto(matchRepository.save(matchEntity));
         } else {
             throw new MatchDoesNotExistException(id);
         }
