@@ -1,15 +1,8 @@
 package com.matchmetrics.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.matchmetrics.json.serializer.CustomMatchSerializer;
 import jakarta.persistence.*;
-import lombok.*;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@ToString
 @Table(name = "Probability")
 public class Probability {
     @Id
@@ -27,8 +20,10 @@ public class Probability {
     private float awayTeamWin;
 
     @OneToOne(mappedBy = "probability")
-    @JsonSerialize(using = CustomMatchSerializer.class)
     private Match match;
+
+    public Probability() {
+    }
 
     public float getAwayTeamWin() {
         return 1 - (homeTeamWin + draw);
@@ -47,5 +42,45 @@ public class Probability {
         this.homeTeamWin = homeTeamWin;
         this.draw = draw;
         this.awayTeamWin = awayTeamWin;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public float getHomeTeamWin() {
+        return this.homeTeamWin;
+    }
+
+    public float getDraw() {
+        return this.draw;
+    }
+
+    public Match getMatch() {
+        return this.match;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setHomeTeamWin(float homeTeamWin) {
+        this.homeTeamWin = homeTeamWin;
+    }
+
+    public void setDraw(float draw) {
+        this.draw = draw;
+    }
+
+    public void setAwayTeamWin(float awayTeamWin) {
+        this.awayTeamWin = awayTeamWin;
+    }
+
+    public String toString() {
+        return "Probability(id=" + this.getId() +
+                ", homeTeamWin=" + this.getHomeTeamWin() +
+                ", draw=" + this.getDraw() +
+                ", awayTeamWin=" + this.getAwayTeamWin() +
+                ", match=" + this.getMatch() + ")";
     }
 }

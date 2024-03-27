@@ -1,4 +1,4 @@
-package com.matchmetrics.exceptions;
+package com.matchmetrics.exception;
 
 public class DateConversionException extends RuntimeException {
 

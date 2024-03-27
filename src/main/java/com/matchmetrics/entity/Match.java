@@ -1,17 +1,11 @@
 package com.matchmetrics.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
 @Entity
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 @Table(name = "Match")
 public class Match {
     @Id
@@ -39,6 +33,18 @@ public class Match {
     @JoinColumn(name = "probability_id", referencedColumnName = "id")
     private Probability probability;
 
+    public Match(int id, Date date, String league, Team homeTeam, Team awayTeam, Probability probability) {
+        this.id = id;
+        this.date = date;
+        this.league = league;
+        this.homeTeam = homeTeam;
+        this.awayTeam = awayTeam;
+        this.probability = probability;
+    }
+
+    public Match() {
+    }
+
     public void setHomeTeam(Team homeTeam) {
         this.homeTeam = homeTeam;
         homeTeam.getHomeMatches().add(this);
@@ -47,5 +53,54 @@ public class Match {
     public void setAwayTeam(Team awayTeam) {
         this.awayTeam = awayTeam;
         awayTeam.getAwayMatches().add(this);
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public Date getDate() {
+        return this.date;
+    }
+
+    public String getLeague() {
+        return this.league;
+    }
+
+    public Team getHomeTeam() {
+        return this.homeTeam;
+    }
+
+    public Team getAwayTeam() {
+        return this.awayTeam;
+    }
+
+    public Probability getProbability() {
+        return this.probability;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setLeague(String league) {
+        this.league = league;
+    }
+
+    public void setProbability(Probability probability) {
+        this.probability = probability;
+    }
+
+    public String toString() {
+        return "Match(id=" + this.getId() +
+                ", date=" + this.getDate() +
+                ", league=" + this.getLeague() +
+                ", homeTeam=" + this.getHomeTeam() +
+                ", awayTeam=" + this.getAwayTeam() +
+                ", probability=" + this.getProbability() + ")";
     }
 }

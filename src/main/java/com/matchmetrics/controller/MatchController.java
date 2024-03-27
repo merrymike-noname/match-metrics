@@ -1,6 +1,7 @@
 package com.matchmetrics.controller;
 
 import com.matchmetrics.entity.Match;
+import com.matchmetrics.entity.dto.main.MatchMainDto;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,12 @@ public class MatchController {
     }
 
     @GetMapping("/all")
-    public List<Match> getAllMatches() {
+    public List<MatchMainDto> getAllMatches() {
         return matchService.getAllMatches();
     }
 
     @GetMapping()
-    public List<Match> getMatches(
+    public List<MatchMainDto> getMatchesByCriteria(
             @RequestParam(name = "team", required = false) String team,
             @RequestParam(name = "isHome", required = false) Boolean isHome,
             @RequestParam(name = "date", required = false) String date,
@@ -34,7 +35,7 @@ public class MatchController {
     }
 
     @GetMapping("/{id}")
-    public Match getMatchById(@PathVariable int id) {
+    public MatchMainDto getMatchById(@PathVariable int id) {
         return matchService.getMatchById(id);
     }
 
