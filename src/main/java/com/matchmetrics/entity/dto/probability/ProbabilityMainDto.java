@@ -1,4 +1,4 @@
-package com.matchmetrics.entity.dto.main;
+package com.matchmetrics.entity.dto.probability;
 
 public class ProbabilityMainDto {
     private float homeTeamWin;

@@ -1,9 +1,8 @@
-package com.matchmetrics.entity.mapper.main;
+package com.matchmetrics.entity.mapper.probability;
 
 import com.matchmetrics.entity.Probability;
-import com.matchmetrics.entity.dto.main.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
 import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public interface ProbabilityMainMapper {

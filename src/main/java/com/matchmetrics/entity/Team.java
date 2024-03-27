@@ -14,6 +14,7 @@ public class Team {
     private int id;
 
     @Column(name = "name")
+    //todo make unique
     @NotNull(message = "Team name should not be empty")
     private String name;
 

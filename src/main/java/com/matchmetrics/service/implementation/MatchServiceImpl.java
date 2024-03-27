@@ -1,8 +1,8 @@
 package com.matchmetrics.service.implementation;
 
 import com.matchmetrics.entity.Match;
-import com.matchmetrics.entity.dto.main.MatchMainDto;
-import com.matchmetrics.entity.mapper.main.MatchMainMapper;
+import com.matchmetrics.entity.dto.match.MatchMainDto;
+import com.matchmetrics.entity.mapper.match.MatchMainMapper;
 import com.matchmetrics.entity.searchCriteria.MatchSearchCriteria;
 import com.matchmetrics.exception.DateConversionException;
 import com.matchmetrics.exception.MatchDoesNotExistException;

@@ -1,4 +1,4 @@
-package com.matchmetrics.entity.dto.nested;
+package com.matchmetrics.entity.dto.team;
 
 import jakarta.validation.constraints.NotNull;
 

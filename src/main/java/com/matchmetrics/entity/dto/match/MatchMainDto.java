@@ -1,6 +1,7 @@
-package com.matchmetrics.entity.dto.main;
+package com.matchmetrics.entity.dto.match;
 
-import com.matchmetrics.entity.dto.nested.TeamNestedDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;

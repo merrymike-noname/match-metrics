@@ -1,6 +1,6 @@
 package com.matchmetrics.controller;
 
-import com.matchmetrics.entity.dto.main.MatchMainDto;
+import com.matchmetrics.entity.dto.match.MatchMainDto;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

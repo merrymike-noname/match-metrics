@@ -1,7 +1,7 @@
-package com.matchmetrics.entity.mapper.nested;
+package com.matchmetrics.entity.mapper.team;
 
 import com.matchmetrics.entity.Team;
-import com.matchmetrics.entity.dto.nested.TeamNestedDto;
+import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

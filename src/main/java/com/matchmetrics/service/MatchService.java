@@ -1,6 +1,6 @@
 package com.matchmetrics.service;
 
-import com.matchmetrics.entity.dto.main.MatchMainDto;
+import com.matchmetrics.entity.dto.match.MatchMainDto;
 
 import java.util.List;
 
