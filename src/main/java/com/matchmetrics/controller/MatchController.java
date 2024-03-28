@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("matchmetrics/api/v0/matches")
 public class MatchController {
-    //private final Logger logger = LoggerFactory.getLogger(MatchController.class);
+    private final Logger logger = LoggerFactory.getLogger(MatchController.class);
     private final MatchService matchService;
 
     @Autowired
@@ -23,7 +23,7 @@ public class MatchController {
 
     @GetMapping("/all")
     public List<MatchMainDto> getAllMatches() {
-        //logger.info("Returning all matches...");
+        logger.info("Returning all matches...");
         return matchService.getAllMatches();
     }
 
