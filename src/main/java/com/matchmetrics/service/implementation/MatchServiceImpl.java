@@ -6,7 +6,7 @@ import com.matchmetrics.entity.mapper.match.MatchMainMapper;
 import com.matchmetrics.entity.searchCriteria.MatchSearchCriteria;
 import com.matchmetrics.exception.DateConversionException;
 import com.matchmetrics.exception.MatchDoesNotExistException;
-import com.matchmetrics.exception.NotEnoughDataException;
+import com.matchmetrics.exception.InvalidDataDataException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +49,7 @@ public class MatchServiceImpl implements MatchService {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
-            throw new NotEnoughDataException(errorMessage.toString());
+            throw new InvalidDataDataException(errorMessage.toString());
         }
         return matchMainMapper.toDto(matchRepository.save(matchMainMapper.toEntity(match)));
     }
@@ -60,7 +60,7 @@ public class MatchServiceImpl implements MatchService {
             if (bindingResult.hasErrors()) {
                 StringBuilder errorMessage = new StringBuilder();
                 bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
-                throw new NotEnoughDataException(errorMessage.toString());
+                throw new InvalidDataDataException(errorMessage.toString());
             }
             Match matchEntity = matchMainMapper.toEntity(match);
             matchEntity.setId(id);

@@ -1,7 +1,7 @@
 package com.matchmetrics;
 
 import com.matchmetrics.entity.dto.match.MatchMainDto;
-import com.matchmetrics.exception.NotEnoughDataException;
+import com.matchmetrics.exception.InvalidDataDataException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.implementation.MatchServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -29,6 +29,6 @@ public class MatchServiceImplTest {
         when(bindingResult.getAllErrors()).thenReturn(List.of(new ObjectError("match", "error message")));
         when(matchRepository.existsById(id)).thenReturn(true);
 
-        assertThrows(NotEnoughDataException.class, () -> matchService.updateMatch(id, match, bindingResult));
+        assertThrows(InvalidDataDataException.class, () -> matchService.updateMatch(id, match, bindingResult));
     }
 }
