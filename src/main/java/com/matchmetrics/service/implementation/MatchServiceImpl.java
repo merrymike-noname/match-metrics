@@ -9,6 +9,8 @@ import com.matchmetrics.exception.MatchDoesNotExistException;
 import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.MatchService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class MatchServiceImpl implements MatchService {
+
+    private final Logger logger = LoggerFactory.getLogger(MatchServiceImpl.class);
 
     private final MatchRepository matchRepository;
     private final MatchMainMapper matchMainMapper;
@@ -40,7 +44,10 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public MatchMainDto getMatchById(int id) {
         Optional<Match> match = matchRepository.findById(id);
-        if (match.isEmpty()) throw new MatchDoesNotExistException(id);
+        if (match.isEmpty()) {
+            logger.error("Match with ID {} not found", id);
+            throw new MatchDoesNotExistException(id);
+        }
         return matchMainMapper.toDto(match.get());
     }
 
@@ -49,6 +56,7 @@ public class MatchServiceImpl implements MatchService {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
+            logger.error("Error occurred while adding match: {}", errorMessage);
             throw new InvalidDataException(errorMessage.toString());
         }
         return matchMainMapper.toDto(matchRepository.save(matchMainMapper.toEntity(match)));
@@ -60,12 +68,14 @@ public class MatchServiceImpl implements MatchService {
             if (bindingResult.hasErrors()) {
                 StringBuilder errorMessage = new StringBuilder();
                 bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
+                logger.error("Error occurred while updating match: {}", errorMessage);
                 throw new InvalidDataException(errorMessage.toString());
             }
             Match matchEntity = matchMainMapper.toEntity(match);
             matchEntity.setId(id);
             return matchMainMapper.toDto(matchRepository.save(matchEntity));
         } else {
+            logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);
         }
     }
@@ -90,6 +100,7 @@ public class MatchServiceImpl implements MatchService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
             return simpleDateFormat.parse(strDate);
         } catch (ParseException e) {
+            logger.error("Error occurred while converting string to date: {}", e.getMessage());
             throw new DateConversionException(e);
         }
     }
