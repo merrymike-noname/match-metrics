@@ -11,7 +11,10 @@ public class TeamNestedDto {
 
     private float elo;
 
-    public TeamNestedDto(@NotNull(message = "Team name should not be empty") String name, @NotNull(message = "Team country should not be empty") String country, float elo) {
+    public TeamNestedDto(
+            @NotNull(message = "Team name should not be empty") String name,
+            @NotNull(message = "Team country should not be empty")
+            String country, float elo) {
         this.name = name;
         this.country = country;
         this.elo = elo;

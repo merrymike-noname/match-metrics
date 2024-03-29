@@ -1,0 +1,1 @@
+ALTER TABLE Team ADD CONSTRAINT team_name_unique_constraint UNIQUE (name);

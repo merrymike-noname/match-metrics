@@ -13,8 +13,7 @@ public class Team {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
-    //todo make unique
+    @Column(name = "name", unique = true)
     @NotNull(message = "Team name should not be empty")
     private String name;
 

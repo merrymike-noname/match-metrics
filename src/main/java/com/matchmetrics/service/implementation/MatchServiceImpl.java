@@ -61,7 +61,6 @@ public class MatchServiceImpl implements MatchService {
         Pageable pageable = createPageable(page, perPage, sortBy);
         Specification<Match> spec = createSpecification(team, isHome, date, league);
         Page<Match> matches = matchRepository.findAll(spec, pageable);
-
         return matches.getContent().stream()
                 .map(matchMainMapper::toDto).collect(Collectors.toList());
     }
