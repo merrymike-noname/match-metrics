@@ -22,9 +22,13 @@ public class MatchController {
     }
 
     @GetMapping("/all")
-    public List<MatchMainDto> getAllMatches() {
+    public List<MatchMainDto> getAllMatches(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
+    ) {
         logger.info("Received request to get all matches");
-        List<MatchMainDto> matches = matchService.getAllMatches();
+        List<MatchMainDto> matches = matchService.getAllMatches(page - 1, perPage, sortBy);
         logger.info("Returning {} (all) matches", matches.size());
         return matches;
     }
@@ -34,11 +38,17 @@ public class MatchController {
             @RequestParam(name = "team", required = false) String team,
             @RequestParam(name = "isHome", required = false) Boolean isHome,
             @RequestParam(name = "date", required = false) String date,
-            @RequestParam(name = "league", required = false) String league
-            ) {
-        logger.info("Received request to get matches by criteria: team={}, isHome={}, date={}, league={}", team, isHome, date, league);
-        List<MatchMainDto> matches = matchService.getMatchesByCriteria(team, isHome, date, league);
-        logger.info("Returning {} matches by criteria: team={}, isHome={}, date={}, league={}", matches.size(), team, isHome, date, league);
+            @RequestParam(name = "league", required = false) String league,
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
+    ) {
+        logger.info("Received request to get matches by criteria: " +
+                "team={}, isHome={}, date={}, league={}", team, isHome, date, league);
+        List<MatchMainDto> matches =
+                matchService.getMatchesByCriteria(team, isHome, date, league, page - 1, perPage, sortBy);
+        logger.info("Returning {} matches by criteria: " +
+                "team={}, isHome={}, date={}, league={}", matches.size(), team, isHome, date, league);
         return matches;
     }
 
