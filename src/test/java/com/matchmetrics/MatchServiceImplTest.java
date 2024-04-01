@@ -1,6 +1,6 @@
 package com.matchmetrics;
 
-import com.matchmetrics.entity.dto.match.MatchMainDto;
+import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
 import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.service.implementation.MatchServiceImpl;
@@ -29,7 +29,7 @@ public class MatchServiceImplTest {
     @Test
     public void testUpdateMatchError() {
         int id = 1;
-        MatchMainDto match = new MatchMainDto();
+        MatchAddUpdateDto match = new MatchAddUpdateDto();
         BindingResult bindingResult = org.mockito.Mockito.mock(BindingResult.class);
 
         when(bindingResult.hasErrors()).thenReturn(true);

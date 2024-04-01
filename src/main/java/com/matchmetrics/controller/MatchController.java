@@ -1,5 +1,6 @@
 package com.matchmetrics.controller;
 
+import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
 import com.matchmetrics.entity.dto.match.MatchMainDto;
 import com.matchmetrics.service.MatchService;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class MatchController {
 
 
     @PostMapping("/add")
-    public MatchMainDto addMatch(@RequestBody MatchMainDto match, BindingResult result) {
+    public MatchMainDto addMatch(@RequestBody MatchAddUpdateDto match, BindingResult result) {
         logger.info("Received request to add match: {}", match);
         MatchMainDto addedMatch = matchService.addMatch(match, result);
         logger.info("Added match: {}", addedMatch);
@@ -70,7 +71,7 @@ public class MatchController {
     }
 
     @PutMapping("/update/{id}")
-    public MatchMainDto updateMatch(@PathVariable int id, @RequestBody MatchMainDto match, BindingResult result) {
+    public MatchMainDto updateMatch(@PathVariable int id, @RequestBody MatchAddUpdateDto match, BindingResult result) {
         logger.info("Received request to update match with ID {}: {}", id, match);
         MatchMainDto updatedMatch = matchService.updateMatch(id, match, result);
         logger.info("Updated match: {}", updatedMatch);

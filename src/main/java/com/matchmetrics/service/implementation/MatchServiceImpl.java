@@ -1,14 +1,16 @@
 package com.matchmetrics.service.implementation;
 
 import com.matchmetrics.entity.Match;
+import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.Team;
+import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
 import com.matchmetrics.entity.dto.match.MatchMainDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapper;
 import com.matchmetrics.entity.mapper.match.MatchMainMapper;
-import com.matchmetrics.exception.DateConversionException;
-import com.matchmetrics.exception.FieldDoesNotExistException;
-import com.matchmetrics.exception.MatchDoesNotExistException;
-import com.matchmetrics.exception.InvalidDataException;
+import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
+import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.MatchService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -35,12 +37,19 @@ public class MatchServiceImpl implements MatchService {
     private final Logger logger = LoggerFactory.getLogger(MatchServiceImpl.class);
 
     private final MatchRepository matchRepository;
+    private final TeamRepository teamRepository;
     private final MatchMainMapper matchMainMapper;
+    private final MatchAddUpdateMapper matchAddUpdateMapperMapper;
 
     @Autowired
-    public MatchServiceImpl(MatchRepository matchRepository, MatchMainMapper matchMainMapper) {
+    public MatchServiceImpl(MatchRepository matchRepository,
+                            TeamRepository teamRepository,
+                            MatchMainMapper matchMainMapper,
+                            MatchAddUpdateMapper matchAddUpdateMapperMapper) {
         this.matchRepository = matchRepository;
+        this.teamRepository = teamRepository;
         this.matchMainMapper = matchMainMapper;
+        this.matchAddUpdateMapperMapper = matchAddUpdateMapperMapper;
     }
 
     @Override
@@ -76,18 +85,39 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public MatchMainDto addMatch(MatchMainDto match, BindingResult bindingResult) {
+    public MatchMainDto addMatch(MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
             logger.error("Error occurred while adding match: {}", errorMessage);
             throw new InvalidDataException(errorMessage.toString());
         }
-        return matchMainMapper.toDto(matchRepository.save(matchMainMapper.toEntity(match)));
+        Team homeTeam = teamRepository.findTeamByName(
+                        matchDto.getHomeTeam().getName())
+                .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getHomeTeam().getName()));
+        Team awayTeam = teamRepository.findTeamByName(
+                        matchDto.getAwayTeam().getName())
+                .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getAwayTeam().getName()));
+
+        ProbabilityMainDto probabilityDto = matchDto.getProbability();
+        Probability probability = new Probability(
+                probabilityDto.getHomeTeamWin(),
+                probabilityDto.getDraw(),
+                probabilityDto.getAwayTeamWin());
+
+        Match matchEntity = matchAddUpdateMapperMapper.toEntity(matchDto);
+        matchEntity.setHomeTeam(homeTeam);
+        matchEntity.setAwayTeam(awayTeam);
+        matchEntity.setProbability(probability);
+
+        homeTeam.getHomeMatches().add(matchEntity);
+        awayTeam.getAwayMatches().add(matchEntity);
+
+        return matchMainMapper.toDto(matchRepository.save(matchEntity));
     }
 
     @Override
-    public MatchMainDto updateMatch(int id, MatchMainDto match, BindingResult bindingResult) {
+    public MatchMainDto updateMatch(int id, MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (matchRepository.existsById(id)) {
             if (bindingResult.hasErrors()) {
                 StringBuilder errorMessage = new StringBuilder();
@@ -95,9 +125,38 @@ public class MatchServiceImpl implements MatchService {
                 logger.error("Error occurred while updating match: {}", errorMessage);
                 throw new InvalidDataException(errorMessage.toString());
             }
-            Match matchEntity = matchMainMapper.toEntity(match);
-            matchEntity.setId(id);
-            return matchMainMapper.toDto(matchRepository.save(matchEntity));
+            Match existingMatch = matchRepository.findById(id)
+                    .orElseThrow(() -> new MatchDoesNotExistException(id));
+
+            Team homeTeam = teamRepository.findTeamByName(
+                            matchDto.getHomeTeam().getName())
+                    .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getHomeTeam().getName()));
+            Team awayTeam = teamRepository.findTeamByName(
+                            matchDto.getAwayTeam().getName())
+                    .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getAwayTeam().getName()));
+
+            ProbabilityMainDto probabilityDto = matchDto.getProbability();
+            Probability probability = new Probability(
+                    probabilityDto.getHomeTeamWin(),
+                    probabilityDto.getDraw(),
+                    probabilityDto.getAwayTeamWin());
+
+            if (existingMatch.getHomeTeam() != homeTeam) {
+                existingMatch.getHomeTeam().getHomeMatches().remove(existingMatch);
+                homeTeam.getHomeMatches().add(existingMatch);
+            }
+            if (existingMatch.getAwayTeam() != awayTeam) {
+                existingMatch.getAwayTeam().getAwayMatches().remove(existingMatch);
+                awayTeam.getAwayMatches().add(existingMatch);
+            }
+
+            existingMatch.setDate(matchDto.getDate());
+            existingMatch.setLeague(matchDto.getLeague());
+            existingMatch.setHomeTeam(homeTeam);
+            existingMatch.setAwayTeam(awayTeam);
+            existingMatch.setProbability(probability);
+
+            return matchMainMapper.toDto(matchRepository.save(existingMatch));
         } else {
             logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);

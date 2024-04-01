@@ -1,5 +1,6 @@
 package com.matchmetrics.service;
 
+import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
 import com.matchmetrics.entity.dto.match.MatchMainDto;
 import org.springframework.validation.BindingResult;
 
@@ -10,7 +11,7 @@ public interface MatchService {
     List<MatchMainDto> getMatchesByCriteria(String team, Boolean isHome, String date, String league,
                                             Integer page, Integer perPage, String sortBy);
     MatchMainDto getMatchById(int id);
-    MatchMainDto addMatch(MatchMainDto match, BindingResult bindingResult);
-    MatchMainDto updateMatch(int id, MatchMainDto match, BindingResult bindingResult);
+    MatchMainDto addMatch(MatchAddUpdateDto match, BindingResult bindingResult);
+    MatchMainDto updateMatch(int id, MatchAddUpdateDto match, BindingResult bindingResult);
     void deleteMatch(int id);
 }

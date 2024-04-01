@@ -29,7 +29,7 @@ public class Match {
     @JoinColumn(name = "away_team_id", referencedColumnName = "id")
     private Team awayTeam;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "probability_id", referencedColumnName = "id")
     private Probability probability;
 
@@ -47,12 +47,10 @@ public class Match {
 
     public void setHomeTeam(Team homeTeam) {
         this.homeTeam = homeTeam;
-        homeTeam.getHomeMatches().add(this);
     }
 
     public void setAwayTeam(Team awayTeam) {
         this.awayTeam = awayTeam;
-        awayTeam.getAwayMatches().add(this);
     }
 
     public int getId() {
