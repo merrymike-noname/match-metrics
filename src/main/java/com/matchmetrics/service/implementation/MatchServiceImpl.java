@@ -18,6 +18,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,10 +88,12 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public MatchMainDto addMatch(MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            StringBuilder errorMessage = new StringBuilder();
-            bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
+            List<String> errorMessages = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            String errorMessage = String.join(", ", errorMessages);
             logger.error("Error occurred while adding match: {}", errorMessage);
-            throw new InvalidDataException(errorMessage.toString());
+            throw new InvalidDataException(errorMessage);
         }
         Team homeTeam = teamRepository.findTeamByName(
                         matchDto.getHomeTeam().getName())
@@ -120,10 +123,12 @@ public class MatchServiceImpl implements MatchService {
     public MatchMainDto updateMatch(int id, MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (matchRepository.existsById(id)) {
             if (bindingResult.hasErrors()) {
-                StringBuilder errorMessage = new StringBuilder();
-                bindingResult.getAllErrors().forEach(error -> errorMessage.append(error.getDefaultMessage()).append("\n"));
+                List<String> errorMessages = bindingResult.getAllErrors().stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .collect(Collectors.toList());
+                String errorMessage = String.join(", ", errorMessages);
                 logger.error("Error occurred while updating match: {}", errorMessage);
-                throw new InvalidDataException(errorMessage.toString());
+                throw new InvalidDataException(errorMessage);
             }
             Match existingMatch = matchRepository.findById(id)
                     .orElseThrow(() -> new MatchDoesNotExistException(id));
