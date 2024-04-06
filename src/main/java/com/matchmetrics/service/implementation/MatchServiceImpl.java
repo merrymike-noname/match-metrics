@@ -8,6 +8,7 @@ import com.matchmetrics.entity.dto.match.MatchMainDto;
 import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
 import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapper;
 import com.matchmetrics.entity.mapper.match.MatchMainMapper;
+import com.matchmetrics.entity.validator.DateValidator;
 import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.TeamRepository;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 public class MatchServiceImpl implements MatchService {
 
     private final Logger logger = LoggerFactory.getLogger(MatchServiceImpl.class);
+    private final DateValidator dateValidator;
 
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
@@ -43,10 +45,11 @@ public class MatchServiceImpl implements MatchService {
     private final MatchAddUpdateMapper matchAddUpdateMapperMapper;
 
     @Autowired
-    public MatchServiceImpl(MatchRepository matchRepository,
+    public MatchServiceImpl(DateValidator dateValidator, MatchRepository matchRepository,
                             TeamRepository teamRepository,
                             MatchMainMapper matchMainMapper,
                             MatchAddUpdateMapper matchAddUpdateMapperMapper) {
+        this.dateValidator = dateValidator;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.matchMainMapper = matchMainMapper;
@@ -95,6 +98,9 @@ public class MatchServiceImpl implements MatchService {
             logger.error("Error occurred while adding match: {}", errorMessage);
             throw new InvalidDataException(errorMessage);
         }
+
+        dateValidator.validate(matchDto.getDate());
+
         Team homeTeam = teamRepository.findTeamByName(
                         matchDto.getHomeTeam().getName())
                 .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getHomeTeam().getName()));
@@ -130,6 +136,9 @@ public class MatchServiceImpl implements MatchService {
                 logger.error("Error occurred while updating match: {}", errorMessage);
                 throw new InvalidDataException(errorMessage);
             }
+
+            dateValidator.validate(matchDto.getDate());
+
             Match existingMatch = matchRepository.findById(id)
                     .orElseThrow(() -> new MatchDoesNotExistException(id));
 
@@ -155,7 +164,7 @@ public class MatchServiceImpl implements MatchService {
                 awayTeam.getAwayMatches().add(existingMatch);
             }
 
-            existingMatch.setDate(matchDto.getDate());
+            existingMatch.setDate(convertStringToDate(matchDto.getDate()));
             existingMatch.setLeague(matchDto.getLeague());
             existingMatch.setHomeTeam(homeTeam);
             existingMatch.setAwayTeam(awayTeam);
@@ -170,7 +179,12 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public void deleteMatch(int id) {
-        matchRepository.deleteById(id);
+        if (matchRepository.existsById(id)) {
+            matchRepository.deleteById(id);
+        } else {
+            logger.error("Match with ID {} not found", id);
+            throw new MatchDoesNotExistException(id);
+        }
     }
 
     public Date convertStringToDate(String strDate) {
@@ -189,7 +203,7 @@ public class MatchServiceImpl implements MatchService {
 
     private Pageable createPageable(int page, int perPage, String sortBy) {
         if (!sortBy.equals("default") && !checkIfFieldExists(sortBy)) {
-            logger.error("Error occurred while trying to find a '" + sortBy + "' field in " + Match.class.getName());
+            logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Match.class.getName());
             throw new FieldDoesNotExistException(sortBy, Match.class);
         }
         Sort sort = sortBy.equals("default") ? Sort.unsorted() : Sort.by(sortBy);

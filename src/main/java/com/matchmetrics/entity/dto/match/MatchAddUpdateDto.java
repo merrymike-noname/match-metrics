@@ -4,11 +4,9 @@ import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
 import com.matchmetrics.entity.dto.team.TeamNameDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
-
 public class MatchAddUpdateDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date;
+    private String date;
 
     private String league;
 
@@ -18,7 +16,7 @@ public class MatchAddUpdateDto {
 
     private ProbabilityMainDto probability;
 
-    public MatchAddUpdateDto(Date date, String league, TeamNameDto homeTeam, TeamNameDto awayTeam, ProbabilityMainDto probability) {
+    public MatchAddUpdateDto(String date, String league, TeamNameDto homeTeam, TeamNameDto awayTeam, ProbabilityMainDto probability) {
         this.date = date;
         this.league = league;
         this.homeTeam = homeTeam;
@@ -29,7 +27,7 @@ public class MatchAddUpdateDto {
     public MatchAddUpdateDto() {
     }
 
-    public Date getDate() {
+    public String getDate() {
         return this.date;
     }
 
@@ -49,7 +47,7 @@ public class MatchAddUpdateDto {
         return this.probability;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

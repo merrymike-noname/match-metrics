@@ -130,6 +130,9 @@ public class MatchControllerTest {
 
     @Test
     public void testGetMatchesByCriteria_date_league() throws Exception {
+
+        //todo split this method
+
         String date1 = "2022-01-01";
         String date2 = "2022-01-02";
         int page = 1;
@@ -249,14 +252,14 @@ public class MatchControllerTest {
     public void testUpdateMatch() throws Exception {
         int id = 1;
         MatchAddUpdateDto matchDto = new MatchAddUpdateDto();
-        matchDto.setDate(new Date());
+        matchDto.setDate("2024-10-10");
         matchDto.setLeague("LeagueA");
         matchDto.setHomeTeam(new TeamNameDto("Test1"));
         matchDto.setAwayTeam(new TeamNameDto("Test2"));
         matchDto.setProbability(new ProbabilityMainDto(0.4f, 0.3f, 0.3f));
 
         MatchMainDto updatedMatch = new MatchMainDto();
-        updatedMatch.setDate(matchDto.getDate());
+        updatedMatch.setDate(new Date());
         updatedMatch.setLeague(matchDto.getLeague());
         updatedMatch.setHomeTeam(new TeamNestedDto(matchDto.getHomeTeam().getName(), "Country", 1500));
         updatedMatch.setAwayTeam(new TeamNestedDto(matchDto.getAwayTeam().getName(), "Country", 1500));
