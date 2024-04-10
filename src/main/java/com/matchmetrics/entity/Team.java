@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Team")
@@ -94,5 +95,22 @@ public class Team {
                 ", elo=" + this.getElo() +
                 ", homeMatches=" + this.getHomeMatches() +
                 ", awayMatches=" + this.getAwayMatches() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Team team = (Team) o;
+        return id == team.id && Float.compare(elo, team.elo) == 0
+                && Objects.equals(name, team.name)
+                && Objects.equals(country, team.country)
+                && Objects.equals(homeMatches, team.homeMatches)
+                && Objects.equals(awayMatches, team.awayMatches);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, country, elo, homeMatches, awayMatches);
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Match")
@@ -100,5 +101,22 @@ public class Match {
                 ", homeTeam=" + this.getHomeTeam() +
                 ", awayTeam=" + this.getAwayTeam() +
                 ", probability=" + this.getProbability() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Match match = (Match) o;
+        return id == match.id && Objects.equals(date, match.date)
+                && Objects.equals(league, match.league)
+                && Objects.equals(homeTeam, match.homeTeam)
+                && Objects.equals(awayTeam, match.awayTeam)
+                && Objects.equals(probability, match.probability);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, date, league, homeTeam, awayTeam, probability);
     }
 }

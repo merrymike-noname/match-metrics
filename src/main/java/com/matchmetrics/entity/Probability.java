@@ -2,6 +2,8 @@ package com.matchmetrics.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "Probability")
 public class Probability {
@@ -82,5 +84,21 @@ public class Probability {
                 ", draw=" + this.getDraw() +
                 ", awayTeamWin=" + this.getAwayTeamWin() +
                 ", match=" + this.getMatch() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Probability that = (Probability) o;
+        return id == that.id && Float.compare(homeTeamWin, that.homeTeamWin) == 0
+                && Float.compare(draw, that.draw) == 0
+                && Float.compare(awayTeamWin, that.awayTeamWin) == 0
+                && Objects.equals(match, that.match);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, homeTeamWin, draw, awayTeamWin, match);
     }
 }
