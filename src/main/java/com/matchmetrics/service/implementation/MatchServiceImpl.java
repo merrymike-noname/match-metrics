@@ -5,9 +5,9 @@ import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
 import com.matchmetrics.entity.dto.match.MatchMainDto;
-import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
 import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapper;
 import com.matchmetrics.entity.mapper.match.MatchMainMapper;
+import com.matchmetrics.entity.mapper.probability.ProbabilityMainMapper;
 import com.matchmetrics.entity.validator.DateValidator;
 import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
@@ -43,17 +43,20 @@ public class MatchServiceImpl implements MatchService {
     private final TeamRepository teamRepository;
     private final MatchMainMapper matchMainMapper;
     private final MatchAddUpdateMapper matchAddUpdateMapperMapper;
+    private final ProbabilityMainMapper probabilityMainMapper;
 
     @Autowired
     public MatchServiceImpl(DateValidator dateValidator, MatchRepository matchRepository,
                             TeamRepository teamRepository,
                             MatchMainMapper matchMainMapper,
-                            MatchAddUpdateMapper matchAddUpdateMapperMapper) {
+                            MatchAddUpdateMapper matchAddUpdateMapperMapper,
+                            ProbabilityMainMapper probabilityMainMapper) {
         this.dateValidator = dateValidator;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
         this.matchMainMapper = matchMainMapper;
         this.matchAddUpdateMapperMapper = matchAddUpdateMapperMapper;
+        this.probabilityMainMapper = probabilityMainMapper;
     }
 
     @Override
@@ -108,11 +111,7 @@ public class MatchServiceImpl implements MatchService {
                         matchDto.getAwayTeam().getName())
                 .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getAwayTeam().getName()));
 
-        ProbabilityMainDto probabilityDto = matchDto.getProbability();
-        Probability probability = new Probability(
-                probabilityDto.getHomeTeamWin(),
-                probabilityDto.getDraw(),
-                probabilityDto.getAwayTeamWin());
+        Probability probability = probabilityMainMapper.toEntity(matchDto.getProbability());
 
         Match matchEntity = matchAddUpdateMapperMapper.toEntity(matchDto);
         matchEntity.setHomeTeam(homeTeam);
@@ -149,11 +148,7 @@ public class MatchServiceImpl implements MatchService {
                             matchDto.getAwayTeam().getName())
                     .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getAwayTeam().getName()));
 
-            ProbabilityMainDto probabilityDto = matchDto.getProbability();
-            Probability probability = new Probability(
-                    probabilityDto.getHomeTeamWin(),
-                    probabilityDto.getDraw(),
-                    probabilityDto.getAwayTeamWin());
+            Probability probability = probabilityMainMapper.toEntity(matchDto.getProbability());
 
             if (existingMatch.getHomeTeam() != homeTeam) {
                 existingMatch.getHomeTeam().getHomeMatches().remove(existingMatch);
