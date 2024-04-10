@@ -5,6 +5,7 @@ import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class MatchMainDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -67,5 +68,22 @@ public class MatchMainDto {
 
     public void setProbability(ProbabilityMainDto probability) {
         this.probability = probability;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MatchMainDto that = (MatchMainDto) o;
+        return Objects.equals(date, that.date)
+                && Objects.equals(league, that.league)
+                && Objects.equals(homeTeam, that.homeTeam)
+                && Objects.equals(awayTeam, that.awayTeam)
+                && Objects.equals(probability, that.probability);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, league, homeTeam, awayTeam, probability);
     }
 }

@@ -4,6 +4,7 @@ import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityMainMapper;
 import com.matchmetrics.entity.mapper.team.TeamNameMapper;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -12,7 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Mapper(componentModel = "spring",
-        uses = { TeamNameMapper.class, ProbabilityMainMapper.class })
+        uses = { TeamNameMapper.class, ProbabilityMainMapper.class },
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public abstract class MatchAddUpdateMapper {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

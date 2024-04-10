@@ -1,5 +1,7 @@
 package com.matchmetrics.entity.dto.probability;
 
+import java.util.Objects;
+
 public class ProbabilityMainDto {
     private float homeTeamWin;
     private float draw;
@@ -36,5 +38,20 @@ public class ProbabilityMainDto {
 
     public void setAwayTeamWin(float awayTeamWin) {
         this.awayTeamWin = awayTeamWin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ProbabilityMainDto that = (ProbabilityMainDto) o;
+        return Float.compare(homeTeamWin, that.homeTeamWin) == 0
+                && Float.compare(draw, that.draw) == 0
+                && Float.compare(awayTeamWin, that.awayTeamWin) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(homeTeamWin, draw, awayTeamWin);
     }
 }

@@ -2,6 +2,8 @@ package com.matchmetrics.entity.dto.team;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Objects;
+
 public class TeamNestedDto {
     @NotNull(message = "Team name should not be empty")
     private String name;
@@ -45,5 +47,20 @@ public class TeamNestedDto {
 
     public void setElo(float elo) {
         this.elo = elo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeamNestedDto that = (TeamNestedDto) o;
+        return Float.compare(elo, that.elo) == 0
+                && Objects.equals(name, that.name)
+                && Objects.equals(country, that.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, country, elo);
     }
 }
