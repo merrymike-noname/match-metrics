@@ -1,6 +1,8 @@
 package com.matchmetrics.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -15,11 +17,15 @@ public class Team {
     private int id;
 
     @Column(name = "name", unique = true)
-    @NotNull(message = "Team name should not be empty")
+    @NotNull(message = "Team name should not be null")
+    @NotBlank(message = "Team name should not be blank")
+    @NotEmpty(message = "Team name should not be empty")
     private String name;
 
     @Column(name = "country")
-    @NotNull(message = "Team country should not be empty")
+    @NotNull(message = "Team country should not be null")
+    @NotBlank(message = "Team country should not be blank")
+    @NotEmpty(message = "Team country should not be empty")
     private String country;
 
     @Column(name = "elo")

@@ -1,21 +1,26 @@
 package com.matchmetrics.entity.dto.team;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 
 public class TeamNestedDto {
-    @NotNull(message = "Team name should not be empty")
+    @NotNull(message = "Team name should not be null")
+    @NotBlank(message = "Team name should not be blank")
+    @NotEmpty(message = "Team name should not be empty")
     private String name;
 
-    @NotNull(message = "Team country should not be empty")
+    @NotNull(message = "Team country should not be null")
+    @NotBlank(message = "Team country should not be blank")
+    @NotEmpty(message = "Team country should not be empty")
     private String country;
 
     private float elo;
 
     public TeamNestedDto(
-            @NotNull(message = "Team name should not be empty") String name,
-            @NotNull(message = "Team country should not be empty")
+            String name,
             String country, float elo) {
         this.name = name;
         this.country = country;
@@ -25,11 +30,11 @@ public class TeamNestedDto {
     public TeamNestedDto() {
     }
 
-    public @NotNull(message = "Team name should not be empty") String getName() {
+    public String getName() {
         return this.name;
     }
 
-    public @NotNull(message = "Team country should not be empty") String getCountry() {
+    public String getCountry() {
         return this.country;
     }
 
@@ -37,11 +42,11 @@ public class TeamNestedDto {
         return this.elo;
     }
 
-    public void setName(@NotNull(message = "Team name should not be empty") String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setCountry(@NotNull(message = "Team country should not be empty") String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
