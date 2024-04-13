@@ -9,11 +9,15 @@ import com.matchmetrics.exception.FieldDoesNotExistException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.TeamService;
+import jakarta.persistence.criteria.Predicate;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -38,11 +42,14 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamGetDto getTeamsByCriteria(String name, String country,
-                                         float elo, Integer page,
+    public List<TeamGetDto> getTeamsByCriteria(String name, String country,
+                                         Float elo, Integer page,
                                          Integer perPage, String sortBy) {
-        //todo implement
-        return null;
+        Pageable pageable = createPageable(page, perPage, sortBy);
+        Specification<Team> spec = createSpecification(name, country, elo);
+        Page<Team> teams = teamRepository.findAll(spec, pageable);
+        return teams.getContent().stream()
+                .map(teamGetMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -89,5 +96,22 @@ public class TeamServiceImpl implements TeamService {
     private boolean checkIfFieldExists(String fieldName) {
         return Arrays.stream(Team.class.getDeclaredFields())
                 .anyMatch(field -> field.getName().equals(fieldName));
+    }
+
+    private Specification<Team> createSpecification(String name, String country, Float elo) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            if (name != null && !name.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("name"), name));
+            }
+            if (country != null && !country.isEmpty()) {
+                predicates.add(criteriaBuilder.equal(root.get("country"), country));
+            }
+            if (elo != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("elo"), elo));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+        };
     }
 }

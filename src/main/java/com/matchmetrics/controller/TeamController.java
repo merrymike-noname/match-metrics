@@ -33,16 +33,16 @@ public class TeamController {
         return teamService.getTeamById(id);
     }
 
-    @GetMapping("/criteria")
-    public TeamGetDto getByCriteria(
-            @RequestParam(name = "team", required = false) String name,
+    @GetMapping()
+    public List<TeamGetDto> getTeamsByCriteria(
+            @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "country", required = false) String country,
-            @RequestParam(name = "elo", required = false) float elo,
+            @RequestParam(name = "elo", required = false) Float elo,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
-        return teamService.getTeamsByCriteria(name, country, elo, page, perPage, sortBy);
+        return teamService.getTeamsByCriteria(name, country, elo, page - 1, perPage, sortBy);
     }
 
     @PostMapping("/add")
