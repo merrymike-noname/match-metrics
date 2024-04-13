@@ -20,8 +20,12 @@ public class TeamController {
     }
 
     @GetMapping("/all")
-    public List<TeamGetDto> getAllTeams() {
-        return teamService.getAllTeams();
+    public List<TeamGetDto> getAllTeams(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
+    ) {
+        return teamService.getAllTeams(page - 1, perPage, sortBy);
     }
 
     @GetMapping("/{id}")

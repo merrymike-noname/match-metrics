@@ -6,7 +6,7 @@ import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import java.util.List;
 
 public interface TeamService {
-    List<TeamGetDto> getAllTeams();
+    List<TeamGetDto> getAllTeams(Integer page, Integer perPage, String sortBy);
     TeamGetDto getTeamById(int id);
     TeamGetDto getTeamsByCriteria(String name, String country, float elo,
                                   Integer page, Integer perPage, String sortBy);
