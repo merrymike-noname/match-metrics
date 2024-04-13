@@ -1,7 +1,6 @@
 package com.matchmetrics.entity.dto.team;
 
-import com.matchmetrics.entity.dto.match.MatchListDto;
-import jakarta.validation.constraints.NotNull;
+import com.matchmetrics.entity.dto.match.MatchNestedDto;
 
 import java.util.List;
 import java.util.Objects;
@@ -13,11 +12,11 @@ public class TeamGetDto {
 
     private float elo;
 
-    private List<MatchListDto> homeMatches;
+    private List<MatchNestedDto> homeMatches;
 
-    private List<MatchListDto> awayMatches;
+    private List<MatchNestedDto> awayMatches;
 
-    public TeamGetDto(String name, String country, float elo, List<MatchListDto> homeMatches, List<MatchListDto> awayMatches) {
+    public TeamGetDto(String name, String country, float elo, List<MatchNestedDto> homeMatches, List<MatchNestedDto> awayMatches) {
         this.name = name;
         this.country = country;
         this.elo = elo;
@@ -49,19 +48,19 @@ public class TeamGetDto {
         this.country = country;
     }
 
-    public List<MatchListDto> getHomeMatches() {
+    public List<MatchNestedDto> getHomeMatches() {
         return homeMatches;
     }
 
-    public void setHomeMatches(List<MatchListDto> homeMatches) {
+    public void setHomeMatches(List<MatchNestedDto> homeMatches) {
         this.homeMatches = homeMatches;
     }
 
-    public List<MatchListDto> getAwayMatches() {
+    public List<MatchNestedDto> getAwayMatches() {
         return awayMatches;
     }
 
-    public void setAwayMatches(List<MatchListDto> awayMatches) {
+    public void setAwayMatches(List<MatchNestedDto> awayMatches) {
         this.awayMatches = awayMatches;
     }
 

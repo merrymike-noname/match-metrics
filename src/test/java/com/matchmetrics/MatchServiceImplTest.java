@@ -4,15 +4,14 @@ import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
-import com.matchmetrics.entity.dto.match.MatchMainDto;
-import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.match.MatchGetDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.dto.team.TeamNameDto;
-import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapper;
-import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapperImpl;
-import com.matchmetrics.entity.mapper.match.MatchMainMapper;
-import com.matchmetrics.entity.mapper.match.MatchMainMapperImpl;
-import com.matchmetrics.entity.mapper.probability.ProbabilityMainMapper;
-import com.matchmetrics.entity.mapper.probability.ProbabilityMainMapperImpl;
+import com.matchmetrics.entity.mapper.match.*;
+import com.matchmetrics.entity.mapper.match.MatchGetMapper;
+import com.matchmetrics.entity.mapper.match.MatchGetMapperImpl;
+import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
+import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
 import com.matchmetrics.entity.mapper.team.TeamNameMapperImpl;
 import com.matchmetrics.entity.mapper.team.TeamNestedMapperImpl;
 import com.matchmetrics.entity.validator.DateValidator;
@@ -58,15 +57,15 @@ public class MatchServiceImplTest {
     private BindingResult bindingResult;
 
     @Spy
-    private final MatchMainMapper matchMainMapper =
-            new MatchMainMapperImpl(new TeamNestedMapperImpl(), new ProbabilityMainMapperImpl());
+    private final MatchGetMapper matchGetMapper =
+            new MatchGetMapperImpl(new TeamNestedMapperImpl(), new ProbabilityGetMapperImpl());
 
     @Spy
     private final MatchAddUpdateMapper matchAddUpdateMapper =
-            new MatchAddUpdateMapperImpl(new TeamNameMapperImpl(), new ProbabilityMainMapperImpl());
+            new MatchAddUpdateMapperImpl(new TeamNameMapperImpl(), new ProbabilityGetMapperImpl());
 
     @Spy
-    private final ProbabilityMainMapper probabilityMainMapper = new ProbabilityMainMapperImpl();
+    private final ProbabilityGetMapper probabilityGetMapper = new ProbabilityGetMapperImpl();
 
     @Spy
     private final DateValidator dateValidator = new DateValidator();
@@ -86,11 +85,11 @@ public class MatchServiceImplTest {
 
         when(matchRepository.findAll(pageable)).thenReturn(new PageImpl<>(matches));
 
-        List<MatchMainDto> expected = matches.stream()
-                .map(matchMainMapper::toDto)
+        List<MatchGetDto> expected = matches.stream()
+                .map(matchGetMapper::toDto)
                 .collect(Collectors.toList());
 
-        List<MatchMainDto> actual = matchService.getAllMatches(1, 2, "default");
+        List<MatchGetDto> actual = matchService.getAllMatches(1, 2, "default");
 
         assertEquals(expected, actual);
     }
@@ -110,10 +109,10 @@ public class MatchServiceImplTest {
 
         when(matchRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(matches));
-        List<MatchMainDto> matchesByCriteria = matchService
+        List<MatchGetDto> matchesByCriteria = matchService
                 .getMatchesByCriteria("TeamA", null, null, null, 1, 2, "default");
-        List<MatchMainDto> expected = matches.stream()
-                .map(matchMainMapper::toDto)
+        List<MatchGetDto> expected = matches.stream()
+                .map(matchGetMapper::toDto)
                 .toList();
         assertEquals(expected, matchesByCriteria);
 
@@ -123,7 +122,7 @@ public class MatchServiceImplTest {
         matchesByCriteria = matchService
                 .getMatchesByCriteria("TeamA", true, null, null, 1, 2, "default");
         expected = matches.stream()
-                .map(matchMainMapper::toDto)
+                .map(matchGetMapper::toDto)
                 .toList();
         assertEquals(expected, matchesByCriteria);
 
@@ -133,7 +132,7 @@ public class MatchServiceImplTest {
         matchesByCriteria = matchService
                 .getMatchesByCriteria("TeamA", false, null, null, 1, 2, "default");
         expected = matches.stream()
-                .map(matchMainMapper::toDto)
+                .map(matchGetMapper::toDto)
                 .toList();
         assertEquals(expected, matchesByCriteria);
 
@@ -143,7 +142,7 @@ public class MatchServiceImplTest {
         matchesByCriteria = matchService
                 .getMatchesByCriteria("TeamA", null, "2024-04-11", null, 1, 2, "default");
         expected = matches.stream()
-                .map(matchMainMapper::toDto)
+                .map(matchGetMapper::toDto)
                 .toList();
         assertEquals(expected, matchesByCriteria);
     }
@@ -155,11 +154,11 @@ public class MatchServiceImplTest {
         Team awayTeam = new Team("AwayTeam", "Country", 1000);
         Probability probability = new Probability(0.2f, 0.5f, 0.3f);
         Match match = new Match(1, new Date(), "League", homeTeam, awayTeam, probability);
-        MatchMainDto expected = matchMainMapper.toDto(match);
+        MatchGetDto expected = matchGetMapper.toDto(match);
 
         when(matchRepository.findById(id)).thenReturn(Optional.of(match));
 
-        MatchMainDto matchById = matchService.getMatchById(id);
+        MatchGetDto matchById = matchService.getMatchById(id);
         assertEquals(expected, matchById);
     }
 
@@ -178,7 +177,7 @@ public class MatchServiceImplTest {
                 new MatchAddUpdateDto("2024-04-10", "League",
                         new TeamNameDto("HomeTeam"),
                         new TeamNameDto("AwayTeam"),
-                        new ProbabilityMainDto(0.2f, 0.5f, 0.3f));
+                        new ProbabilityGetDto(0.2f, 0.5f, 0.3f));
         Probability probability = new Probability(0.2f, 0.5f, 0.3f);
         Team homeTeam = new Team("HomeTeam", "Country", 1000);
         homeTeam.setHomeMatches(new ArrayList<>());
@@ -186,14 +185,14 @@ public class MatchServiceImplTest {
         awayTeam.setAwayMatches(new ArrayList<>());
         Match match = new Match(1, new SimpleDateFormat("yyyy-MM-dd").parse("2024-04-10"),
                 "League", homeTeam, awayTeam, probability);
-        MatchMainDto expected = matchMainMapper.toDto(match);
+        MatchGetDto expected = matchGetMapper.toDto(match);
 
         when(bindingResult.hasErrors()).thenReturn(false);
         when(teamRepository.findTeamByName("HomeTeam")).thenReturn(Optional.of(homeTeam));
         when(teamRepository.findTeamByName("AwayTeam")).thenReturn(Optional.of(awayTeam));
         when(matchRepository.save(any(Match.class))).thenReturn(match);
 
-        MatchMainDto addedMatch = matchService.addMatch(matchDto, bindingResult);
+        MatchGetDto addedMatch = matchService.addMatch(matchDto, bindingResult);
         assertEquals(expected, addedMatch);
     }
 
@@ -202,7 +201,7 @@ public class MatchServiceImplTest {
         MatchAddUpdateDto matchAddUpdateDto = new MatchAddUpdateDto("2024-04-10", "League",
                 new TeamNameDto("HomeTeam"),
                 new TeamNameDto("AwayTeam"),
-                new ProbabilityMainDto(0.2f, 0.5f, 0.3f));
+                new ProbabilityGetDto(0.2f, 0.5f, 0.3f));
 
         when(bindingResult.hasErrors()).thenReturn(true);
         when(bindingResult.getAllErrors())
@@ -224,7 +223,7 @@ public class MatchServiceImplTest {
                 new MatchAddUpdateDto("2024-04-10", "League",
                         new TeamNameDto("HomeTeam"),
                         new TeamNameDto("AwayTeam"),
-                        new ProbabilityMainDto(0.2f, 0.5f, 0.3f));
+                        new ProbabilityGetDto(0.2f, 0.5f, 0.3f));
         Probability probability = new Probability(0.2f, 0.5f, 0.3f);
         Team homeTeam = new Team("HomeTeam", "Country", 1000);
         homeTeam.setHomeMatches(new ArrayList<>());
@@ -232,7 +231,7 @@ public class MatchServiceImplTest {
         awayTeam.setAwayMatches(new ArrayList<>());
         Match match = new Match(id, new SimpleDateFormat("yyyy-MM-dd").parse("2024-04-10"),
                 "League", homeTeam, awayTeam, probability);
-        MatchMainDto expected = matchMainMapper.toDto(match);
+        MatchGetDto expected = matchGetMapper.toDto(match);
 
         when(matchRepository.existsById(id)).thenReturn(true);
         when(bindingResult.hasErrors()).thenReturn(false);
@@ -241,7 +240,7 @@ public class MatchServiceImplTest {
         when(teamRepository.findTeamByName("AwayTeam")).thenReturn(Optional.of(awayTeam));
         when(matchRepository.save(any(Match.class))).thenReturn(match);
 
-        MatchMainDto updatedMatch = matchService.updateMatch(id, matchDto, bindingResult);
+        MatchGetDto updatedMatch = matchService.updateMatch(id, matchDto, bindingResult);
         assertEquals(expected, updatedMatch);
     }
 
@@ -251,7 +250,7 @@ public class MatchServiceImplTest {
         MatchAddUpdateDto matchAddUpdateDto = new MatchAddUpdateDto("2024-04-10", "League",
                 new TeamNameDto("HomeTeam"),
                 new TeamNameDto("AwayTeam"),
-                new ProbabilityMainDto(0.2f, 0.5f, 0.3f));
+                new ProbabilityGetDto(0.2f, 0.5f, 0.3f));
 
         when(matchRepository.existsById(id)).thenReturn(false);
         assertThrows(MatchDoesNotExistException.class, () -> matchService.updateMatch(id, matchAddUpdateDto, bindingResult));

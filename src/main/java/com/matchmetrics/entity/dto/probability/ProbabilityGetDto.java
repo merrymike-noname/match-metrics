@@ -2,18 +2,18 @@ package com.matchmetrics.entity.dto.probability;
 
 import java.util.Objects;
 
-public class ProbabilityMainDto {
+public class ProbabilityGetDto {
     private float homeTeamWin;
     private float draw;
     private float awayTeamWin;
 
-    public ProbabilityMainDto(float homeTeamWin, float draw, float awayTeamWin) {
+    public ProbabilityGetDto(float homeTeamWin, float draw, float awayTeamWin) {
         this.homeTeamWin = homeTeamWin;
         this.draw = draw;
         this.awayTeamWin = awayTeamWin;
     }
 
-    public ProbabilityMainDto() {
+    public ProbabilityGetDto() {
     }
 
     public float getHomeTeamWin() {
@@ -44,7 +44,7 @@ public class ProbabilityMainDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ProbabilityMainDto that = (ProbabilityMainDto) o;
+        ProbabilityGetDto that = (ProbabilityGetDto) o;
         return Float.compare(homeTeamWin, that.homeTeamWin) == 0
                 && Float.compare(draw, that.draw) == 0
                 && Float.compare(awayTeamWin, that.awayTeamWin) == 0;

@@ -1,6 +1,6 @@
 package com.matchmetrics.entity.dto.match;
 
-import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.dto.team.TeamNameDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -16,9 +16,9 @@ public class MatchAddUpdateDto {
 
     private TeamNameDto awayTeam;
 
-    private ProbabilityMainDto probability;
+    private ProbabilityGetDto probability;
 
-    public MatchAddUpdateDto(String date, String league, TeamNameDto homeTeam, TeamNameDto awayTeam, ProbabilityMainDto probability) {
+    public MatchAddUpdateDto(String date, String league, TeamNameDto homeTeam, TeamNameDto awayTeam, ProbabilityGetDto probability) {
         this.date = date;
         this.league = league;
         this.homeTeam = homeTeam;
@@ -45,7 +45,7 @@ public class MatchAddUpdateDto {
         return this.awayTeam;
     }
 
-    public ProbabilityMainDto getProbability() {
+    public ProbabilityGetDto getProbability() {
         return this.probability;
     }
 
@@ -65,7 +65,7 @@ public class MatchAddUpdateDto {
         this.awayTeam = awayTeam;
     }
 
-    public void setProbability(ProbabilityMainDto probability) {
+    public void setProbability(ProbabilityGetDto probability) {
         this.probability = probability;
     }
 

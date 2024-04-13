@@ -4,10 +4,10 @@ import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
-import com.matchmetrics.entity.dto.match.MatchMainDto;
+import com.matchmetrics.entity.dto.match.MatchGetDto;
 import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapper;
-import com.matchmetrics.entity.mapper.match.MatchMainMapper;
-import com.matchmetrics.entity.mapper.probability.ProbabilityMainMapper;
+import com.matchmetrics.entity.mapper.match.MatchGetMapper;
+import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.entity.validator.DateValidator;
 import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
@@ -41,36 +41,36 @@ public class MatchServiceImpl implements MatchService {
 
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
-    private final MatchMainMapper matchMainMapper;
+    private final MatchGetMapper matchGetMapper;
     private final MatchAddUpdateMapper matchAddUpdateMapperMapper;
-    private final ProbabilityMainMapper probabilityMainMapper;
+    private final ProbabilityGetMapper probabilityGetMapper;
 
     @Autowired
     public MatchServiceImpl(DateValidator dateValidator, MatchRepository matchRepository,
                             TeamRepository teamRepository,
-                            MatchMainMapper matchMainMapper,
+                            MatchGetMapper matchGetMapper,
                             MatchAddUpdateMapper matchAddUpdateMapperMapper,
-                            ProbabilityMainMapper probabilityMainMapper) {
+                            ProbabilityGetMapper probabilityGetMapper) {
         this.dateValidator = dateValidator;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
-        this.matchMainMapper = matchMainMapper;
+        this.matchGetMapper = matchGetMapper;
         this.matchAddUpdateMapperMapper = matchAddUpdateMapperMapper;
-        this.probabilityMainMapper = probabilityMainMapper;
+        this.probabilityGetMapper = probabilityGetMapper;
     }
 
     @Override
-    public List<MatchMainDto> getAllMatches(
+    public List<MatchGetDto> getAllMatches(
         Integer page, Integer perPage, String sortBy
     ) {
         Pageable pageable = createPageable(page, perPage, sortBy);
 
         return matchRepository.findAll(pageable).getContent().stream()
-                .map(matchMainMapper::toDto).collect(Collectors.toList());
+                .map(matchGetMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<MatchMainDto> getMatchesByCriteria(
+    public List<MatchGetDto> getMatchesByCriteria(
             String team, Boolean isHome, String date, String league,
             Integer page, Integer perPage, String sortBy
     ) {
@@ -78,21 +78,21 @@ public class MatchServiceImpl implements MatchService {
         Specification<Match> spec = createSpecification(team, isHome, date, league);
         Page<Match> matches = matchRepository.findAll(spec, pageable);
         return matches.getContent().stream()
-                .map(matchMainMapper::toDto).collect(Collectors.toList());
+                .map(matchGetMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public MatchMainDto getMatchById(int id) {
+    public MatchGetDto getMatchById(int id) {
         Optional<Match> match = matchRepository.findById(id);
         if (match.isEmpty()) {
             logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);
         }
-        return matchMainMapper.toDto(match.get());
+        return matchGetMapper.toDto(match.get());
     }
 
     @Override
-    public MatchMainDto addMatch(MatchAddUpdateDto matchDto, BindingResult bindingResult) {
+    public MatchGetDto addMatch(MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -111,7 +111,7 @@ public class MatchServiceImpl implements MatchService {
                         matchDto.getAwayTeam().getName())
                 .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getAwayTeam().getName()));
 
-        Probability probability = probabilityMainMapper.toEntity(matchDto.getProbability());
+        Probability probability = probabilityGetMapper.toEntity(matchDto.getProbability());
 
         Match matchEntity = matchAddUpdateMapperMapper.toEntity(matchDto);
         matchEntity.setHomeTeam(homeTeam);
@@ -121,11 +121,11 @@ public class MatchServiceImpl implements MatchService {
         homeTeam.getHomeMatches().add(matchEntity);
         awayTeam.getAwayMatches().add(matchEntity);
 
-        return matchMainMapper.toDto(matchRepository.save(matchEntity));
+        return matchGetMapper.toDto(matchRepository.save(matchEntity));
     }
 
     @Override
-    public MatchMainDto updateMatch(int id, MatchAddUpdateDto matchDto, BindingResult bindingResult) {
+    public MatchGetDto updateMatch(int id, MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (matchRepository.existsById(id)) {
             if (bindingResult.hasErrors()) {
                 List<String> errorMessages = bindingResult.getAllErrors().stream()
@@ -148,7 +148,7 @@ public class MatchServiceImpl implements MatchService {
                             matchDto.getAwayTeam().getName())
                     .orElseThrow(() -> new TeamDoesNotExistException(matchDto.getAwayTeam().getName()));
 
-            Probability probability = probabilityMainMapper.toEntity(matchDto.getProbability());
+            Probability probability = probabilityGetMapper.toEntity(matchDto.getProbability());
 
             if (existingMatch.getHomeTeam() != homeTeam) {
                 existingMatch.getHomeTeam().getHomeMatches().remove(existingMatch);
@@ -165,7 +165,7 @@ public class MatchServiceImpl implements MatchService {
             existingMatch.setAwayTeam(awayTeam);
             existingMatch.setProbability(probability);
 
-            return matchMainMapper.toDto(matchRepository.save(existingMatch));
+            return matchGetMapper.toDto(matchRepository.save(existingMatch));
         } else {
             logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);

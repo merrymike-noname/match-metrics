@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matchmetrics.controller.MatchController;
 import com.matchmetrics.controller.controller_advice.GlobalExceptionHandler;
 import com.matchmetrics.entity.dto.match.MatchAddUpdateDto;
-import com.matchmetrics.entity.dto.match.MatchMainDto;
-import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.match.MatchGetDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.dto.team.TeamNameDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import com.matchmetrics.exception.MatchDoesNotExistException;
@@ -62,11 +62,11 @@ public class MatchControllerTest {
     public void testGetAllMatches() throws Exception {
         TeamNestedDto homeTeam = new TeamNestedDto("Test1", "LeagueA", 1500);
         TeamNestedDto awayTeam = new TeamNestedDto("Test2", "LeagueB", 1400);
-        ProbabilityMainDto probability = new ProbabilityMainDto(0.4f, 0.3f, 0.3f);
-        MatchMainDto match1 = new MatchMainDto(new Date(), "LeagueA", homeTeam, awayTeam, probability);
-        MatchMainDto match2 = new MatchMainDto(new Date(), "LeagueB", homeTeam, awayTeam, probability);
+        ProbabilityGetDto probability = new ProbabilityGetDto(0.4f, 0.3f, 0.3f);
+        MatchGetDto match1 = new MatchGetDto(new Date(), "LeagueA", homeTeam, awayTeam, probability);
+        MatchGetDto match2 = new MatchGetDto(new Date(), "LeagueB", homeTeam, awayTeam, probability);
 
-        List<MatchMainDto> matches = Arrays.asList(match1, match2);
+        List<MatchGetDto> matches = Arrays.asList(match1, match2);
 
         when(matchService.getAllMatches(0, 3, "default")).thenReturn(matches);
 
@@ -140,9 +140,9 @@ public class MatchControllerTest {
 
         TeamNestedDto homeTeam = new TeamNestedDto("Test1", "LeagueA", 1500);
         TeamNestedDto awayTeam = new TeamNestedDto("Test2", "LeagueB", 1400);
-        ProbabilityMainDto probability = new ProbabilityMainDto(0.4f, 0.3f, 0.3f);
-        MatchMainDto match1 = new MatchMainDto(new SimpleDateFormat("yyyy-MM-dd").parse(date), "LeagueA", homeTeam, awayTeam, probability);
-        MatchMainDto match2 = new MatchMainDto(new SimpleDateFormat("yyyy-MM-dd").parse(date), "LeagueA", awayTeam, homeTeam, probability);
+        ProbabilityGetDto probability = new ProbabilityGetDto(0.4f, 0.3f, 0.3f);
+        MatchGetDto match1 = new MatchGetDto(new SimpleDateFormat("yyyy-MM-dd").parse(date), "LeagueA", homeTeam, awayTeam, probability);
+        MatchGetDto match2 = new MatchGetDto(new SimpleDateFormat("yyyy-MM-dd").parse(date), "LeagueA", awayTeam, homeTeam, probability);
 
         when(matchService.getMatchesByCriteria(eq(team), eq(isHome), any(), eq(league), eq(page - 1), eq(perPage), eq(sortBy)))
                 .thenReturn(List.of(match1));
@@ -186,8 +186,8 @@ public class MatchControllerTest {
 
         TeamNestedDto homeTeam = new TeamNestedDto("Test1", "LeagueA", 1500);
         TeamNestedDto awayTeam = new TeamNestedDto("Test2", "LeagueB", 1400);
-        ProbabilityMainDto probability = new ProbabilityMainDto(0.4f, 0.3f, 0.3f);
-        MatchMainDto match1 = new MatchMainDto(new SimpleDateFormat("yyyy-MM-dd").parse(date1), "LeagueA", homeTeam, awayTeam, probability);
+        ProbabilityGetDto probability = new ProbabilityGetDto(0.4f, 0.3f, 0.3f);
+        MatchGetDto match1 = new MatchGetDto(new SimpleDateFormat("yyyy-MM-dd").parse(date1), "LeagueA", homeTeam, awayTeam, probability);
 
         when(matchService.getMatchesByCriteria(any(), any(), eq(date1), any(), anyInt(), anyInt(), anyString())).thenReturn(List.of(match1));
 
@@ -229,8 +229,8 @@ public class MatchControllerTest {
 
         TeamNestedDto homeTeam = new TeamNestedDto("Test1", "LeagueA", 1500);
         TeamNestedDto newTeam = new TeamNestedDto("Test3", "LeagueC", 1300);
-        ProbabilityMainDto probabilitySecond = new ProbabilityMainDto(0.5f, 0.25f, 0.025f);
-        MatchMainDto match2 = new MatchMainDto(new SimpleDateFormat("yyyy-MM-dd").parse(date2), "LeagueBB", homeTeam, newTeam, probabilitySecond);
+        ProbabilityGetDto probabilitySecond = new ProbabilityGetDto(0.5f, 0.25f, 0.025f);
+        MatchGetDto match2 = new MatchGetDto(new SimpleDateFormat("yyyy-MM-dd").parse(date2), "LeagueBB", homeTeam, newTeam, probabilitySecond);
 
         when(matchService.getMatchesByCriteria(any(), any(), any(), eq(league), anyInt(), anyInt(), anyString())).thenReturn(List.of(match2));
 
@@ -271,7 +271,7 @@ public class MatchControllerTest {
         String sortBy = "default";
 
         when(matchService.getMatchesByCriteria(eq(team), any(), any(), eq(league), anyInt(), anyInt(), anyString()))
-                .thenReturn(List.of(new MatchMainDto()));
+                .thenReturn(List.of(new MatchGetDto()));
 
         mockMvc.perform(get("/matchmetrics/api/v0/matches")
                         .param("team", team)
@@ -291,9 +291,9 @@ public class MatchControllerTest {
         matchDto.setLeague("LeagueA");
         matchDto.setHomeTeam(new TeamNameDto("Test1"));
         matchDto.setAwayTeam(new TeamNameDto("Test2"));
-        matchDto.setProbability(new ProbabilityMainDto(0.4f, 0.3f, 0.3f));
+        matchDto.setProbability(new ProbabilityGetDto(0.4f, 0.3f, 0.3f));
 
-        MatchMainDto updatedMatch = new MatchMainDto();
+        MatchGetDto updatedMatch = new MatchGetDto();
         updatedMatch.setDate(new Date());
         updatedMatch.setLeague(matchDto.getLeague());
         updatedMatch.setHomeTeam(new TeamNestedDto(matchDto.getHomeTeam().getName(), "Country", 1500));
@@ -322,9 +322,9 @@ public class MatchControllerTest {
         matchDto.setLeague("LeagueA");
         matchDto.setHomeTeam(new TeamNameDto("Test1"));
         matchDto.setAwayTeam(new TeamNameDto("Test2"));
-        matchDto.setProbability(new ProbabilityMainDto(0.4f, 0.3f, 0.3f));
+        matchDto.setProbability(new ProbabilityGetDto(0.4f, 0.3f, 0.3f));
 
-        MatchMainDto addedMatch = new MatchMainDto();
+        MatchGetDto addedMatch = new MatchGetDto();
         addedMatch.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(matchDto.getDate()));
         addedMatch.setLeague(matchDto.getLeague());
         addedMatch.setHomeTeam(new TeamNestedDto(matchDto.getHomeTeam().getName(), "CountryA", 1500));
@@ -349,12 +349,12 @@ public class MatchControllerTest {
     @Test
     public void testGetMatchById() throws Exception {
         int id = 1;
-        MatchMainDto match = new MatchMainDto();
+        MatchGetDto match = new MatchGetDto();
         match.setDate(new SimpleDateFormat("yyyy-MM-dd").parse("2022-01-01"));
         match.setLeague("LeagueA");
         match.setHomeTeam(new TeamNestedDto("Test1", "CountryA", 1500));
         match.setAwayTeam(new TeamNestedDto("Test2", "CountryB", 1400));
-        match.setProbability(new ProbabilityMainDto(0.4f, 0.3f, 0.3f));
+        match.setProbability(new ProbabilityGetDto(0.4f, 0.3f, 0.3f));
 
         when(matchService.getMatchById(id)).thenReturn(match);
 

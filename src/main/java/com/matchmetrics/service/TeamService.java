@@ -8,8 +8,8 @@ import java.util.List;
 public interface TeamService {
     List<TeamGetDto> getAllTeams();
     TeamGetDto getTeamById(int id);
-    TeamGetDto getByCriteria(String name, String country, float elo, boolean isBiggestElo,
-                             Integer page, Integer perPage, String sortBy);
+    TeamGetDto getTeamsByCriteria(String name, String country, float elo,
+                                  Integer page, Integer perPage, String sortBy);
     TeamNestedDto createTeam(TeamNestedDto team);
     TeamNestedDto updateTeam(int id, TeamNestedDto team);
     void deleteTeam(int id);

@@ -34,12 +34,11 @@ public class TeamController {
             @RequestParam(name = "team", required = false) String name,
             @RequestParam(name = "country", required = false) String country,
             @RequestParam(name = "elo", required = false) float elo,
-            @RequestParam(name = "isBigger", required = false) boolean isBiggestElo,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
-        return teamService.getByCriteria(name, country, elo, isBiggestElo, page, perPage, sortBy);
+        return teamService.getTeamsByCriteria(name, country, elo, page, perPage, sortBy);
     }
 
     @PostMapping("/add")

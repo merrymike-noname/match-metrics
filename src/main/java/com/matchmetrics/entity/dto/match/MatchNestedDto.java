@@ -1,18 +1,18 @@
 package com.matchmetrics.entity.dto.match;
 
-import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Objects;
 
-public class MatchListDto {
+public class MatchNestedDto {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String date;
 
     private String league;
 
-    private ProbabilityMainDto probability;
+    private ProbabilityGetDto probability;
 
     public String getDate() {
         return date;
@@ -22,11 +22,11 @@ public class MatchListDto {
         this.date = date;
     }
 
-    public ProbabilityMainDto getProbability() {
+    public ProbabilityGetDto getProbability() {
         return probability;
     }
 
-    public void setProbability(ProbabilityMainDto probability) {
+    public void setProbability(ProbabilityGetDto probability) {
         this.probability = probability;
     }
 
@@ -38,7 +38,7 @@ public class MatchListDto {
         this.league = league;
     }
 
-    public MatchListDto(String date, String league, ProbabilityMainDto probability) {
+    public MatchNestedDto(String date, String league, ProbabilityGetDto probability) {
         this.date = date;
         this.league = league;
         this.probability = probability;
@@ -48,7 +48,7 @@ public class MatchListDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MatchListDto that = (MatchListDto) o;
+        MatchNestedDto that = (MatchNestedDto) o;
         return Objects.equals(date, that.date) &&
                 Objects.equals(league, that.league) &&
                 Objects.equals(probability, that.probability);

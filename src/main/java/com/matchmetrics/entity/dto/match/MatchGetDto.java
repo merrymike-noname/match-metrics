@@ -1,13 +1,13 @@
 package com.matchmetrics.entity.dto.match;
 
-import com.matchmetrics.entity.dto.probability.ProbabilityMainDto;
+import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.Objects;
 
-public class MatchMainDto {
+public class MatchGetDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date date;
 
@@ -17,9 +17,9 @@ public class MatchMainDto {
 
     private TeamNestedDto awayTeam;
 
-    private ProbabilityMainDto probability;
+    private ProbabilityGetDto probability;
 
-    public MatchMainDto(Date date, String league, TeamNestedDto homeTeam, TeamNestedDto awayTeam, ProbabilityMainDto probability) {
+    public MatchGetDto(Date date, String league, TeamNestedDto homeTeam, TeamNestedDto awayTeam, ProbabilityGetDto probability) {
         this.date = date;
         this.league = league;
         this.homeTeam = homeTeam;
@@ -27,7 +27,7 @@ public class MatchMainDto {
         this.probability = probability;
     }
 
-    public MatchMainDto() {
+    public MatchGetDto() {
     }
 
     public Date getDate() {
@@ -46,7 +46,7 @@ public class MatchMainDto {
         return this.awayTeam;
     }
 
-    public ProbabilityMainDto getProbability() {
+    public ProbabilityGetDto getProbability() {
         return this.probability;
     }
 
@@ -66,7 +66,7 @@ public class MatchMainDto {
         this.awayTeam = awayTeam;
     }
 
-    public void setProbability(ProbabilityMainDto probability) {
+    public void setProbability(ProbabilityGetDto probability) {
         this.probability = probability;
     }
 
@@ -74,7 +74,7 @@ public class MatchMainDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MatchMainDto that = (MatchMainDto) o;
+        MatchGetDto that = (MatchGetDto) o;
         return Objects.equals(date, that.date)
                 && Objects.equals(league, that.league)
                 && Objects.equals(homeTeam, that.homeTeam)

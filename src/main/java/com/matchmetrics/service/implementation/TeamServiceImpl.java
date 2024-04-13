@@ -20,7 +20,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamGetDto getByCriteria(String name, String country, float elo, boolean isBiggestElo, Integer page, Integer perPage, String sortBy) {
+    public TeamGetDto getTeamsByCriteria(String name, String country, float elo, Integer page, Integer perPage, String sortBy) {
         return null;
     }
 
