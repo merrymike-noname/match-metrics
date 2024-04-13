@@ -3,7 +3,9 @@ package com.matchmetrics.controller;
 import com.matchmetrics.entity.dto.team.TeamGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import com.matchmetrics.service.TeamService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,13 +48,14 @@ public class TeamController {
     }
 
     @PostMapping("/add")
-    public TeamNestedDto createTeam(@RequestBody TeamNestedDto team) {
-        return teamService.createTeam(team);
+    public TeamNestedDto createTeam(@Valid @RequestBody TeamNestedDto team, BindingResult bindingResult) {
+        return teamService.createTeam(team, bindingResult);
     }
 
     @PutMapping("/update/{id}")
-    public TeamNestedDto updateTeam(@PathVariable int id, @RequestBody TeamNestedDto team) {
-        return teamService.updateTeam(id, team);
+    public TeamNestedDto updateTeam(@PathVariable int id, @Valid @RequestBody TeamNestedDto team,
+                                    BindingResult bindingResult) {
+        return teamService.updateTeam(id, team, bindingResult);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -5,17 +5,22 @@ import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.team.TeamGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import com.matchmetrics.entity.mapper.team.TeamGetMapper;
+import com.matchmetrics.entity.mapper.team.TeamNestedMapper;
 import com.matchmetrics.exception.FieldDoesNotExistException;
+import com.matchmetrics.exception.InvalidDataException;
+import com.matchmetrics.exception.TeamAlreadyExistsException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.TeamService;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,10 +32,14 @@ import java.util.stream.Collectors;
 public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final TeamGetMapper teamGetMapper;
+    private final TeamNestedMapper teamNestedMapper;
 
-    public TeamServiceImpl(TeamRepository teamRepository, TeamGetMapper teamGetMapper) {
+    public TeamServiceImpl(TeamRepository teamRepository,
+                           TeamGetMapper teamGetMapper,
+                           TeamNestedMapper teamNestedMapper) {
         this.teamRepository = teamRepository;
         this.teamGetMapper = teamGetMapper;
+        this.teamNestedMapper = teamNestedMapper;
     }
 
     @Override
@@ -62,15 +71,48 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamNestedDto createTeam(TeamNestedDto team) {
-        //todo implement
-        return null;
+    public TeamNestedDto createTeam(TeamNestedDto team, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            String errorMessage = String.join(", ", errorMessages);
+            //logger.error("Error occurred while adding match: {}", errorMessage);
+            throw new InvalidDataException(errorMessage);
+        }
+        if (teamRepository.existsByName(team.getName())) {
+            throw new TeamAlreadyExistsException(team.getName());
+        }
+
+        Team teamEntity = teamNestedMapper.toEntity(team);
+        teamRepository.save(teamEntity);
+        return teamNestedMapper.toDto(teamEntity);
     }
 
     @Override
-    public TeamNestedDto updateTeam(int id, TeamNestedDto team) {
-        //todo implement
-        return null;
+    public TeamNestedDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            List<String> errorMessages = bindingResult.getAllErrors().stream()
+                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                    .collect(Collectors.toList());
+            String errorMessage = String.join(", ", errorMessages);
+            //logger.error("Error occurred while adding match: {}", errorMessage);
+            throw new InvalidDataException(errorMessage);
+        }
+        Optional<Team> existingTeam = teamRepository.findById(id);
+        if (existingTeam.isEmpty()) {
+            throw new TeamDoesNotExistException(id);
+        }
+        if (teamRepository.existsByName(team.getName())) {
+            throw new TeamAlreadyExistsException(team.getName());
+        }
+
+        Team teamEntity = existingTeam.get();
+        teamEntity.setName(team.getName());
+        teamEntity.setCountry(team.getCountry());
+        teamEntity.setElo(team.getElo());
+        teamRepository.save(teamEntity);
+        return teamNestedMapper.toDto(teamEntity);
     }
 
     @Override
@@ -86,7 +128,7 @@ public class TeamServiceImpl implements TeamService {
     private Pageable createPageable(int page, int perPage, String sortBy) {
         if (!sortBy.equals("default") && !checkIfFieldExists(sortBy)) {
             // todo enable logger
-            // logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Match.class.getName());
+            // logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Team.class.getName());
             throw new FieldDoesNotExistException(sortBy, Match.class);
         }
         Sort sort = sortBy.equals("default") ? Sort.unsorted() : Sort.by(sortBy);
