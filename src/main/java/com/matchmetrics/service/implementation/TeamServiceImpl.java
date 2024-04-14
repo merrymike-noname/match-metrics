@@ -13,6 +13,8 @@ import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.TeamService;
 import jakarta.persistence.criteria.Predicate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class TeamServiceImpl implements TeamService {
+
+    private final Logger logger = LoggerFactory.getLogger(TeamServiceImpl.class);
+
     private final TeamRepository teamRepository;
     private final TeamGetMapper teamGetMapper;
     private final TeamNestedMapper teamNestedMapper;
@@ -52,11 +57,16 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<TeamGetDto> getTeamsByCriteria(String name, String country,
-                                         Float elo, Integer page,
-                                         Integer perPage, String sortBy) {
+                                               Float elo, Integer page,
+                                               Integer perPage, String sortBy) {
         Pageable pageable = createPageable(page, perPage, sortBy);
         Specification<Team> spec = createSpecification(name, country, elo);
         Page<Team> teams = teamRepository.findAll(spec, pageable);
+
+        if (teams.isEmpty()) {
+            logger.warn("No teams found with the given criteria. Name: {}, Country: {}, Elo: {}", name, country, elo);
+        }
+
         return teams.getContent().stream()
                 .map(teamGetMapper::toDto).collect(Collectors.toList());
     }
@@ -65,6 +75,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamGetDto getTeamById(int id) {
         Optional<Team> team = teamRepository.findById(id);
         if (team.isEmpty()) {
+            logger.error("Team with ID {} not found", id);
             throw new TeamDoesNotExistException(id);
         }
         return teamGetMapper.toDto(team.get());
@@ -77,10 +88,11 @@ public class TeamServiceImpl implements TeamService {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
             String errorMessage = String.join(", ", errorMessages);
-            //logger.error("Error occurred while adding match: {}", errorMessage);
+            logger.error("Error occurred while creating team: {}", errorMessage);
             throw new InvalidDataException(errorMessage);
         }
         if (teamRepository.existsByName(team.getName())) {
+            logger.error("Team with name {} already exists", team.getName());
             throw new TeamAlreadyExistsException(team.getName());
         }
 
@@ -96,14 +108,16 @@ public class TeamServiceImpl implements TeamService {
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
                     .collect(Collectors.toList());
             String errorMessage = String.join(", ", errorMessages);
-            //logger.error("Error occurred while adding match: {}", errorMessage);
+            logger.error("Error occurred while updating team: {}", errorMessage);
             throw new InvalidDataException(errorMessage);
         }
         Optional<Team> existingTeam = teamRepository.findById(id);
         if (existingTeam.isEmpty()) {
+            logger.error("Team with ID {} not found", id);
             throw new TeamDoesNotExistException(id);
         }
         if (teamRepository.existsByName(team.getName())) {
+            logger.error("Team with name {} already exists, you can't update with it.", team.getName());
             throw new TeamAlreadyExistsException(team.getName());
         }
 
@@ -120,15 +134,14 @@ public class TeamServiceImpl implements TeamService {
         if (teamRepository.existsById(id)) {
             teamRepository.deleteById(id);
         } else {
-            // todo log
+            logger.error("Team with ID {} not found", id);
             throw new TeamDoesNotExistException(id);
         }
     }
 
     private Pageable createPageable(int page, int perPage, String sortBy) {
         if (!sortBy.equals("default") && !checkIfFieldExists(sortBy)) {
-            // todo enable logger
-            // logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Team.class.getName());
+            logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Team.class.getName());
             throw new FieldDoesNotExistException(sortBy, Match.class);
         }
         Sort sort = sortBy.equals("default") ? Sort.unsorted() : Sort.by(sortBy);

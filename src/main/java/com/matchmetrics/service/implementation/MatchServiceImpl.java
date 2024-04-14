@@ -77,6 +77,12 @@ public class MatchServiceImpl implements MatchService {
         Pageable pageable = createPageable(page, perPage, sortBy);
         Specification<Match> spec = createSpecification(team, isHome, date, league);
         Page<Match> matches = matchRepository.findAll(spec, pageable);
+
+        if (matches.isEmpty()) {
+            logger.warn("No matches found with the given criteria. Team: {}, IsHome: {}, Date: {}, League: {}",
+                    team, isHome, date, league);
+        }
+
         return matches.getContent().stream()
                 .map(matchGetMapper::toDto).collect(Collectors.toList());
     }
