@@ -1,4 +1,4 @@
-package com.matchmetrics;
+package com.matchmetrics.match;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matchmetrics.controller.MatchController;

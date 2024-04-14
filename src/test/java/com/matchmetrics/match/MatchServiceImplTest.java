@@ -1,4 +1,4 @@
-package com.matchmetrics;
+package com.matchmetrics.match;
 
 import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.Probability;
