@@ -59,6 +59,16 @@ public class TeamController {
         return teams;
     }
 
+    @GetMapping("/compare")
+    public List<TeamNestedDto> getTeamsComparedByName(@RequestParam(name = "teamHome") String teamHome,
+                                                      @RequestParam(name = "teamAway") String teamAway
+    ) {
+        logger.info("Received request to compare teams: {} and {}", teamHome, teamAway);
+        List<TeamNestedDto> teams = teamService.getTeamsComparedByName(teamHome, teamAway);
+        logger.info("Returning {} team stats", teams.size());
+        return teams;
+    }
+
     @PostMapping("/add")
     public TeamNestedDto createTeam(@Valid @RequestBody TeamNestedDto team, BindingResult bindingResult) {
         logger.info("Received request to add team: {}", team);

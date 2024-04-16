@@ -173,6 +173,33 @@ public class TeamControllerTest {
     }
 
     @Test
+    public void testGetTeamsComparedByName() throws Exception {
+        String teamHome = "Liverpool";
+        String teamAway = "Arsenal";
+        TeamNestedDto teamHomeDto = new TeamNestedDto(teamHome, "England", 2000);
+        TeamNestedDto teamAwayDto = new TeamNestedDto(teamAway, "England", 1900);
+
+        when(teamService.getTeamsComparedByName(teamHome, teamAway)).thenReturn(List.of(teamHomeDto, teamAwayDto));
+
+        mockMvc.perform(get("/matchmetrics/api/v0/teams/compare")
+                        .param("teamHome", teamHome)
+                        .param("teamAway", teamAway)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{" +
+                        "\"name\":\"" + teamHomeDto.getName() + "\"," +
+                        "\"country\":\"" + teamHomeDto.getCountry() + "\"," +
+                        "\"elo\":" + teamHomeDto.getElo() +
+                        "},{" +
+                        "\"name\":\"" + teamAwayDto.getName() + "\"," +
+                        "\"country\":\"" + teamAwayDto.getCountry() + "\"," +
+                        "\"elo\":" + teamAwayDto.getElo() +
+                        "}]"));
+
+        verify(teamService, times(1)).getTeamsComparedByName(teamHome, teamAway);
+    }
+
+    @Test
     public void testCreateTeam() throws Exception {
         TeamNestedDto team = new TeamNestedDto("CWA", "USA", 1200);
 
