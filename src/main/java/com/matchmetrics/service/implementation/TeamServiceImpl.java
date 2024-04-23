@@ -73,17 +73,22 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public List<TeamGetDto> getTeamsComparedByName(String homeTeamName, String awayTeamName) {
+        if (homeTeamName.equals(awayTeamName)) {
+            logger.error("Team names are the same: {}", homeTeamName);
+            throw new InvalidDataException("Team names are the same");
+        }
+
         Optional<Team> homeTeamEntity = teamRepository.findTeamByName(homeTeamName);
         Optional<Team> awayTeamEntity = teamRepository.findTeamByName(awayTeamName);
 
         if (homeTeamEntity.isEmpty() ) {
             logger.error("First team does not exist: {}", homeTeamName);
-            throw new TeamDoesNotExistException("First team does not exist");
+            throw new TeamDoesNotExistException("Team " + homeTeamName + " does not exist");
         }
 
         if (awayTeamEntity.isEmpty()) {
             logger.error("Second team does not exist: {}", awayTeamName);
-            throw new TeamDoesNotExistException("Second team does not exist");
+            throw new TeamDoesNotExistException("Team " + awayTeamName + " does not exist");
         }
 
         if (homeTeamEntity.get().getId() == awayTeamEntity.get().getId()) {

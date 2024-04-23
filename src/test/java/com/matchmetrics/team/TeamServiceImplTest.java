@@ -82,6 +82,48 @@ public class TeamServiceImplTest {
     }
 
     @Test
+    void testGetTeamsComparedByName() {
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        Team homeTeamEntity = new Team(homeTeamName, "Country", 1500f);
+        homeTeamEntity.setId(1);
+        Team awayTeamEntity = new Team(awayTeamName, "Country", 1500f);
+        awayTeamEntity.setId(2);
+        List<TeamGetDto> expected = List.of(teamGetMapper.toDto(homeTeamEntity), teamGetMapper.toDto(awayTeamEntity));
+
+        when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.of(homeTeamEntity));
+        when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.of(awayTeamEntity));
+
+        assertThat(teamService.getTeamsComparedByName(homeTeamName, awayTeamName)).isEqualTo(expected);
+    }
+
+    @Test
+    void testGetTeamsComparedByName_ThrowsExceptions() {
+        String homeTeamName = "HomeTeam";
+        String awayTeamName = "AwayTeam";
+        Team homeTeamEntity = new Team(homeTeamName, "Country", 1500f);
+        homeTeamEntity.setId(1);
+        Team awayTeamEntity = new Team(awayTeamName, "Country", 1500f);
+        awayTeamEntity.setId(1);
+
+        assertThrows(InvalidDataException.class, () ->
+                teamService.getTeamsComparedByName(homeTeamName, homeTeamName));
+
+        when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.empty());
+        assertThrows(TeamDoesNotExistException.class, () ->
+                teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
+
+        when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.of(homeTeamEntity));
+        when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.empty());
+        assertThrows(TeamDoesNotExistException.class, () ->
+                teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
+
+        when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.of(awayTeamEntity));
+        assertThrows(InvalidDataException.class, () ->
+                teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
+    }
+
+    @Test
     void testGetTeamById() {
         int id = 1;
         Team team = new Team("Team", "Country", 1000f);
@@ -134,7 +176,7 @@ public class TeamServiceImplTest {
     void testUpdateTeam() {
         int id = 1;
         TeamNestedDto dto = new TeamNestedDto("Team", "Country", 1200f);
-        Team existingTeam = new Team("Team", "Country", 1000f);
+        Team existingTeam = new Team("Team1", "Country", 1000f);
         Team updatedTeam = teamNestedMapper.toEntity(dto);
         TeamGetDto expected = teamGetMapper.toDto(updatedTeam);
 
@@ -148,7 +190,34 @@ public class TeamServiceImplTest {
 
     @Test
     void testUpdateTeam_ThrowsExceptions() {
-        
+        int id = 1;
+        TeamNestedDto dto = new TeamNestedDto("Team", "Country", 1000f);
+        Team existingTeam = new Team("Team1", "Country", 1000f);
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+        when(bindingResult.getAllErrors())
+                .thenReturn(List.of(new ObjectError("team", "error message")));
+        assertThrows(InvalidDataException.class, () -> teamService.updateTeam(id, dto, bindingResult));
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(teamRepository.findById(id)).thenReturn(Optional.empty());
+        assertThrows(TeamDoesNotExistException.class, () -> teamService.updateTeam(id, dto, bindingResult));
+
+        when(teamRepository.findById(id)).thenReturn(Optional.of(existingTeam));
+        when(teamRepository.existsByName(dto.getName())).thenReturn(true);
+        assertThrows(TeamAlreadyExistsException.class, () -> teamService.updateTeam(id, dto, bindingResult));
+    }
+
+    @Test
+    void testDeleteTeam() {
+        int id = 1;
+        when(teamRepository.existsById(id)).thenReturn(true);
+        doNothing().when(teamRepository).deleteById(id);
+        teamService.deleteTeam(id);
+        verify(teamRepository, times(1)).deleteById(id);
+
+        when(teamRepository.existsById(id)).thenReturn(false);
+        assertThrows(TeamDoesNotExistException.class, () -> teamService.deleteTeam(id));
     }
 
 }
