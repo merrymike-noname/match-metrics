@@ -82,7 +82,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public TeamNestedDto createTeam(TeamNestedDto team, BindingResult bindingResult) {
+    public TeamGetDto createTeam(TeamNestedDto team, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -97,12 +97,11 @@ public class TeamServiceImpl implements TeamService {
         }
 
         Team teamEntity = teamNestedMapper.toEntity(team);
-        teamRepository.save(teamEntity);
-        return teamNestedMapper.toDto(teamEntity);
+        return teamGetMapper.toDto(teamRepository.save(teamEntity));
     }
 
     @Override
-    public TeamNestedDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult) {
+    public TeamGetDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             List<String> errorMessages = bindingResult.getAllErrors().stream()
                     .map(DefaultMessageSourceResolvable::getDefaultMessage)
@@ -116,7 +115,8 @@ public class TeamServiceImpl implements TeamService {
             logger.error("Team with ID {} not found", id);
             throw new TeamDoesNotExistException(id);
         }
-        if (teamRepository.existsByName(team.getName())) {
+        if (!existingTeam.get().getName().equals(team.getName()) &&
+                teamRepository.existsByName(team.getName())) {
             logger.error("Team with name {} already exists, you can't update with it.", team.getName());
             throw new TeamAlreadyExistsException(team.getName());
         }
@@ -125,8 +125,8 @@ public class TeamServiceImpl implements TeamService {
         teamEntity.setName(team.getName());
         teamEntity.setCountry(team.getCountry());
         teamEntity.setElo(team.getElo());
-        teamRepository.save(teamEntity);
-        return teamNestedMapper.toDto(teamEntity);
+
+        return teamGetMapper.toDto(teamRepository.save(teamEntity));
     }
 
     @Override

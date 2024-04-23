@@ -60,18 +60,18 @@ public class TeamController {
     }
 
     @PostMapping("/add")
-    public TeamNestedDto createTeam(@Valid @RequestBody TeamNestedDto team, BindingResult bindingResult) {
+    public TeamGetDto createTeam(@Valid @RequestBody TeamNestedDto team, BindingResult bindingResult) {
         logger.info("Received request to add team: {}", team);
-        TeamNestedDto createdTeam = teamService.createTeam(team, bindingResult);
+        TeamGetDto createdTeam = teamService.createTeam(team, bindingResult);
         logger.info("Added team: {}", createdTeam);
         return createdTeam;
     }
 
     @PutMapping("/update/{id}")
-    public TeamNestedDto updateTeam(@PathVariable int id, @Valid @RequestBody TeamNestedDto team,
+    public TeamGetDto updateTeam(@PathVariable int id, @Valid @RequestBody TeamNestedDto team,
                                     BindingResult bindingResult) {
         logger.info("Received request to update team with ID {}: {}", id, team);
-        TeamNestedDto updatedTeam = teamService.updateTeam(id, team, bindingResult);
+        TeamGetDto updatedTeam = teamService.updateTeam(id, team, bindingResult);
         logger.info("Updated team: {}", updatedTeam);
         return updatedTeam;
     }

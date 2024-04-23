@@ -11,8 +11,8 @@ public interface TeamService {
     TeamGetDto getTeamById(int id);
     List<TeamGetDto> getTeamsByCriteria(String name, String country, Float elo,
                                   Integer page, Integer perPage, String sortBy);
-    TeamNestedDto createTeam(TeamNestedDto team, BindingResult bindingResult);
-    TeamNestedDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult);
+    TeamGetDto createTeam(TeamNestedDto team, BindingResult bindingResult);
+    TeamGetDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult);
     void deleteTeam(int id);
 }
 

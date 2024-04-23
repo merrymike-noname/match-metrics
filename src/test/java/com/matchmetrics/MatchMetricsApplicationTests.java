@@ -1,4 +1,4 @@
-package com.matchmetrics.match;
+package com.matchmetrics;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
