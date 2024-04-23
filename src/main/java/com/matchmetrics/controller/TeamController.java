@@ -60,11 +60,11 @@ public class TeamController {
     }
 
     @GetMapping("/compare")
-    public List<TeamNestedDto> getTeamsComparedByName(@RequestParam(name = "teamHome") String teamHome,
-                                                      @RequestParam(name = "teamAway") String teamAway
+    public List<TeamGetDto> getTeamsComparedByName(@RequestParam(name = "homeTeam") String homeTeamName,
+                                                      @RequestParam(name = "homeTeam") String awayTeamName
     ) {
-        logger.info("Received request to compare teams: {} and {}", teamHome, teamAway);
-        List<TeamNestedDto> teams = teamService.getTeamsComparedByName(teamHome, teamAway);
+        logger.info("Received request to compare teams: {} and {}", homeTeamName, awayTeamName);
+        List<TeamGetDto> teams = teamService.getTeamsComparedByName(homeTeamName, awayTeamName);
         logger.info("Returning {} team stats", teams.size());
         return teams;
     }

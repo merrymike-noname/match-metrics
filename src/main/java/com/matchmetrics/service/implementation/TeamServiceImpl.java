@@ -72,27 +72,27 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<TeamNestedDto> getTeamsComparedByName(String teamHome, String teamAway) {
-        Optional<Team> teamHomeEntity = teamRepository.findTeamByName(teamHome);
-        Optional<Team> teamAwayEntity = teamRepository.findTeamByName(teamAway);
+    public List<TeamGetDto> getTeamsComparedByName(String homeTeamName, String awayTeamName) {
+        Optional<Team> homeTeamEntity = teamRepository.findTeamByName(homeTeamName);
+        Optional<Team> awayTeamEntity = teamRepository.findTeamByName(awayTeamName);
 
-        if (teamHomeEntity.isEmpty() ) {
-            logger.error("First team does not exist: {}", teamHome);
+        if (homeTeamEntity.isEmpty() ) {
+            logger.error("First team does not exist: {}", homeTeamName);
             throw new TeamDoesNotExistException("First team does not exist");
         }
 
-        if (teamAwayEntity.isEmpty()) {
-            logger.error("Second team does not exist: {}", teamAway);
+        if (awayTeamEntity.isEmpty()) {
+            logger.error("Second team does not exist: {}", awayTeamName);
             throw new TeamDoesNotExistException("Second team does not exist");
         }
 
-        if (teamHomeEntity.get().getId() == teamAwayEntity.get().getId()) {
-            logger.error("Teams are the same: {}", teamHome);
+        if (homeTeamEntity.get().getId() == awayTeamEntity.get().getId()) {
+            logger.error("Teams are the same: {}", homeTeamName);
             throw new InvalidDataException("Teams are the same");
         }
 
-        TeamNestedDto teamHomeDto = teamNestedMapper.toDto(teamHomeEntity.get());
-        TeamNestedDto teamAwayDto = teamNestedMapper.toDto(teamAwayEntity.get());
+        TeamGetDto teamHomeDto = teamGetMapper.toDto(homeTeamEntity.get());
+        TeamGetDto teamAwayDto = teamGetMapper.toDto(awayTeamEntity.get());
 
         return List.of(teamHomeDto, teamAwayDto);
     }
