@@ -61,7 +61,7 @@ public class TeamController {
 
     @GetMapping("/compare")
     public List<TeamGetDto> getTeamsComparedByName(@RequestParam(name = "homeTeam") String homeTeamName,
-                                                      @RequestParam(name = "homeTeam") String awayTeamName
+                                                      @RequestParam(name = "awayTeam") String awayTeamName
     ) {
         logger.info("Received request to compare teams: {} and {}", homeTeamName, awayTeamName);
         List<TeamGetDto> teams = teamService.getTeamsComparedByName(homeTeamName, awayTeamName);

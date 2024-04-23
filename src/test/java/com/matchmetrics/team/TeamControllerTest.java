@@ -18,6 +18,7 @@ import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -100,7 +101,7 @@ public class TeamControllerTest {
         String name = "CWA";
         TeamGetDto expectedTeam = new TeamGetDto(name, "USA", 1200,
                 new ArrayList<>(), new ArrayList<>());
-        List<TeamGetDto> expectedTeams = Arrays.asList(expectedTeam);
+        List<TeamGetDto> expectedTeams = Collections.singletonList(expectedTeam);
 
         when(teamService.getTeamsByCriteria(name, null, null, 0, 3, "default")).thenReturn(expectedTeams);
 
@@ -125,7 +126,7 @@ public class TeamControllerTest {
         String country = "USA";
         TeamGetDto expectedTeam = new TeamGetDto("CWA", country, 1200,
                 new ArrayList<>(), new ArrayList<>());
-        List<TeamGetDto> expectedTeams = Arrays.asList(expectedTeam);
+        List<TeamGetDto> expectedTeams = Collections.singletonList(expectedTeam);
 
         when(teamService.getTeamsByCriteria(null, country, null, 0, 3, "default")).thenReturn(expectedTeams);
 
@@ -150,7 +151,7 @@ public class TeamControllerTest {
         Float elo = 1200f;
         TeamGetDto expectedTeam = new TeamGetDto("CWA", "USA", elo,
                 new ArrayList<>(), new ArrayList<>());
-        List<TeamGetDto> expectedTeams = Arrays.asList(expectedTeam);
+        List<TeamGetDto> expectedTeams = Collections.singletonList(expectedTeam);
 
         when(teamService.getTeamsByCriteria(null, null, elo, 0, 3, "default")).thenReturn(expectedTeams);
 
@@ -174,14 +175,14 @@ public class TeamControllerTest {
     public void testGetTeamsComparedByName() throws Exception {
         String teamHome = "Liverpool";
         String teamAway = "Arsenal";
-        TeamNestedDto teamHomeDto = new TeamNestedDto(teamHome, "England", 2000);
-        TeamNestedDto teamAwayDto = new TeamNestedDto(teamAway, "England", 1900);
+        TeamGetDto teamHomeDto = new TeamGetDto(teamHome, "England", 2000, new ArrayList<>(), new ArrayList<>());
+        TeamGetDto teamAwayDto = new TeamGetDto(teamAway, "England", 1900, new ArrayList<>(), new ArrayList<>());
 
         when(teamService.getTeamsComparedByName(teamHome, teamAway)).thenReturn(List.of(teamHomeDto, teamAwayDto));
 
         mockMvc.perform(get("/matchmetrics/api/v0/teams/compare")
-                        .param("teamHome", teamHome)
-                        .param("teamAway", teamAway)
+                        .param("homeTeam", teamHome)
+                        .param("awayTeam", teamAway)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{" +
