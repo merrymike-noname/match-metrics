@@ -61,7 +61,7 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public List<MatchGetDto> getAllMatches(
-        Integer page, Integer perPage, String sortBy
+            Integer page, Integer perPage, String sortBy
     ) {
         Pageable pageable = createPageable(page, perPage, sortBy);
 
@@ -230,7 +230,7 @@ public class MatchServiceImpl implements MatchService {
                 );
                 if (isHome != null) {
                     predicates.clear();
-                    if(isHome) {
+                    if (isHome) {
                         predicates.add(criteriaBuilder.equal(homeTeam.get("name"), team));
                     } else {
                         predicates.add(criteriaBuilder.equal(awayTeam.get("name"), team));

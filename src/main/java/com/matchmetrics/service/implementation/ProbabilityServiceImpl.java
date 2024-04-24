@@ -2,27 +2,27 @@ package com.matchmetrics.service.implementation;
 
 import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
+import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.exception.FieldDoesNotExistException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
-import com.matchmetrics.service.ProbabilityService;
 import com.matchmetrics.repository.ProbabilityRepository;
-import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
+import com.matchmetrics.service.ProbabilityService;
+import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
-import jakarta.persistence.criteria.Predicate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.List;
-import java.util.ArrayList;
 
 @Service
 public class ProbabilityServiceImpl implements ProbabilityService {

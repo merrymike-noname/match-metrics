@@ -81,7 +81,7 @@ public class TeamServiceImpl implements TeamService {
         Optional<Team> homeTeamEntity = teamRepository.findTeamByName(homeTeamName);
         Optional<Team> awayTeamEntity = teamRepository.findTeamByName(awayTeamName);
 
-        if (homeTeamEntity.isEmpty() ) {
+        if (homeTeamEntity.isEmpty()) {
             logger.error("First team does not exist: {}", homeTeamName);
             throw new TeamDoesNotExistException("Team " + homeTeamName + " does not exist");
         }

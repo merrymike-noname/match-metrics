@@ -28,6 +28,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProbabilityServiceImplTest {
+
     @Mock
     private ProbabilityRepository probabilityRepository;
 
@@ -81,7 +82,7 @@ public class ProbabilityServiceImplTest {
         ProbabilityGetDto dto = new ProbabilityGetDto();
         ProbabilityGetDto expected = probabilityGetMapper.toDto(probabilityEntity);
 
-       // when(bindingResult.hasErrors()).thenReturn(false);
+        // when(bindingResult.hasErrors()).thenReturn(false);
         when(probabilityGetMapper.toEntity(dto)).thenReturn(probabilityEntity);
         when(probabilityRepository.save(probabilityEntity)).thenReturn(probabilityEntity);
 

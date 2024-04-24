@@ -1,7 +1,6 @@
 package com.matchmetrics.repository;
 
 import com.matchmetrics.entity.Probability;
-import com.matchmetrics.entity.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

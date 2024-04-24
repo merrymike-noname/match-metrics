@@ -66,7 +66,7 @@ public class ProbabilityController {
 
     @PutMapping("/update/{id}")
     public ProbabilityGetDto updateProbability(@PathVariable int id, @Valid @RequestBody ProbabilityGetDto probability,
-                                 BindingResult bindingResult) {
+                                               BindingResult bindingResult) {
         logger.info("Received request to update probability with ID {}: {}", id, probability);
         ProbabilityGetDto updatedProbability = probabilityService.updateProbability(id, probability, bindingResult);
         logger.info("Updated probability: {}", updatedProbability);

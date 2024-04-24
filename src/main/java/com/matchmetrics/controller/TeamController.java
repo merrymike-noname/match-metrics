@@ -61,7 +61,7 @@ public class TeamController {
 
     @GetMapping("/compare")
     public List<TeamGetDto> getTeamsComparedByName(@RequestParam(name = "homeTeam") String homeTeamName,
-                                                      @RequestParam(name = "awayTeam") String awayTeamName
+                                                   @RequestParam(name = "awayTeam") String awayTeamName
     ) {
         logger.info("Received request to compare teams: {} and {}", homeTeamName, awayTeamName);
         List<TeamGetDto> teams = teamService.getTeamsComparedByName(homeTeamName, awayTeamName);
@@ -79,7 +79,7 @@ public class TeamController {
 
     @PutMapping("/update/{id}")
     public TeamGetDto updateTeam(@PathVariable int id, @Valid @RequestBody TeamNestedDto team,
-                                    BindingResult bindingResult) {
+                                 BindingResult bindingResult) {
         logger.info("Received request to update team with ID {}: {}", id, team);
         TeamGetDto updatedTeam = teamService.updateTeam(id, team, bindingResult);
         logger.info("Updated team: {}", updatedTeam);
