@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("matchmetrics/api/v0/probabilities")
 public class ProbabilityController {
-    private final Logger logger = LoggerFactory.getLogger(TeamController.class);
+    private final Logger logger = LoggerFactory.getLogger(ProbabilityController.class);
     private final ProbabilityService probabilityService;
 
     public ProbabilityController(ProbabilityService probabilityService) {
