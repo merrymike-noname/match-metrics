@@ -4,7 +4,9 @@ import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
+import com.matchmetrics.exception.AssociatedProbabilityException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
+import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.ProbabilityRepository;
 import com.matchmetrics.service.implementation.ProbabilityServiceImpl;
 import com.matchmetrics.util.PageableCreator;
@@ -32,6 +34,9 @@ public class ProbabilityServiceImplTest {
 
     @Mock
     private ProbabilityRepository probabilityRepository;
+
+    @Mock
+    private MatchRepository matchRepository;
 
     @Mock
     private BindingResult bindingResult;
@@ -113,11 +118,18 @@ public class ProbabilityServiceImplTest {
     void testDeleteProbability() {
         int id = 1;
         when(probabilityRepository.existsById(id)).thenReturn(true);
+        when(matchRepository.existsByProbabilityId(id)).thenReturn(false);
         doNothing().when(probabilityRepository).deleteById(id);
         probabilityService.deleteProbability(id);
         verify(probabilityRepository, times(1)).deleteById(id);
 
         when(probabilityRepository.existsById(id)).thenReturn(false);
-        assertThrows(ProbabilityDoesNotExistException.class, () -> probabilityService.deleteProbability(id));
+        assertThrows(ProbabilityDoesNotExistException.class,
+                () -> probabilityService.deleteProbability(id));
+
+        when(probabilityRepository.existsById(id)).thenReturn(true);
+        when(matchRepository.existsByProbabilityId(id)).thenReturn(true);
+        assertThrows(AssociatedProbabilityException.class,
+                () -> probabilityService.deleteProbability(id));
     }
 }
