@@ -22,6 +22,7 @@ public class Probability {
     private float awayTeamWin;
 
     @OneToOne(mappedBy = "probability")
+    @PrimaryKeyJoinColumn
     private Match match;
 
     public Probability() {

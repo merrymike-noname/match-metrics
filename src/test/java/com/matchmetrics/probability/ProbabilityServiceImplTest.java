@@ -7,6 +7,7 @@ import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
 import com.matchmetrics.repository.ProbabilityRepository;
 import com.matchmetrics.service.implementation.ProbabilityServiceImpl;
+import com.matchmetrics.util.PageableCreator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,6 +38,8 @@ public class ProbabilityServiceImplTest {
 
     @Spy
     private ProbabilityGetMapper probabilityGetMapper = new ProbabilityGetMapperImpl();
+    @Spy
+    private final PageableCreator pageableCreator = new PageableCreator();
 
     @InjectMocks
     private ProbabilityServiceImpl probabilityService;

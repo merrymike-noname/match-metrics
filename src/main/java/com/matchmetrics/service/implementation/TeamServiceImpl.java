@@ -1,31 +1,27 @@
 package com.matchmetrics.service.implementation;
 
-import com.matchmetrics.entity.Match;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.team.TeamGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import com.matchmetrics.entity.mapper.team.TeamGetMapper;
 import com.matchmetrics.entity.mapper.team.TeamNestedMapper;
-import com.matchmetrics.exception.FieldDoesNotExistException;
 import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.exception.TeamAlreadyExistsException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.TeamService;
+import com.matchmetrics.util.PageableCreator;
 import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +30,7 @@ import java.util.stream.Collectors;
 public class TeamServiceImpl implements TeamService {
 
     private final Logger logger = LoggerFactory.getLogger(TeamServiceImpl.class);
+    private final PageableCreator pageableCreator;
 
     private final TeamRepository teamRepository;
     private final TeamGetMapper teamGetMapper;
@@ -41,15 +38,17 @@ public class TeamServiceImpl implements TeamService {
 
     public TeamServiceImpl(TeamRepository teamRepository,
                            TeamGetMapper teamGetMapper,
-                           TeamNestedMapper teamNestedMapper) {
+                           TeamNestedMapper teamNestedMapper,
+                           PageableCreator pageableCreator) {
         this.teamRepository = teamRepository;
         this.teamGetMapper = teamGetMapper;
         this.teamNestedMapper = teamNestedMapper;
+        this.pageableCreator = pageableCreator;
     }
 
     @Override
     public List<TeamGetDto> getAllTeams(Integer page, Integer perPage, String sortBy) {
-        Pageable pageable = createPageable(page, perPage, sortBy);
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Team.class);
 
         return teamRepository.findAll(pageable).getContent().stream()
                 .map(teamGetMapper::toDto).collect(Collectors.toList());
@@ -59,7 +58,7 @@ public class TeamServiceImpl implements TeamService {
     public List<TeamGetDto> getTeamsByCriteria(String name, String country,
                                                Float elo, Integer page,
                                                Integer perPage, String sortBy) {
-        Pageable pageable = createPageable(page, perPage, sortBy);
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Team.class);
         Specification<Team> spec = createSpecification(name, country, elo);
         Page<Team> teams = teamRepository.findAll(spec, pageable);
 
@@ -168,20 +167,6 @@ public class TeamServiceImpl implements TeamService {
             logger.error("Team with ID {} not found", id);
             throw new TeamDoesNotExistException(id);
         }
-    }
-
-    private Pageable createPageable(int page, int perPage, String sortBy) {
-        if (!sortBy.equals("default") && !checkIfFieldExists(sortBy)) {
-            logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Team.class.getName());
-            throw new FieldDoesNotExistException(sortBy, Match.class);
-        }
-        Sort sort = sortBy.equals("default") ? Sort.unsorted() : Sort.by(sortBy);
-        return PageRequest.of(page, perPage, sort);
-    }
-
-    private boolean checkIfFieldExists(String fieldName) {
-        return Arrays.stream(Team.class.getDeclaredFields())
-                .anyMatch(field -> field.getName().equals(fieldName));
     }
 
     private Specification<Team> createSpecification(String name, String country, Float elo) {

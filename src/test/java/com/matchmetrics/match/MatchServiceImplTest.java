@@ -22,6 +22,7 @@ import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.implementation.MatchServiceImpl;
+import com.matchmetrics.util.PageableCreator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -69,6 +70,9 @@ public class MatchServiceImplTest {
 
     @Spy
     private final DateValidator dateValidator = new DateValidator();
+
+    @Spy
+    private final PageableCreator pageableCreator = new PageableCreator();
 
     @InjectMocks
     private MatchServiceImpl matchService;

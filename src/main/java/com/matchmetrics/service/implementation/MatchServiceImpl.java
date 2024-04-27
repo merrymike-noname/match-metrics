@@ -13,6 +13,7 @@ import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.MatchService;
+import com.matchmetrics.util.PageableCreator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -21,9 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -37,6 +36,7 @@ import java.util.stream.Collectors;
 public class MatchServiceImpl implements MatchService {
 
     private final Logger logger = LoggerFactory.getLogger(MatchServiceImpl.class);
+    private final PageableCreator pageableCreator;
     private final DateValidator dateValidator;
 
     private final MatchRepository matchRepository;
@@ -46,11 +46,14 @@ public class MatchServiceImpl implements MatchService {
     private final ProbabilityGetMapper probabilityGetMapper;
 
     @Autowired
-    public MatchServiceImpl(DateValidator dateValidator, MatchRepository matchRepository,
+    public MatchServiceImpl(PageableCreator pageableCreator,
+                            DateValidator dateValidator,
+                            MatchRepository matchRepository,
                             TeamRepository teamRepository,
                             MatchGetMapper matchGetMapper,
                             MatchAddUpdateMapper matchAddUpdateMapperMapper,
                             ProbabilityGetMapper probabilityGetMapper) {
+        this.pageableCreator = pageableCreator;
         this.dateValidator = dateValidator;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
@@ -63,7 +66,7 @@ public class MatchServiceImpl implements MatchService {
     public List<MatchGetDto> getAllMatches(
             Integer page, Integer perPage, String sortBy
     ) {
-        Pageable pageable = createPageable(page, perPage, sortBy);
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Match.class);
 
         return matchRepository.findAll(pageable).getContent().stream()
                 .map(matchGetMapper::toDto).collect(Collectors.toList());
@@ -74,7 +77,7 @@ public class MatchServiceImpl implements MatchService {
             String team, Boolean isHome, String date, String league,
             Integer page, Integer perPage, String sortBy
     ) {
-        Pageable pageable = createPageable(page, perPage, sortBy);
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Match.class);
         Specification<Match> spec = createSpecification(team, isHome, date, league);
         Page<Match> matches = matchRepository.findAll(spec, pageable);
 
@@ -200,20 +203,6 @@ public class MatchServiceImpl implements MatchService {
             logger.error("Error occurred while converting string to date: {}", e.getMessage());
             throw new DateConversionException(e);
         }
-    }
-
-    private Pageable createPageable(int page, int perPage, String sortBy) {
-        if (!sortBy.equals("default") && !checkIfFieldExists(sortBy)) {
-            logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Match.class.getName());
-            throw new FieldDoesNotExistException(sortBy, Match.class);
-        }
-        Sort sort = sortBy.equals("default") ? Sort.unsorted() : Sort.by(sortBy);
-        return PageRequest.of(page, perPage, sort);
-    }
-
-    private boolean checkIfFieldExists(String fieldName) {
-        return Arrays.stream(Match.class.getDeclaredFields())
-                .anyMatch(field -> field.getName().equals(fieldName));
     }
 
     private Specification<Match> createSpecification(String team, Boolean isHome, String date, String league) {

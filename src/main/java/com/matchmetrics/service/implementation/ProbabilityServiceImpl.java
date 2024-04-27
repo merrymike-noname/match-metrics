@@ -3,23 +3,20 @@ package com.matchmetrics.service.implementation;
 import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
-import com.matchmetrics.exception.FieldDoesNotExistException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
 import com.matchmetrics.repository.ProbabilityRepository;
 import com.matchmetrics.service.ProbabilityService;
+import com.matchmetrics.util.PageableCreator;
 import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,19 +25,22 @@ import java.util.stream.Collectors;
 public class ProbabilityServiceImpl implements ProbabilityService {
 
     private final Logger logger = LoggerFactory.getLogger(ProbabilityServiceImpl.class);
+    private final PageableCreator pageableCreator;
 
     private final ProbabilityRepository probabilityRepository;
     private final ProbabilityGetMapper probabilityGetMapper;
 
     public ProbabilityServiceImpl(ProbabilityRepository probabilityRepository,
-                                  ProbabilityGetMapper probabilityGetMapper) {
+                                  ProbabilityGetMapper probabilityGetMapper,
+                                  PageableCreator pageableCreator) {
         this.probabilityRepository = probabilityRepository;
         this.probabilityGetMapper = probabilityGetMapper;
+        this.pageableCreator = pageableCreator;
     }
 
     @Override
     public List<ProbabilityGetDto> getAllProbabilities(Integer page, Integer perPage, String sortBy) {
-        Pageable pageable = createProbabilityPageable(page, perPage, sortBy);
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Probability.class);
 
         return probabilityRepository.findAll(pageable).stream()
                 .map(probabilityGetMapper::toDto)
@@ -60,7 +60,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
     @Override
     public List<ProbabilityGetDto> getProbabilitiesByCriteria(
             Float probValue, Boolean higher, Integer page, Integer perPage, String sortBy) {
-        Pageable pageable = createProbabilityPageable(page, perPage, sortBy);
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Probability.class);
         Specification<Probability> spec = createProbabilitySpecification(probValue, higher);
         Page<Probability> probabilities = probabilityRepository.findAll(spec, pageable);
 
@@ -105,29 +105,28 @@ public class ProbabilityServiceImpl implements ProbabilityService {
         probabilityRepository.deleteById(id);
     }
 
-    private Pageable createProbabilityPageable(int page, int perPage, String sortBy) {
-        if (!sortBy.equals("default") && !checkIfProbabilityFieldExists(sortBy)) {
-            logger.error("Error occurred while trying to find a '{}' field in {}", sortBy, Probability.class.getName());
-            throw new FieldDoesNotExistException(sortBy, Probability.class);
-        }
-        Sort sort = sortBy.equals("default") ? Sort.unsorted() : Sort.by(sortBy);
-        return PageRequest.of(page, perPage, sort);
-    }
-
-    private boolean checkIfProbabilityFieldExists(String fieldName) {
-        return Arrays.stream(Probability.class.getDeclaredFields())
-                .anyMatch(field -> field.getName().equals(fieldName));
-    }
-
     private Specification<Probability> createProbabilitySpecification(Float probValue, Boolean higher) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (probValue != null) {
                 if (higher != null && higher) {
-                    predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("probValue"), probValue));
+                    predicates.add(
+                            criteriaBuilder.or(
+                                    criteriaBuilder.greaterThanOrEqualTo(root.get("homeTeamWin"), probValue),
+                                    criteriaBuilder.greaterThanOrEqualTo(root.get("draw"), probValue)
+                                    // todo add "awayTeamWin"
+                            )
+                    );
+
                 } else {
-                    predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("probValue"), probValue));
+                    predicates.add(
+                            criteriaBuilder.or(
+                                    criteriaBuilder.lessThanOrEqualTo(root.get("homeTeamWin"), probValue),
+                                    criteriaBuilder.lessThanOrEqualTo(root.get("draw"), probValue)
+                                    // todo add "awayTeamWin"
+                            )
+                    );
                 }
             }
 

@@ -13,6 +13,7 @@ import com.matchmetrics.exception.TeamAlreadyExistsException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.implementation.TeamServiceImpl;
+import com.matchmetrics.util.PageableCreator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -45,6 +46,9 @@ public class TeamServiceImplTest {
 
     @Spy
     private TeamNestedMapper teamNestedMapper = new TeamNestedMapperImpl();
+
+    @Spy
+    private final PageableCreator pageableCreator = new PageableCreator();
 
     @InjectMocks
     private TeamServiceImpl teamService;
