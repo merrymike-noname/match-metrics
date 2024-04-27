@@ -20,4 +20,6 @@ public interface MatchRepository extends JpaRepository<Match, Integer>, JpaSpeci
     @Query("SELECT m FROM Match m LEFT JOIN FETCH m.homeTeam LEFT JOIN FETCH m.awayTeam LEFT JOIN FETCH m.probability")
     @Override
     Page<Match> findAll(Pageable pageable);
+
+    Boolean existsByProbabilityId(int probabilityId);
 }

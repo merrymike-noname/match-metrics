@@ -96,12 +96,25 @@ public class GlobalExceptionHandler {
             (ProbabilityDoesNotExistException e, WebRequest request) {
         ApiErrorResponse errorResponse = new ApiErrorResponse(
                 LocalDateTime.now(),
-                HttpStatus.CONFLICT.value(),
-                HttpStatus.CONFLICT.getReasonPhrase(),
+                HttpStatus.NOT_FOUND.value(),
+                HttpStatus.NOT_FOUND.getReasonPhrase(),
                 e.getMessage(),
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AssociatedProbabilityException.class)
+    public ResponseEntity<ApiErrorResponse> handleAssociatedProbabilityException
+            (AssociatedProbabilityException e, WebRequest request) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.IM_USED.value(),
+                HttpStatus.IM_USED.getReasonPhrase(),
+                e.getMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.IM_USED);
     }
 }
 

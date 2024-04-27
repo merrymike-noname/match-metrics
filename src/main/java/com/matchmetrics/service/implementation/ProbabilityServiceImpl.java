@@ -3,7 +3,9 @@ package com.matchmetrics.service.implementation;
 import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
+import com.matchmetrics.exception.AssociatedProbabilityException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
+import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.ProbabilityRepository;
 import com.matchmetrics.service.ProbabilityService;
 import com.matchmetrics.util.PageableCreator;
@@ -28,14 +30,17 @@ public class ProbabilityServiceImpl implements ProbabilityService {
     private final PageableCreator pageableCreator;
 
     private final ProbabilityRepository probabilityRepository;
+    private final MatchRepository matchRepository;
     private final ProbabilityGetMapper probabilityGetMapper;
 
     public ProbabilityServiceImpl(ProbabilityRepository probabilityRepository,
                                   ProbabilityGetMapper probabilityGetMapper,
-                                  PageableCreator pageableCreator) {
+                                  PageableCreator pageableCreator,
+                                  MatchRepository matchRepository) {
         this.probabilityRepository = probabilityRepository;
         this.probabilityGetMapper = probabilityGetMapper;
         this.pageableCreator = pageableCreator;
+        this.matchRepository = matchRepository;
     }
 
     @Override
@@ -101,6 +106,10 @@ public class ProbabilityServiceImpl implements ProbabilityService {
         if (!probabilityRepository.existsById(id)) {
             logger.error("Probability with ID {} not found", id);
             throw new ProbabilityDoesNotExistException(id);
+        }
+        if (matchRepository.existsByProbabilityId(id)) {
+            logger.error("Probability with ID {} is associated with a match and cannot be deleted", id);
+            throw new AssociatedProbabilityException(id);
         }
         probabilityRepository.deleteById(id);
     }
