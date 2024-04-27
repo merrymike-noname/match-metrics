@@ -54,4 +54,13 @@ public class ProbabilityGetDto {
     public int hashCode() {
         return Objects.hash(homeTeamWin, draw, awayTeamWin);
     }
+
+    @Override
+    public String toString() {
+        return "ProbabilityGetDto{" +
+                "homeTeamWin=" + homeTeamWin +
+                ", draw=" + draw +
+                ", awayTeamWin=" + awayTeamWin +
+                '}';
+    }
 }

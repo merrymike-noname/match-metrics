@@ -18,7 +18,7 @@ public class Probability {
     @Column(name = "draw")
     private float draw;
 
-    @Transient
+    @Column(name = "away_team_win")
     private float awayTeamWin;
 
     @OneToOne(mappedBy = "probability")
@@ -26,14 +26,6 @@ public class Probability {
     private Match match;
 
     public Probability() {
-    }
-
-    public float getAwayTeamWin() {
-        return 1 - (homeTeamWin + draw);
-    }
-
-    public void setAwayTeamWin(float homeTeamWin, float draw) {
-        awayTeamWin = 1 - (homeTeamWin + draw);
     }
 
     public void setMatch(Match match) {
@@ -77,6 +69,10 @@ public class Probability {
 
     public void setAwayTeamWin(float awayTeamWin) {
         this.awayTeamWin = awayTeamWin;
+    }
+
+    public float getAwayTeamWin() {
+        return awayTeamWin;
     }
 
     public String toString() {

@@ -91,7 +91,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
         Probability probability = optionalProbability.get();
         probability.setHomeTeamWin(probabilityDto.getHomeTeamWin());
         probability.setDraw(probabilityDto.getDraw());
-        probability.setAwayTeamWin(probabilityDto.getHomeTeamWin(), probabilityDto.getDraw());
+        probability.setAwayTeamWin(probabilityDto.getAwayTeamWin());
         Probability updatedProbability = probabilityRepository.save(probability);
         return probabilityGetMapper.toDto(updatedProbability);
     }
@@ -114,8 +114,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
                     predicates.add(
                             criteriaBuilder.or(
                                     criteriaBuilder.greaterThanOrEqualTo(root.get("homeTeamWin"), probValue),
-                                    criteriaBuilder.greaterThanOrEqualTo(root.get("draw"), probValue)
-                                    // todo add "awayTeamWin"
+                                    criteriaBuilder.greaterThanOrEqualTo(root.get("draw"), probValue),
+                                    criteriaBuilder.greaterThanOrEqualTo(root.get("awayTeamWin"), probValue)
                             )
                     );
 
@@ -123,8 +123,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
                     predicates.add(
                             criteriaBuilder.or(
                                     criteriaBuilder.lessThanOrEqualTo(root.get("homeTeamWin"), probValue),
-                                    criteriaBuilder.lessThanOrEqualTo(root.get("draw"), probValue)
-                                    // todo add "awayTeamWin"
+                                    criteriaBuilder.lessThanOrEqualTo(root.get("draw"), probValue),
+                                    criteriaBuilder.lessThanOrEqualTo(root.get("awayTeamWin"), probValue)
                             )
                     );
                 }
