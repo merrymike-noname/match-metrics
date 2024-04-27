@@ -30,7 +30,7 @@ public class Match {
     @JoinColumn(name = "away_team_id", referencedColumnName = "id")
     private Team awayTeam;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "probability_id", referencedColumnName = "id")
     private Probability probability;
 
