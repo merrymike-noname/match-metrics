@@ -3,6 +3,7 @@ package com.matchmetrics.service.implementation;
 import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
+import com.matchmetrics.entity.validator.ProbabilityValidator;
 import com.matchmetrics.exception.AssociatedProbabilityException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
 import com.matchmetrics.repository.MatchRepository;
@@ -28,6 +29,7 @@ public class ProbabilityServiceImpl implements ProbabilityService {
 
     private final Logger logger = LoggerFactory.getLogger(ProbabilityServiceImpl.class);
     private final PageableCreator pageableCreator;
+    private final ProbabilityValidator probabilityValidator;
 
     private final ProbabilityRepository probabilityRepository;
     private final MatchRepository matchRepository;
@@ -36,10 +38,12 @@ public class ProbabilityServiceImpl implements ProbabilityService {
     public ProbabilityServiceImpl(ProbabilityRepository probabilityRepository,
                                   ProbabilityGetMapper probabilityGetMapper,
                                   PageableCreator pageableCreator,
+                                  ProbabilityValidator probabilityValidator,
                                   MatchRepository matchRepository) {
         this.probabilityRepository = probabilityRepository;
         this.probabilityGetMapper = probabilityGetMapper;
         this.pageableCreator = pageableCreator;
+        this.probabilityValidator = probabilityValidator;
         this.matchRepository = matchRepository;
     }
 
@@ -80,6 +84,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
     @Override
     public ProbabilityGetDto createProbability(
             ProbabilityGetDto probabilityDto, BindingResult bindingResult) {
+
+        probabilityValidator.validateProbability(probabilityDto);
         Probability probability = probabilityGetMapper.toEntity(probabilityDto);
         Probability savedProbability = probabilityRepository.save(probability);
         return probabilityGetMapper.toDto(savedProbability);
@@ -88,6 +94,8 @@ public class ProbabilityServiceImpl implements ProbabilityService {
     @Override
     public ProbabilityGetDto updateProbability(
             int id, ProbabilityGetDto probabilityDto, BindingResult bindingResult) {
+
+        probabilityValidator.validateProbability(probabilityDto);
         Optional<Probability> optionalProbability = probabilityRepository.findById(id);
         if (optionalProbability.isEmpty()) {
             logger.error("Probability with ID {} not found", id);

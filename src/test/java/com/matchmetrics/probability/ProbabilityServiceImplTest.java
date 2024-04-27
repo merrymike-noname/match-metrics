@@ -4,6 +4,7 @@ import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
+import com.matchmetrics.entity.validator.ProbabilityValidator;
 import com.matchmetrics.exception.AssociatedProbabilityException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;
 import com.matchmetrics.repository.MatchRepository;
@@ -43,8 +44,12 @@ public class ProbabilityServiceImplTest {
 
     @Spy
     private ProbabilityGetMapper probabilityGetMapper = new ProbabilityGetMapperImpl();
+
     @Spy
     private final PageableCreator pageableCreator = new PageableCreator();
+
+    @Spy
+    private final ProbabilityValidator probabilityValidator = new ProbabilityValidator();
 
     @InjectMocks
     private ProbabilityServiceImpl probabilityService;
@@ -87,7 +92,7 @@ public class ProbabilityServiceImplTest {
     @Test
     void testCreateProbability() {
         Probability probabilityEntity = new Probability();
-        ProbabilityGetDto dto = new ProbabilityGetDto();
+        ProbabilityGetDto dto = new ProbabilityGetDto(0.3f, 0.3f, 0.4f);
         ProbabilityGetDto expected = probabilityGetMapper.toDto(probabilityEntity);
 
         // when(bindingResult.hasErrors()).thenReturn(false);
@@ -101,7 +106,7 @@ public class ProbabilityServiceImplTest {
     @Test
     void testUpdateProbability() {
         int id = 1;
-        ProbabilityGetDto dto = new ProbabilityGetDto();
+        ProbabilityGetDto dto = new ProbabilityGetDto(0.3f, 0.3f, 0.4f);
         Probability existingProbability = new Probability();
         Probability updatedProbability = probabilityGetMapper.toEntity(dto);
         ProbabilityGetDto expected = probabilityGetMapper.toDto(updatedProbability);
