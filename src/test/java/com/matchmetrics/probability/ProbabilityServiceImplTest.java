@@ -111,7 +111,7 @@ public class ProbabilityServiceImplTest {
         Probability updatedProbability = probabilityGetMapper.toEntity(dto);
         ProbabilityGetDto expected = probabilityGetMapper.toDto(updatedProbability);
 
-        //   when(bindingResult.hasErrors()).thenReturn(false);
+        // when(bindingResult.hasErrors()).thenReturn(false);
         when(probabilityRepository.findById(id)).thenReturn(Optional.of(existingProbability));
         when(probabilityRepository.save(existingProbability)).thenReturn(updatedProbability);
 
