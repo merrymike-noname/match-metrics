@@ -21,6 +21,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
@@ -94,6 +95,25 @@ public class ProbabilityServiceImplTest {
         when(probabilityRepository.findById(id)).thenReturn(Optional.empty());
 
         assertThrows(ProbabilityDoesNotExistException.class, () -> probabilityService.getProbabilityById(id));
+    }
+
+    @Test
+    void testGetProbabilityByCriteria() {
+        List<Probability> probabilities = Arrays.asList(
+                new Probability(0.3f, 0.2f, 0.5f),
+                new Probability(0.4f, 0.2f, 0.4f),
+                new Probability(0.5f, 0.2f, 0.3f)
+        );
+        List<ProbabilityGetDto> expectedProbabilities =
+                probabilities.stream().map(probabilityGetMapper::toDto).toList();
+
+        when(probabilityRepository.findAll(any(Specification.class), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(probabilities));
+
+        List<ProbabilityGetDto> actualProbabilities =
+                probabilityService.getProbabilitiesByCriteria(0.2f, true, 1, 5, "default");
+        assertThat(actualProbabilities).isEqualTo(expectedProbabilities);
+        verify(probabilityRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
     @Test
