@@ -13,6 +13,7 @@ import com.matchmetrics.exception.TeamAlreadyExistsException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.implementation.TeamServiceImpl;
+import com.matchmetrics.util.BindingResultInspector;
 import com.matchmetrics.util.PageableCreator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +50,9 @@ public class TeamServiceImplTest {
 
     @Spy
     private final PageableCreator pageableCreator = new PageableCreator();
+
+    @Spy
+    private final BindingResultInspector bindingResultInspector = new BindingResultInspector();
 
     @InjectMocks
     private TeamServiceImpl teamService;

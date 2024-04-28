@@ -14,6 +14,7 @@ import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.MatchService;
+import com.matchmetrics.util.BindingResultInspector;
 import com.matchmetrics.util.PageableCreator;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
@@ -21,7 +22,6 @@ import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,6 +38,7 @@ public class MatchServiceImpl implements MatchService {
 
     private final Logger logger = LoggerFactory.getLogger(MatchServiceImpl.class);
     private final PageableCreator pageableCreator;
+    private final BindingResultInspector bindingResultInspector;
     private final DateValidator dateValidator;
     private final ProbabilityValidator probabilityValidator;
 
@@ -49,6 +50,7 @@ public class MatchServiceImpl implements MatchService {
 
     @Autowired
     public MatchServiceImpl(PageableCreator pageableCreator,
+                            BindingResultInspector bindingResultInspector,
                             DateValidator dateValidator,
                             ProbabilityValidator probabilityValidator,
                             MatchRepository matchRepository,
@@ -57,6 +59,7 @@ public class MatchServiceImpl implements MatchService {
                             MatchAddUpdateMapper matchAddUpdateMapperMapper,
                             ProbabilityGetMapper probabilityGetMapper) {
         this.pageableCreator = pageableCreator;
+        this.bindingResultInspector = bindingResultInspector;
         this.dateValidator = dateValidator;
         this.probabilityValidator = probabilityValidator;
         this.matchRepository = matchRepository;
@@ -106,14 +109,8 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public MatchGetDto addMatch(MatchAddUpdateDto matchDto, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-            String errorMessage = String.join(", ", errorMessages);
-            logger.error("Error occurred while adding match: {}", errorMessage);
-            throw new InvalidDataException(errorMessage);
-        }
+
+        bindingResultInspector.checkBindingResult(bindingResult);
 
         dateValidator.validate(matchDto.getDate());
 
@@ -141,14 +138,8 @@ public class MatchServiceImpl implements MatchService {
     @Override
     public MatchGetDto updateMatch(int id, MatchAddUpdateDto matchDto, BindingResult bindingResult) {
         if (matchRepository.existsById(id)) {
-            if (bindingResult.hasErrors()) {
-                List<String> errorMessages = bindingResult.getAllErrors().stream()
-                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                        .collect(Collectors.toList());
-                String errorMessage = String.join(", ", errorMessages);
-                logger.error("Error occurred while updating match: {}", errorMessage);
-                throw new InvalidDataException(errorMessage);
-            }
+
+            bindingResultInspector.checkBindingResult(bindingResult);
 
             dateValidator.validate(matchDto.getDate());
 

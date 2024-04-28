@@ -10,11 +10,11 @@ import com.matchmetrics.exception.TeamAlreadyExistsException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.TeamService;
+import com.matchmetrics.util.BindingResultInspector;
 import com.matchmetrics.util.PageableCreator;
 import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -31,6 +31,7 @@ public class TeamServiceImpl implements TeamService {
 
     private final Logger logger = LoggerFactory.getLogger(TeamServiceImpl.class);
     private final PageableCreator pageableCreator;
+    private final BindingResultInspector bindingResultInspector;
 
     private final TeamRepository teamRepository;
     private final TeamGetMapper teamGetMapper;
@@ -39,11 +40,13 @@ public class TeamServiceImpl implements TeamService {
     public TeamServiceImpl(TeamRepository teamRepository,
                            TeamGetMapper teamGetMapper,
                            TeamNestedMapper teamNestedMapper,
-                           PageableCreator pageableCreator) {
+                           PageableCreator pageableCreator,
+                           BindingResultInspector bindingResultInspector) {
         this.teamRepository = teamRepository;
         this.teamGetMapper = teamGetMapper;
         this.teamNestedMapper = teamNestedMapper;
         this.pageableCreator = pageableCreator;
+        this.bindingResultInspector = bindingResultInspector;
     }
 
     @Override
@@ -113,14 +116,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamGetDto createTeam(TeamNestedDto team, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-            String errorMessage = String.join(", ", errorMessages);
-            logger.error("Error occurred while creating team: {}", errorMessage);
-            throw new InvalidDataException(errorMessage);
-        }
+
+        bindingResultInspector.checkBindingResult(bindingResult);
+
         if (teamRepository.existsByName(team.getName())) {
             logger.error("Team with name {} already exists", team.getName());
             throw new TeamAlreadyExistsException(team.getName());
@@ -132,14 +130,9 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamGetDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            List<String> errorMessages = bindingResult.getAllErrors().stream()
-                    .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .collect(Collectors.toList());
-            String errorMessage = String.join(", ", errorMessages);
-            logger.error("Error occurred while updating team: {}", errorMessage);
-            throw new InvalidDataException(errorMessage);
-        }
+
+        bindingResultInspector.checkBindingResult(bindingResult);
+
         Optional<Team> existingTeam = teamRepository.findById(id);
         if (existingTeam.isEmpty()) {
             logger.error("Team with ID {} not found", id);
