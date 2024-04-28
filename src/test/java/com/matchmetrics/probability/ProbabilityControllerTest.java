@@ -139,5 +139,4 @@ public class ProbabilityControllerTest {
 
         verify(probabilityService, times(1)).deleteProbability(1);
     }
-
 }
