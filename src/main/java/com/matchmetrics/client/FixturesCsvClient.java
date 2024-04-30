@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -63,7 +65,22 @@ public class FixturesCsvClient {
     }
 
     private ProbabilityGetDto computeProbabilities(String[] fields) {
-        // todo implement logic
-        return new ProbabilityGetDto();
+        ProbabilityGetDto probability = new ProbabilityGetDto();
+        BigDecimal homeTeamWin = BigDecimal.ZERO;
+        BigDecimal draw;
+        BigDecimal awayTeamWin;
+
+        for (int i = 4; i < 10; i++) {
+            homeTeamWin = homeTeamWin.add(new BigDecimal(fields[i]));
+        }
+        draw = new BigDecimal(fields[10]);
+        awayTeamWin = BigDecimal.ONE.subtract(homeTeamWin).subtract(draw);
+
+        probability.setHomeTeamWin(homeTeamWin.setScale(6, RoundingMode.HALF_UP).floatValue());
+        probability.setDraw(draw.setScale(6, RoundingMode.HALF_UP).floatValue());
+        probability.setAwayTeamWin(awayTeamWin.setScale(6, RoundingMode.HALF_UP).floatValue());
+
+        return probability;
     }
+
 }
