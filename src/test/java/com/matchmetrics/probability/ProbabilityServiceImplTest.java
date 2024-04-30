@@ -4,7 +4,7 @@ import com.matchmetrics.entity.Probability;
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
-import com.matchmetrics.entity.validator.ProbabilityValidator;
+import com.matchmetrics.util.validator.ProbabilityValidator;
 import com.matchmetrics.exception.AssociatedProbabilityException;
 import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.exception.ProbabilityDoesNotExistException;

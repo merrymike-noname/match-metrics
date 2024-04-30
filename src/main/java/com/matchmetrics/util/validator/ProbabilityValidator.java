@@ -1,4 +1,4 @@
-package com.matchmetrics.entity.validator;
+package com.matchmetrics.util.validator;
 
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
 import com.matchmetrics.exception.InvalidProbabilityException;

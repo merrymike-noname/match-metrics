@@ -14,8 +14,8 @@ import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
 import com.matchmetrics.entity.mapper.team.TeamNameMapperImpl;
 import com.matchmetrics.entity.mapper.team.TeamNestedMapperImpl;
-import com.matchmetrics.entity.validator.DateValidator;
-import com.matchmetrics.entity.validator.ProbabilityValidator;
+import com.matchmetrics.util.DateParser;
+import com.matchmetrics.util.validator.ProbabilityValidator;
 import com.matchmetrics.exception.DateConversionException;
 import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.exception.MatchDoesNotExistException;
@@ -71,7 +71,7 @@ public class MatchServiceImplTest {
     private final ProbabilityGetMapper probabilityGetMapper = new ProbabilityGetMapperImpl();
 
     @Spy
-    private final DateValidator dateValidator = new DateValidator();
+    private final DateParser dateParser = new DateParser();
 
     @Spy
     private final ProbabilityValidator probabilityValidator = new ProbabilityValidator();
