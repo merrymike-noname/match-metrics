@@ -11,3 +11,5 @@ spring.mvc.hiddenmethod.filter.enabled=true
 springdoc.api-docs.path=/matchmetrics-docs
 springdoc.swagger-ui.path=/swagger-ui-matchmetrics-docs.html
 springdoc.swagger-ui.operationsSorter=method
+
+api.url=
