@@ -66,15 +66,15 @@ public class FixturesCsvClient {
 
     private ProbabilityGetDto computeProbabilities(String[] fields) {
         ProbabilityGetDto probability = new ProbabilityGetDto();
-        BigDecimal homeTeamWin = BigDecimal.ZERO;
+        BigDecimal awayTeamWin = BigDecimal.ZERO;
         BigDecimal draw;
-        BigDecimal awayTeamWin;
+        BigDecimal homeTeamWin;
 
         for (int i = 4; i < 10; i++) {
-            homeTeamWin = homeTeamWin.add(new BigDecimal(fields[i]));
+            awayTeamWin = awayTeamWin.add(new BigDecimal(fields[i]));
         }
         draw = new BigDecimal(fields[10]);
-        awayTeamWin = BigDecimal.ONE.subtract(homeTeamWin).subtract(draw);
+        homeTeamWin = BigDecimal.ONE.subtract(awayTeamWin).subtract(draw);
 
         probability.setHomeTeamWin(homeTeamWin.setScale(6, RoundingMode.HALF_UP).floatValue());
         probability.setDraw(draw.setScale(6, RoundingMode.HALF_UP).floatValue());
