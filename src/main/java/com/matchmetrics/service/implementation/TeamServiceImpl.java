@@ -1,5 +1,6 @@
 package com.matchmetrics.service.implementation;
 
+import com.matchmetrics.client.TeamCsvClient;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.team.TeamGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
@@ -32,6 +33,7 @@ public class TeamServiceImpl implements TeamService {
     private final Logger logger = LoggerFactory.getLogger(TeamServiceImpl.class);
     private final PageableCreator pageableCreator;
     private final BindingResultInspector bindingResultInspector;
+    private final TeamCsvClient teamCsvClient;
 
     private final TeamRepository teamRepository;
     private final TeamGetMapper teamGetMapper;
@@ -41,12 +43,14 @@ public class TeamServiceImpl implements TeamService {
                            TeamGetMapper teamGetMapper,
                            TeamNestedMapper teamNestedMapper,
                            PageableCreator pageableCreator,
-                           BindingResultInspector bindingResultInspector) {
+                           BindingResultInspector bindingResultInspector,
+                           TeamCsvClient teamCsvClient) {
         this.teamRepository = teamRepository;
         this.teamGetMapper = teamGetMapper;
         this.teamNestedMapper = teamNestedMapper;
         this.pageableCreator = pageableCreator;
         this.bindingResultInspector = bindingResultInspector;
+        this.teamCsvClient = teamCsvClient;
     }
 
     @Override
@@ -84,13 +88,19 @@ public class TeamServiceImpl implements TeamService {
         Optional<Team> awayTeamEntity = teamRepository.findTeamByName(awayTeamName);
 
         if (homeTeamEntity.isEmpty()) {
-            logger.error("First team does not exist: {}", homeTeamName);
-            throw new TeamDoesNotExistException("Team " + homeTeamName + " does not exist");
+            TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(homeTeamName);
+            Team homeTeamSaved = teamRepository.save(teamNestedMapper.toEntity(teamFromRemote));
+            homeTeamSaved.setHomeMatches(new ArrayList<>());
+            homeTeamSaved.setAwayMatches(new ArrayList<>());
+            homeTeamEntity = Optional.of(homeTeamSaved);
         }
 
         if (awayTeamEntity.isEmpty()) {
-            logger.error("Second team does not exist: {}", awayTeamName);
-            throw new TeamDoesNotExistException("Team " + awayTeamName + " does not exist");
+            TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(awayTeamName);
+            Team awayTeamSaved = teamRepository.save(teamNestedMapper.toEntity(teamFromRemote));
+            awayTeamSaved.setHomeMatches(new ArrayList<>());
+            awayTeamSaved.setAwayMatches(new ArrayList<>());
+            awayTeamEntity = Optional.of(awayTeamSaved);
         }
 
         if (homeTeamEntity.get().getId() == awayTeamEntity.get().getId()) {
@@ -178,4 +188,6 @@ public class TeamServiceImpl implements TeamService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
+
+    //private Optional<Team> pullTeamFromRemote(TeamGetDto teamGetDto) {}
 }

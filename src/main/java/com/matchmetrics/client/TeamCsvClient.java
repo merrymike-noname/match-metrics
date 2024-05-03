@@ -2,6 +2,8 @@ package com.matchmetrics.client;
 
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import com.matchmetrics.exception.TeamDoesNotExistException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ public class TeamCsvClient {
     private static final int TEAM_NAME_POSITION = 1;
     private static final int TEAM_COUNTRY_POSITION = 2;
     private static final int ELO_RATING_POSITION = 4;
+
+    private final Logger logger = LoggerFactory.getLogger(TeamCsvClient.class);
 
     public TeamNestedDto getTeamFromRemote(String teamName) {
         this.teamName = teamName.replaceAll(" ", "");
@@ -44,6 +48,7 @@ public class TeamCsvClient {
         try {
             eloRating = Float.parseFloat(currentTeamStats[ELO_RATING_POSITION]);
         } catch (NumberFormatException e) {
+            logger.error("Team does not exist: {}", teamName);
             throw new TeamDoesNotExistException(teamName);
         }
 
@@ -57,6 +62,7 @@ public class TeamCsvClient {
     private String getLastNonEmptyLine(String content) {
         assert content != null;
         List<String> lines = Arrays.asList(content.split("\n"));
+
         for (int i = lines.size() - 1; i >= 0; i--) {
             String line = lines.get(i);
             if (!line.isBlank()) {
