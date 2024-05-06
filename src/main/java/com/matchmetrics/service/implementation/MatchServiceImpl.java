@@ -16,6 +16,7 @@ import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.service.MatchService;
 import com.matchmetrics.util.BindingResultInspector;
 import com.matchmetrics.util.PageableCreator;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
@@ -95,6 +96,13 @@ public class MatchServiceImpl implements MatchService {
 
         return matches.getContent().stream()
                 .map(matchGetMapper::toDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public MatchGetDto getMatchByTeams(String homeTeam, String awayTeam) {
+        Match match = matchRepository.findTopByHomeTeamNameAndAwayTeamNameOrderByDateDesc(homeTeam, awayTeam)
+                .orElseThrow(() -> new EntityNotFoundException("Match not found with home team: " + homeTeam + " and away team: " + awayTeam));
+        return matchGetMapper.toDto(match);
     }
 
     @Override

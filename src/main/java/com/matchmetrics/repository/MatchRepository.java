@@ -10,6 +10,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Integer>, JpaSpecificationExecutor<Match> {
 
@@ -20,6 +22,8 @@ public interface MatchRepository extends JpaRepository<Match, Integer>, JpaSpeci
     @Query("SELECT m FROM Match m LEFT JOIN FETCH m.homeTeam LEFT JOIN FETCH m.awayTeam LEFT JOIN FETCH m.probability")
     @Override
     Page<Match> findAll(Pageable pageable);
+
+    Optional<Match> findTopByHomeTeamNameAndAwayTeamNameOrderByDateDesc(String homeTeam, String awayTeam);
 
     Boolean existsByProbabilityId(int probabilityId);
 }

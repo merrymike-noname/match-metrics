@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("matchmetrics/api/v0/matches")
 public class MatchController {
@@ -52,6 +53,17 @@ public class MatchController {
         logger.info("Returning {} matches by criteria: " +
                 "team={}, isHome={}, date={}, league={}", matches.size(), team, isHome, date, league);
         return matches;
+    }
+
+    @GetMapping("/byTeams")
+    public MatchGetDto getMatchByTeams(
+            @RequestParam(name = "homeTeam") String homeTeam,
+            @RequestParam(name = "awayTeam") String awayTeam
+    ) {
+        logger.info("Received request to get match by home team: {} and away team: {}", homeTeam, awayTeam);
+        MatchGetDto match = matchService.getMatchByTeams(homeTeam, awayTeam);
+        logger.info("Returning match: {}", match);
+        return match;
     }
 
     @GetMapping("/{id}")
