@@ -38,8 +38,8 @@ public class MatchController {
 
     @GetMapping()
     public List<MatchGetDto> getMatchesByCriteria(
-            @RequestParam(name = "team", required = false) String team,
-            @RequestParam(name = "isHome", required = false) Boolean isHome,
+            @RequestParam(name = "homeTeam", required = false) String homeTeam,
+            @RequestParam(name = "awayTeam", required = false) String awayTeam,
             @RequestParam(name = "date", required = false) String date,
             @RequestParam(name = "league", required = false) String league,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -47,23 +47,12 @@ public class MatchController {
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
         logger.info("Received request to get matches by criteria: " +
-                "team={}, isHome={}, date={}, league={}", team, isHome, date, league);
+                "homeTeam={}, awayTeam={}, date={}, league={}", homeTeam, awayTeam, date, league);
         List<MatchGetDto> matches =
-                matchService.getMatchesByCriteria(team, isHome, date, league, page - 1, perPage, sortBy);
+                matchService.getMatchesByCriteria(homeTeam, awayTeam, date, league, page - 1, perPage, sortBy);
         logger.info("Returning {} matches by criteria: " +
-                "team={}, isHome={}, date={}, league={}", matches.size(), team, isHome, date, league);
+                "homeTeam={}, awayTeam={}, date={}, league={}", matches.size(), homeTeam, awayTeam, date, league);
         return matches;
-    }
-
-    @GetMapping("/byTeams")
-    public MatchGetDto getMatchByTeams(
-            @RequestParam(name = "homeTeam") String homeTeam,
-            @RequestParam(name = "awayTeam") String awayTeam
-    ) {
-        logger.info("Received request to get match by home team: {} and away team: {}", homeTeam, awayTeam);
-        MatchGetDto match = matchService.getMatchByTeams(homeTeam, awayTeam);
-        logger.info("Returning match: {}", match);
-        return match;
     }
 
     @GetMapping("/{id}")

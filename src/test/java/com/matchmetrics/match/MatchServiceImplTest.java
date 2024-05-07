@@ -122,7 +122,7 @@ public class MatchServiceImplTest {
         when(matchRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(matches));
         List<MatchGetDto> matchesByCriteria = matchService
-                .getMatchesByCriteria("TeamA", null, null, null, 1, 2, "default");
+                .getMatchesByCriteria("TeamA", "TeamB", null, null, 1, 2, "default");
         List<MatchGetDto> expected = matches.stream()
                 .map(matchGetMapper::toDto)
                 .toList();
@@ -132,7 +132,7 @@ public class MatchServiceImplTest {
         when(matchRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(matches));
         matchesByCriteria = matchService
-                .getMatchesByCriteria("TeamA", true, null, null, 1, 2, "default");
+                .getMatchesByCriteria("TeamA", null, null, null, 1, 2, "default");
         expected = matches.stream()
                 .map(matchGetMapper::toDto)
                 .toList();
@@ -142,7 +142,7 @@ public class MatchServiceImplTest {
         when(matchRepository.findAll(any(Specification.class), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(matches));
         matchesByCriteria = matchService
-                .getMatchesByCriteria("TeamA", false, null, null, 1, 2, "default");
+                .getMatchesByCriteria(null, "TeamA", null, null, 1, 2, "default");
         expected = matches.stream()
                 .map(matchGetMapper::toDto)
                 .toList();
