@@ -286,14 +286,21 @@ public class MatchServiceImplTest {
     }
 
     @Test
-    void testDeleteMatch() {
+    void testDeleteMatch() throws ParseException {
         int id = 1;
-        when(matchRepository.existsById(id)).thenReturn(true);
+        Team homeTeam = new Team("HomeTeam", "Country", 1000);
+        Team awayTeam = new Team("AwayTeam", "Country", 1000);
+        Match match = new Match(id, new SimpleDateFormat("yyyy-MM-dd").parse("2024-04-11"),
+                "League", homeTeam, awayTeam, new Probability());
+        homeTeam.setHomeMatches(new ArrayList<>(List.of(match)));
+        awayTeam.setAwayMatches(new ArrayList<>(List.of(match)));
+
+        when(matchRepository.findById(id)).thenReturn(Optional.of(match));
         doNothing().when(matchRepository).deleteById(id);
         matchService.deleteMatch(id);
         verify(matchRepository, times(1)).deleteById(id);
 
-        when(matchRepository.existsById(id)).thenReturn(false);
+        when(matchRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(MatchDoesNotExistException.class, () -> matchService.deleteMatch(id));
     }
 }

@@ -177,7 +177,10 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public void deleteMatch(int id) {
-        if (matchRepository.existsById(id)) {
+        Optional<Match> match = matchRepository.findById(id);
+        if (match.isPresent()) {
+            match.get().getHomeTeam().getHomeMatches().remove(match);
+            match.get().getAwayTeam().getAwayMatches().remove(match);
             matchRepository.deleteById(id);
         } else {
             logger.error("Match with ID {} not found", id);
