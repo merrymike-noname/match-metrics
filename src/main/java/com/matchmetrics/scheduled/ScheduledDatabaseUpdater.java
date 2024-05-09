@@ -16,8 +16,11 @@ import com.matchmetrics.util.validator.ProbabilityValidator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.*;
 
@@ -52,12 +55,14 @@ public class ScheduledDatabaseUpdater {
         this.teamRepository = teamRepository;
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 12 18 * * *")
+    @Retryable(value = { ResourceAccessException.class }, maxAttempts = 5, backoff = @Backoff(delay = 5000))
     @Transactional
     public void updateDatabase() {
         logger.info("Database update started");
         Date today = new Date();
         List<Match> allMatchesOld = matchRepository.findAll();
+        List<Team> teamsToUpdate = new ArrayList<>();
         List<MatchAddUpdateDto> allMatchesNew = fixturesCsvClient.getFixtures();
 
         for (Match m : allMatchesOld) {
@@ -68,11 +73,16 @@ public class ScheduledDatabaseUpdater {
             if (m.getDate().before(today)) {
                 m.getHomeTeam().getHomeMatches().remove(m);
                 m.getAwayTeam().getAwayMatches().remove(m);
+                teamsToUpdate.add(m.getHomeTeam());
+                teamsToUpdate.add(m.getAwayTeam());
                 matchRepository.delete(m);
             }
         }
-
+        logger.info("Persisting new matches");
         persistNewMatches(allMatchesNew);
+
+        logger.info("Updating teams elo");
+        updateTeamInfo(teamsToUpdate);
     }
 
     @Transactional
@@ -109,6 +119,17 @@ public class ScheduledDatabaseUpdater {
 
             matchRepository.save(newMatch);
         }
-        logger.info("Updating is finished");
+        logger.info("Match persisting is finished");
+    }
+
+    @Transactional
+    protected void updateTeamInfo(List<Team> teamsToUpdate) {
+        for (Team teamToUpdate : teamsToUpdate) {
+            TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(teamToUpdate.getName());
+            if (teamToUpdate.getElo() != teamFromRemote.getElo()) {
+                teamToUpdate.setElo(teamFromRemote.getElo());
+                teamRepository.save(teamToUpdate);
+            }
+        }
     }
 }
