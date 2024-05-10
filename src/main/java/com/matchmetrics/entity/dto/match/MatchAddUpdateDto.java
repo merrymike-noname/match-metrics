@@ -77,8 +77,7 @@ public class MatchAddUpdateDto {
         return Objects.equals(date, that.date)
                 && Objects.equals(league, that.league)
                 && Objects.equals(homeTeam, that.homeTeam)
-                && Objects.equals(awayTeam, that.awayTeam)
-                && Objects.equals(probability, that.probability);
+                && Objects.equals(awayTeam, that.awayTeam);
     }
 
     @Override
