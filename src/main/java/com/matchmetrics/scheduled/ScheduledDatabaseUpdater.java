@@ -55,7 +55,7 @@ public class ScheduledDatabaseUpdater {
         this.teamRepository = teamRepository;
     }
 
-    @Scheduled(cron = "0 6 22 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     @Retryable(value = { ResourceAccessException.class }, maxAttempts = 5, backoff = @Backoff(delay = 5000))
     @Transactional
     public void updateDatabase() {
