@@ -55,7 +55,7 @@ public class ScheduledDatabaseUpdater {
         this.teamRepository = teamRepository;
     }
 
-    @Scheduled(cron = "0 12 12 * * *")
+    @Scheduled(cron = "0 6 22 * * *")
     @Retryable(value = { ResourceAccessException.class }, maxAttempts = 5, backoff = @Backoff(delay = 5000))
     @Transactional
     public void updateDatabase() {
@@ -66,8 +66,9 @@ public class ScheduledDatabaseUpdater {
         List<MatchAddUpdateDto> allMatchesNew = fixturesCsvClient.getFixtures();
 
         for (Match m : allMatchesOld) {
-            // extracts matches that are already present in DB
-            allMatchesNew.remove(addUpdateMapper.toDto(m));
+
+            allMatchesNew.removeIf(newMatch -> allMatchesOld.stream()
+                    .anyMatch(oldMatch -> newMatch.equals(addUpdateMapper.toDto(oldMatch))));
 
             // removes all outdated matches
             if (m.getDate().before(today)) {
