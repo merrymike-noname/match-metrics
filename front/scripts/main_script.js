@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         this.onerror = null;
                         this.src = '/front/resources/logos/default.png';
                     };
-                    awayTeamLogo.style.width = '30px'; // You can adjust the size as needed
+                    awayTeamLogo.style.width = '30px';
                     awayTeamLogo.style.height = '30px';
                     awayTeamLogo.style.borderRadius = '50%';
                     awayTeamLogo.style.marginRight = '10px';

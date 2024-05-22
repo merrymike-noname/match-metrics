@@ -43,7 +43,7 @@ public class MatchController {
             @RequestParam(name = "date", required = false) String date,
             @RequestParam(name = "league", required = false) String league,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "perPage", required = false, defaultValue = "20") Integer perPage,
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
         logger.info("Received request to get matches by criteria: " +

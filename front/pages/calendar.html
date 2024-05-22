@@ -4,20 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Title</title>
-    <link rel="stylesheet" href="/front/styles/main_styles.css">
+    <link rel="stylesheet" href="/front/styles/calendar.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
 <div class="header">
     <span class="title">Football matches prediction</span>
     <nav>
         <a href="compare.html" class="menu-button">Compare teams</a>
-        <a href="calendar.html" class="menu-button">Calendar</a>
+        <a href="calendar.html" class="menu-button active">Calendar</a>
         <a href="team_stats.html" class="menu-button">Team Stats</a>
     </nav>
     <a href="user.html" class="username">Захар</a>
 </div>
 
+<div class="container">
+    <input type="text" id="datePicker" value="">
+    <div id="matchesList"></div>
+</div>
 
+<div id="favoriteTeamNextMatch" class="favorite-match">
+    <div class="team-logos"></div>
+    <div class="team-names"></div>
+    <div class="match-date"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="/front/scripts/calendar.js"></script>
 </body>
