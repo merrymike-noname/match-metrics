@@ -18,6 +18,39 @@ body {
     font-size: 20px;
 }
 
+#matchInfo .teamInfo {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: -10px 5px;
+
+}
+
+#predictionButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#predictionButtonContainer button {
+    width: 30%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+#matchInfo .teamInfo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
 .container {
     margin: 20px auto;
     width: 510px;
@@ -53,12 +86,20 @@ button {
     width: 510px;
 }
 
+#matchInfo2 {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px auto;
+    width: 510px;
+}
+
 #matchInfo .team {
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 45%;
 }
+
 
 #matchInfo .team img {
     width: 50px;

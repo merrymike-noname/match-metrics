@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "http://localhost:63342")
+@CrossOrigin(origins = "http://localhost:63343")
 @RestController
 @RequestMapping("matchmetrics/api/v0/teams")
 public class TeamController {
@@ -29,7 +29,7 @@ public class TeamController {
     @GetMapping("/all")
     public List<TeamGetDto> getAllTeams(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "perPage", required = false, defaultValue = "10000") Integer perPage,
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
         logger.info("Received request to get all teams. Pages: {}, perPage: {}, sortBy: {}", page, perPage, sortBy);
