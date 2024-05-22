@@ -105,6 +105,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    datePicker.dispatchEvent(new Event('change'));
+    datePicker.change();
 
 });

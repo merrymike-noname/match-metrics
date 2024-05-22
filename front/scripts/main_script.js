@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const team1Input = document.getElementById('team1');
     const team2Input = document.getElementById('team2');
     const forecastButton = document.getElementById('forecastButton');
-    const matchInfoDiv = document.getElementById('matchInfo');
+    const matchInfoDiv = document.getElementById('matchInfo2');
     const predictionButtonContainer = document.getElementById('predictionButtonContainer');
     const predictionButton = document.createElement('button');
     predictionButton.id = 'predictionButton';
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (team1Exists && team2Exists) {
             const team1InfoDiv = document.getElementById('team1Info');
             const team2InfoDiv = document.getElementById('team2Info');
-
+            matchInfoDiv.innerHTML = '';
             fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team1}`)
                 .then(response => response.json())
                 .then(teams => {
