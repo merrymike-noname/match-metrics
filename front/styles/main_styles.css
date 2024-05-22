@@ -69,6 +69,43 @@ body {
     box-sizing: border-box;
 }
 
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 30px;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header .username:hover {
+    color: #ccc;
+}
+
+.header .menu-button:first-child {
+    color: #ff0;
+    margin-left: -200px;
+}
+
+.favorite-match {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: white;
+    padding: 20px;
+    width: 180px;
+    height: 90px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
 button {
     padding: 10px 20px;
     background-color: #333;
@@ -123,4 +160,29 @@ button {
 
 #matchInfo .team .low-elo {
     background-color: lightcoral;
+}
+
+.favorite-match {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.favorite-match .team-logos {
+    display: flex;
+    justify-content: space-between;
+}
+
+.favorite-match .team-names {
+    display: flex;
+    justify-content: space-between;
+}
+
+.favorite-match .match-date {
+    margin-top: 10px;
 }
