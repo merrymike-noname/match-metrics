@@ -1,33 +1,30 @@
 document.addEventListener('DOMContentLoaded', function () {
     const teamInput = document.getElementById('teamInput');
     const teamLogoDiv = document.getElementById('teamLogo');
-    const teamNameDiv = document.getElementById('teamName');
     const teamInfoDiv = document.getElementById('teamInfo');
-    const teamMatchDiv = document.getElementById('nextMatchBanner');
-    const teamLogosDiv = document.querySelector('.team-logos');
-    const teamNamesDiv = document.querySelector('.team-names');
-    const matchDateDiv = document.querySelector('.match-date');
+    const matchInfoDiv = document.getElementById('matchInfo');
 
     let teams = [];
+    teamInput.value = 'Girona';
 
     fetch('http://localhost:8080/matchmetrics/api/v0/teams/all')
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
             suggestTeams(teamInput, teams);
+            teamInput.dispatchEvent(new Event('input'));
         })
         .catch(error => console.error('Error:', error));
 
     teamInput.addEventListener('input', function () {
         const teamName = teamInput.value.trim();
-        const teamExists = teams.includes(teamName);
-        console.log(teamExists)
-        if (teamExists) {
+        if (teams.includes(teamName)) {
             fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${teamName}`)
                 .then(response => response.json())
                 .then(teams => {
+                    teamInfoDiv.style.display = 'block';
+                    matchInfoDiv.style.display = 'block';
                     const team = teams[0];
-                    console.log(team);
                     teamLogoDiv.innerHTML = '';
                     const teamLogo = document.createElement('img');
                     teamLogo.src = `/front/resources/logos/${team.name.toLowerCase()}.png`;
@@ -44,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     teamNameElement.style.fontWeight = 'bold';
                     teamLogoDiv.appendChild(teamNameElement);
 
-                    const teamInfoDiv = document.getElementById('teamInfo');
                     teamInfoDiv.style.backgroundColor = 'white';
                     teamInfoDiv.style.borderRadius = '10px';
                     teamInfoDiv.style.padding = '10px';
@@ -56,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     const teamElo = document.createElement('p');
                     teamElo.textContent = `ELO: ${Math.round(team.elo)}`;
                     teamInfoDiv.appendChild(teamElo);
-
 
                     fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${teamName}`)
                         .then(response => response.json())
@@ -70,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         if (matches.length > 0) {
                                             displayMatch(matches[0]);
                                         } else {
-                                            teamMatchDiv.textContent = 'No matches in the nearest time.';
+                                            matchInfoDiv.textContent = 'No matches in the nearest time.';
                                         }
                                     })
                                     .catch(error => console.error('Error:', error));
@@ -83,8 +78,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function displayMatch(match) {
+        matchInfoDiv.innerHTML = '';  // Clear previous match info
 
         const logosDiv = document.createElement('div');
+        logosDiv.style.display = 'flex';
+        logosDiv.style.justifyContent = 'center';
+        logosDiv.style.alignItems = 'center';
 
         const homeTeamLogo = document.createElement('img');
         homeTeamLogo.src = `/front/resources/logos/${match.homeTeam.name.toLowerCase()}.png`;
@@ -94,8 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         homeTeamLogo.style.width = '45px';
         homeTeamLogo.style.height = '45px';
-        homeTeamLogo.style.marginLeft = '50px';
-        homeTeamLogo.style.marginRight = '70px'; // Добавление отступа справа
+        homeTeamLogo.style.margin = '0 150px 0 1px';
         logosDiv.appendChild(homeTeamLogo);
 
         const awayTeamLogo = document.createElement('img');
@@ -106,31 +104,23 @@ document.addEventListener('DOMContentLoaded', function () {
         };
         awayTeamLogo.style.width = '45px';
         awayTeamLogo.style.height = '45px';
-
         logosDiv.appendChild(awayTeamLogo);
 
-        // Добавление div с логотипами в teamInfoDiv
-        teamInfoDiv.appendChild(logosDiv);
+        matchInfoDiv.appendChild(logosDiv);
 
-        // Создание div для имен команд
         const namesDiv = document.createElement('div');
-        namesDiv.textContent = `${match.homeTeam.name}  vs  ${match.awayTeam.name}`;
+        namesDiv.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name}`;
         namesDiv.style.display = 'flex';
         namesDiv.style.justifyContent = 'center';
         namesDiv.style.alignItems = 'center';
+        matchInfoDiv.appendChild(namesDiv);
 
-        // Добавление div с именами команд в teamInfoDiv
-        teamInfoDiv.appendChild(namesDiv);
-
-        // Создание div для даты матча
         const dateDiv = document.createElement('div');
         dateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         dateDiv.style.display = 'flex';
         dateDiv.style.justifyContent = 'center';
         dateDiv.style.alignItems = 'center';
-
-        // Добавление div с датой матча в teamInfoDiv
-        teamInfoDiv.appendChild(dateDiv);
+        matchInfoDiv.appendChild(dateDiv);
     }
 
     function suggestTeams(input, suggestions) {
@@ -144,15 +134,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 datalist.parentNode.removeChild(datalist);
             }
             if (filteredSuggestions.length > 0) {
-                const datalist = document.createElement('datalist');
-                datalist.id = input.id + 'List';
+                const newDatalist = document.createElement('datalist');
+                newDatalist.id = input.id + 'List';
                 filteredSuggestions.forEach(team => {
                     const option = document.createElement('option');
                     option.value = team;
-                    datalist.appendChild(option);
+                    newDatalist.appendChild(option);
                 });
-                input.parentNode.appendChild(datalist);
-                input.setAttribute('list', datalist.id);
+                input.parentNode.appendChild(newDatalist);
+                input.setAttribute('list', newDatalist.id);
             }
         });
     }
