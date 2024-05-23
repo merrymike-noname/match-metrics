@@ -1,0 +1,235 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    justify-content: center;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.favorite-match {
+    position: relative;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.title {
+    font-size: 20px;
+}
+
+#teamInfoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#matchInfo .teamInfo {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: -10px 5px;
+}
+
+#predictionButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#predictionButtonContainer button {
+    width: 30%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+#matchInfo .teamInfo img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.container {
+    margin: 20px auto;
+    width: 510px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.team-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 30px;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header .username:hover {
+    color: #ccc;
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#matchInfo {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px auto;
+    width: 510px;
+}
+
+#matchInfo2 {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px auto;
+    width: 510px;
+}
+
+#matchInfo .team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 45%;
+}
+
+#matchInfo .team img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+#matchInfo .team h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+#matchesList {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+#matchesList div {
+    margin-bottom: 10px;
+}
+
+#matchInfo .team p {
+    margin-bottom: 5px;
+}
+
+#matchInfo .team .high-elo {
+    background-color: lightgreen;
+}
+
+#matchInfo .team .low-elo {
+    background-color: lightcoral;
+}
+
+.header .menu-button:first-child {
+    margin-left: -200px;
+}
+
+#teamInfoContainer {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#teamLogo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+#teamName {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#teamInfo {
+    margin-top: 20px;
+    text-align: left;
+}
+
+#nextMatchBanner {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    text-align: center;
+}
+
+.favorite-match {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.favorite-match .team-logos {
+    display: flex;
+    justify-content: space-between;
+}
+
+.favorite-match .team-names {
+    display: flex;
+    justify-content: space-between;
+}
+
+.favorite-match .match-date {
+    margin-top: 10px;
+}
