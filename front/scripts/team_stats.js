@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     function displayMatch(match) {
-        matchInfoDiv.innerHTML = '';  // Clear previous match info
+        matchInfoDiv.innerHTML = '';
 
         const logosDiv = document.createElement('div');
         logosDiv.style.display = 'flex';
