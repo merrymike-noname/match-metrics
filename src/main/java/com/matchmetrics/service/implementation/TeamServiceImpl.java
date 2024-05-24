@@ -17,6 +17,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -70,7 +71,11 @@ public class TeamServiceImpl implements TeamService {
         Page<Team> teams = teamRepository.findAll(spec, pageable);
 
         if (teams.isEmpty()) {
-            logger.warn("No teams found with the given criteria. Name: {}, Country: {}, Elo: {}", name, country, elo);
+            //logger.warn("No teams found with the given criteria. Name: {}, Country: {}, Elo: {}", name, country, elo);
+            if (name != null && country == null && elo == null) {
+                TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(name);
+                teams = new PageImpl<>(List.of(teamRepository.save(teamNestedMapper.toEntity(teamFromRemote))));
+            }
         }
 
         return teams.getContent().stream()
@@ -188,6 +193,4 @@ public class TeamServiceImpl implements TeamService {
             return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
         };
     }
-
-    //private Optional<Team> pullTeamFromRemote(TeamGetDto teamGetDto) {}
 }
