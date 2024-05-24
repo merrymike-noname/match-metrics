@@ -9,6 +9,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -18,6 +19,7 @@ import java.util.Date;
 public abstract class MatchAddUpdateMapper {
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    @Mapping(target = "date", expression = "java( convertDateToString(match.getDate()) )")
     public abstract MatchAddUpdateDto toDto(Match match);
 
     @Mapping(target = "date", expression = "java( convertStringToDate(dto.getDate()) )")
@@ -30,6 +32,16 @@ public abstract class MatchAddUpdateMapper {
             // Parse string date to Date type
             LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
             return java.sql.Date.valueOf(localDate);
+        }
+    }
+
+    public String convertDateToString(Date date) {
+        if (date == null) {
+            return null;
+        } else {
+            java.util.Date utilDate = new java.util.Date(date.getTime());
+            LocalDate localDate = utilDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            return dateTimeFormatter.format(localDate);
         }
     }
 }

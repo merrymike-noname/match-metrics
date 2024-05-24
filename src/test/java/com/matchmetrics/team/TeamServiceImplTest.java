@@ -1,5 +1,6 @@
 package com.matchmetrics.team;
 
+import com.matchmetrics.client.TeamCsvClient;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.entity.dto.team.TeamGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
@@ -41,6 +42,9 @@ public class TeamServiceImplTest {
 
     @Mock
     private BindingResult bindingResult;
+
+    @Mock
+    private TeamCsvClient teamCsvClient;
 
     @Spy
     private TeamGetMapper teamGetMapper = new TeamGetMapperImpl(new MatchNestedMapperImpl());
@@ -103,6 +107,8 @@ public class TeamServiceImplTest {
         when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.of(awayTeamEntity));
 
         assertThat(teamService.getTeamsComparedByName(homeTeamName, awayTeamName)).isEqualTo(expected);
+
+        //todo add test for TeamCsvClient usage
     }
 
     @Test
@@ -118,11 +124,13 @@ public class TeamServiceImplTest {
                 teamService.getTeamsComparedByName(homeTeamName, homeTeamName));
 
         when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.empty());
+        when(teamCsvClient.getTeamFromRemote(homeTeamName)).thenThrow(new TeamDoesNotExistException(homeTeamName));
         assertThrows(TeamDoesNotExistException.class, () ->
                 teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
 
         when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.of(homeTeamEntity));
         when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.empty());
+        when(teamCsvClient.getTeamFromRemote(awayTeamName)).thenThrow(new TeamDoesNotExistException(awayTeamName));
         assertThrows(TeamDoesNotExistException.class, () ->
                 teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
 

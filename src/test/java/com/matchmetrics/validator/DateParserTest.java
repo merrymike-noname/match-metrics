@@ -1,6 +1,6 @@
 package com.matchmetrics.validator;
 
-import com.matchmetrics.entity.validator.DateValidator;
+import com.matchmetrics.util.DateParser;
 import com.matchmetrics.exception.DateConversionException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,17 +10,17 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DateValidatorTest {
+public class DateParserTest {
 
-    private final DateValidator dateValidator = new DateValidator();
+    private final DateParser dateParser = new DateParser();
 
     @ParameterizedTest
     @MethodSource("provideTestCases")
     public void validate(String date, boolean valid, String exceptionMessage) {
         if (valid) {
-            assertDoesNotThrow(() -> dateValidator.validate(date));
+            assertDoesNotThrow(() -> dateParser.validate(date));
         } else {
-            Exception exception = assertThrows(DateConversionException.class, () -> dateValidator.validate(date));
+            Exception exception = assertThrows(DateConversionException.class, () -> dateParser.validate(date));
             assertTrue(exception.getMessage().contains(exceptionMessage));
         }
     }
@@ -35,4 +35,6 @@ public class DateValidatorTest {
                 Arguments.of("", false, "Date cannot be null or empty")
         );
     }
+
+    // todo add test for successful parsing
 }

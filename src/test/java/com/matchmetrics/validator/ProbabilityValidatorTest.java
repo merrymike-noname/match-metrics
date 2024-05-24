@@ -1,7 +1,7 @@
 package com.matchmetrics.validator;
 
 import com.matchmetrics.entity.dto.probability.ProbabilityGetDto;
-import com.matchmetrics.entity.validator.ProbabilityValidator;
+import com.matchmetrics.util.validator.ProbabilityValidator;
 import com.matchmetrics.exception.InvalidProbabilityException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

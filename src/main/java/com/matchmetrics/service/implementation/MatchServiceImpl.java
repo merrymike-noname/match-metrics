@@ -8,8 +8,8 @@ import com.matchmetrics.entity.dto.match.MatchGetDto;
 import com.matchmetrics.entity.mapper.match.MatchAddUpdateMapper;
 import com.matchmetrics.entity.mapper.match.MatchGetMapper;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
-import com.matchmetrics.entity.validator.DateValidator;
-import com.matchmetrics.entity.validator.ProbabilityValidator;
+import com.matchmetrics.util.DateParser;
+import com.matchmetrics.util.validator.ProbabilityValidator;
 import com.matchmetrics.exception.*;
 import com.matchmetrics.repository.MatchRepository;
 import com.matchmetrics.repository.TeamRepository;
@@ -28,8 +28,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,7 +37,7 @@ public class MatchServiceImpl implements MatchService {
     private final Logger logger = LoggerFactory.getLogger(MatchServiceImpl.class);
     private final PageableCreator pageableCreator;
     private final BindingResultInspector bindingResultInspector;
-    private final DateValidator dateValidator;
+    private final DateParser dateParser;
     private final ProbabilityValidator probabilityValidator;
 
     private final MatchRepository matchRepository;
@@ -51,7 +49,7 @@ public class MatchServiceImpl implements MatchService {
     @Autowired
     public MatchServiceImpl(PageableCreator pageableCreator,
                             BindingResultInspector bindingResultInspector,
-                            DateValidator dateValidator,
+                            DateParser dateParser,
                             ProbabilityValidator probabilityValidator,
                             MatchRepository matchRepository,
                             TeamRepository teamRepository,
@@ -60,7 +58,7 @@ public class MatchServiceImpl implements MatchService {
                             ProbabilityGetMapper probabilityGetMapper) {
         this.pageableCreator = pageableCreator;
         this.bindingResultInspector = bindingResultInspector;
-        this.dateValidator = dateValidator;
+        this.dateParser = dateParser;
         this.probabilityValidator = probabilityValidator;
         this.matchRepository = matchRepository;
         this.teamRepository = teamRepository;
@@ -112,7 +110,7 @@ public class MatchServiceImpl implements MatchService {
 
         bindingResultInspector.checkBindingResult(bindingResult);
 
-        dateValidator.validate(matchDto.getDate());
+        dateParser.validate(matchDto.getDate());
 
         Team homeTeam = teamRepository.findTeamByName(
                         matchDto.getHomeTeam().getName())
@@ -140,8 +138,7 @@ public class MatchServiceImpl implements MatchService {
         if (matchRepository.existsById(id)) {
 
             bindingResultInspector.checkBindingResult(bindingResult);
-
-            dateValidator.validate(matchDto.getDate());
+            dateParser.validate(matchDto.getDate());
 
             Match existingMatch = matchRepository.findById(id)
                     .orElseThrow(() -> new MatchDoesNotExistException(id));
@@ -165,7 +162,7 @@ public class MatchServiceImpl implements MatchService {
                 awayTeam.getAwayMatches().add(existingMatch);
             }
 
-            existingMatch.setDate(convertStringToDate(matchDto.getDate()));
+            existingMatch.setDate(dateParser.convertStringToDate(matchDto.getDate()));
             existingMatch.setLeague(matchDto.getLeague());
             existingMatch.setHomeTeam(homeTeam);
             existingMatch.setAwayTeam(awayTeam);
@@ -180,25 +177,14 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public void deleteMatch(int id) {
-        if (matchRepository.existsById(id)) {
+        Optional<Match> match = matchRepository.findById(id);
+        if (match.isPresent()) {
+            match.get().getHomeTeam().getHomeMatches().remove(match);
+            match.get().getAwayTeam().getAwayMatches().remove(match);
             matchRepository.deleteById(id);
         } else {
             logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);
-        }
-    }
-
-    public Date convertStringToDate(String strDate) {
-        if (strDate == null) {
-            return null;
-        }
-        try {
-            String pattern = "yyyy-MM-dd";
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-            return simpleDateFormat.parse(strDate);
-        } catch (ParseException e) {
-            logger.error("Error occurred while converting string to date: {}", e.getMessage());
-            throw new DateConversionException(e);
         }
     }
 
@@ -224,7 +210,7 @@ public class MatchServiceImpl implements MatchService {
                 }
             }
             if (date != null) {
-                predicates.add(criteriaBuilder.equal(root.get("date"), convertStringToDate(date)));
+                predicates.add(criteriaBuilder.equal(root.get("date"), dateParser.convertStringToDate(date)));
             }
             if (league != null) {
                 predicates.add(criteriaBuilder.equal(root.get("league"), league));

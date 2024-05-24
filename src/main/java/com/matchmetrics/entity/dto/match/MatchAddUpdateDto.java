@@ -77,12 +77,22 @@ public class MatchAddUpdateDto {
         return Objects.equals(date, that.date)
                 && Objects.equals(league, that.league)
                 && Objects.equals(homeTeam, that.homeTeam)
-                && Objects.equals(awayTeam, that.awayTeam)
-                && Objects.equals(probability, that.probability);
+                && Objects.equals(awayTeam, that.awayTeam);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(date, league, homeTeam, awayTeam, probability);
+    }
+
+    @Override
+    public String toString() {
+        return "MatchAddUpdateDto{" +
+                "date='" + date + '\'' +
+                ", league='" + league + '\'' +
+                ", homeTeam=" + homeTeam +
+                ", awayTeam=" + awayTeam +
+                ", probability=" + probability +
+                '}';
     }
 }

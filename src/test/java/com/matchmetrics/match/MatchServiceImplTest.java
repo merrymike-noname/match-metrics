@@ -14,8 +14,8 @@ import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapper;
 import com.matchmetrics.entity.mapper.probability.ProbabilityGetMapperImpl;
 import com.matchmetrics.entity.mapper.team.TeamNameMapperImpl;
 import com.matchmetrics.entity.mapper.team.TeamNestedMapperImpl;
-import com.matchmetrics.entity.validator.DateValidator;
-import com.matchmetrics.entity.validator.ProbabilityValidator;
+import com.matchmetrics.util.DateParser;
+import com.matchmetrics.util.validator.ProbabilityValidator;
 import com.matchmetrics.exception.DateConversionException;
 import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.exception.MatchDoesNotExistException;
@@ -71,7 +71,7 @@ public class MatchServiceImplTest {
     private final ProbabilityGetMapper probabilityGetMapper = new ProbabilityGetMapperImpl();
 
     @Spy
-    private final DateValidator dateValidator = new DateValidator();
+    private final DateParser dateParser = new DateParser();
 
     @Spy
     private final ProbabilityValidator probabilityValidator = new ProbabilityValidator();
@@ -286,14 +286,21 @@ public class MatchServiceImplTest {
     }
 
     @Test
-    void testDeleteMatch() {
+    void testDeleteMatch() throws ParseException {
         int id = 1;
-        when(matchRepository.existsById(id)).thenReturn(true);
+        Team homeTeam = new Team("HomeTeam", "Country", 1000);
+        Team awayTeam = new Team("AwayTeam", "Country", 1000);
+        Match match = new Match(id, new SimpleDateFormat("yyyy-MM-dd").parse("2024-04-11"),
+                "League", homeTeam, awayTeam, new Probability());
+        homeTeam.setHomeMatches(new ArrayList<>(List.of(match)));
+        awayTeam.setAwayMatches(new ArrayList<>(List.of(match)));
+
+        when(matchRepository.findById(id)).thenReturn(Optional.of(match));
         doNothing().when(matchRepository).deleteById(id);
         matchService.deleteMatch(id);
         verify(matchRepository, times(1)).deleteById(id);
 
-        when(matchRepository.existsById(id)).thenReturn(false);
+        when(matchRepository.findById(id)).thenReturn(Optional.empty());
         assertThrows(MatchDoesNotExistException.class, () -> matchService.deleteMatch(id));
     }
 }
