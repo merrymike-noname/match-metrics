@@ -43,8 +43,9 @@ document.addEventListener('DOMContentLoaded', function () {
         homeTeamLogo.style.height = '30px';
         awayTeamLogo.style.width = '30px';
         awayTeamLogo.style.height = '30px';
-        homeTeamLogo.style.marginRight = '20px !important';
-        awayTeamLogo.style.marginLeft = '20px !important';
+        homeTeamLogo.style.marginRight = '40px !important';
+        awayTeamLogo.style.marginLeft = '40px !important';
+        teamLogosDiv.style.justifyContent = 'space-between';
         teamLogosDiv.appendChild(homeTeamLogo);
         teamLogosDiv.appendChild(awayTeamLogo);
 
@@ -55,12 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         teamNamesDiv.style.justifyContent = 'center';
 
         const matchDateDiv = favoriteMatchDiv.querySelector('.match-date');
-        matchDateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+        matchDateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     }
 
     const datePicker = flatpickr('#datePicker', {

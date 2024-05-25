@@ -25,7 +25,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: Roboto, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f2f2f2;
@@ -41,7 +41,8 @@ body {
 }
 
 .title {
-    font-size: 20px;
+    font-size: 24px;
+    transition: font-size 0.3s ease;
 }
 
 #matchInfo .teamInfo {
@@ -68,6 +69,11 @@ body {
     cursor: pointer;
     transition: background-color 0.3s ease;
     margin-top: 10px;
+}
+
+.header .username:hover {
+    color: #ccc;
+    transform: scale(1.1);
 }
 
 #matchInfo .teamInfo img {
@@ -118,19 +124,6 @@ body {
     color: #ff0;
 }
 
-.favorite-match {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: white;
-    padding: 20px;
-    width: 180px;
-    height: 90px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
 button {
     padding: 10px 20px;
     background-color: #333;
@@ -174,15 +167,28 @@ button {
     margin-bottom: 5px;
 }
 
+#datePicker {
+    margin-bottom: 20px;
+}
+
 #matchesList {
     background-color: white;
     border-radius: 10px;
     padding: 20px;
     margin-top: 20px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
 }
 #matchesList div {
     margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+#matchesList div:hover {
+    transform: scale(1.05);
 }
 
 #matchInfo .team p {
@@ -203,18 +209,22 @@ button {
 
 .favorite-match {
     position: fixed;
-    bottom: 10px;
-    right: 10px;
+    bottom: 20px;
+    right: 20px;
     background-color: white;
-    padding: 10px;
+    padding: 20px;
+    width: 180px;
+    height: 90px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    transition: transform 0.3s ease;
 }
 
 .favorite-match .team-logos {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .favorite-match .team-names {

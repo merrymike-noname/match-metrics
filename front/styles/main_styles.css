@@ -1,8 +1,9 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f2f2f2;
+    transition: all 0.3s ease;
 }
 
 .header {
@@ -12,6 +13,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background-color: #444;
 }
 
 .header .menu-button:first-child {
@@ -20,6 +26,11 @@ body {
 
 .title {
     font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.title:hover {
+    font-size: 22px;
 }
 
 .header nav {
@@ -30,10 +41,12 @@ body {
     color: #fff;
     text-decoration: none;
     margin-right: 30px;
+    transition: all 0.3s ease;
 }
 
 .header .menu-button:hover {
     color: #ccc;
+    transform: scale(1.1);
 }
 
 .header .menu-button.active {
@@ -43,10 +56,12 @@ body {
 .header .username {
     color: #fff;
     text-decoration: none;
+    transition: all 0.3s ease;
 }
 
 .header .username:hover {
     color: #ccc;
+    transform: scale(1.1);
 }
 
 .container {
@@ -55,6 +70,7 @@ body {
     text-align: center;
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .team-input {
@@ -65,6 +81,11 @@ body {
     margin-right: 10px;
     width: 50%;
     box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.team-input:hover {
+    transform: scale(1.05);
 }
 
 button {
@@ -74,7 +95,12 @@ button {
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+    transform: scale(1.1);
 }
 
 #matchInfo {
@@ -95,6 +121,11 @@ button {
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+#team1Info:hover, #team2Info:hover {
+    transform: scale(1.05);
 }
 
 #team1Info img, #team2Info img {
@@ -102,11 +133,13 @@ button {
     height: 80px;
     border-radius: 50%;
     margin-bottom: 10px;
+    transition: all 0.3s ease;
 }
 
 #team1Info h2, #team2Info h2, #team1Info p, #team2Info p {
     text-align: center;
     word-wrap: break-word;
+    transition: all 0.3s ease;
 }
 
 #predictionButtonContainer {
@@ -124,7 +157,12 @@ button {
     border: none;
     border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#predictionButtonContainer button:hover {
+    background-color: #444;
+    transform: scale(1.1);
 }
 
 #matchInfo2 {
@@ -142,6 +180,7 @@ button {
     padding: 20px;
     margin-top: 20px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
 #matchesList div {
@@ -157,6 +196,11 @@ button {
 #matchInfo2 .team {
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+#matchInfo2 .team:hover {
+    transform: scale(1.05);
 }
 
 #matchInfo2 .team img {
@@ -165,7 +209,6 @@ button {
     border-radius: 50%;
     margin-right: 10px;
     margin-bottom: 5px;
-
 }
 
 #matchInfo2 .team p {
@@ -189,6 +232,11 @@ button {
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.favorite-match:hover {
+    transform: scale(1.05);
 }
 
 .favorite-match .team-logos {
