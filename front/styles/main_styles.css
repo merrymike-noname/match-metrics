@@ -14,41 +14,39 @@ body {
     align-items: center;
 }
 
+.header .menu-button:first-child {
+    margin-left: -200px;
+}
+
 .title {
     font-size: 20px;
 }
 
-#matchInfo .teamInfo {
-    background-color: white;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    margin: -10px 5px;
-}
-
-#predictionButtonContainer {
+.header nav {
     display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
-#predictionButtonContainer button {
-    width: 30%;
-    padding: 10px;
-    background-color: #333;
+.header .menu-button {
     color: #fff;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 10px;
+    text-decoration: none;
+    margin-right: 30px;
 }
 
-#matchInfo .teamInfo img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    margin-bottom: 10px;
+.header .menu-button:hover {
+    color: #ccc;
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header .username:hover {
+    color: #ccc;
 }
 
 .container {
@@ -69,42 +67,6 @@ body {
     box-sizing: border-box;
 }
 
-.header .menu-button {
-    color: #fff;
-    text-decoration: none;
-    margin-right: 30px;
-}
-
-.header .menu-button:hover {
-    color: #ccc;
-}
-
-.header .username {
-    color: #fff;
-    text-decoration: none;
-}
-
-.header .username:hover {
-    color: #ccc;
-}
-
-.header .menu-button.active {
-    color: #ff0;
-}
-
-.favorite-match {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: white;
-    padding: 20px;
-    width: 180px;
-    height: 90px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
 button {
     padding: 10px 20px;
     background-color: #333;
@@ -120,32 +82,58 @@ button {
     justify-content: space-between;
     margin: 20px auto;
     width: 510px;
+    visibility: hidden;
 }
 
-#matchInfo2 {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px auto;
-    width: 510px;
-}
-
-#matchInfo .team {
+#team1Info, #team2Info {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: calc(50% - 10px);
+    margin: 0 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 45%;
 }
 
-#matchInfo .team img {
-    width: 50px;
-    height: 50px;
+#team1Info img, #team2Info img {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     margin-bottom: 10px;
 }
 
-#matchInfo .team h2 {
-    font-size: 24px;
-    margin-bottom: 5px;
+#team1Info h2, #team2Info h2, #team1Info p, #team2Info p {
+    text-align: center;
+    word-wrap: break-word;
+}
+
+#predictionButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#predictionButtonContainer button {
+    width: 30%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#matchInfo2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    width: 510px;
+    visibility: hidden;
 }
 
 #matchesList {
@@ -153,26 +141,43 @@ button {
     border-radius: 10px;
     padding: 20px;
     margin-top: 20px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
+
 #matchesList div {
     margin-bottom: 10px;
 }
 
-#matchInfo .team p {
+#matchInfo2 .teams {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#matchInfo2 .team {
+    display: flex;
+    align-items: center;
+}
+
+#matchInfo2 .team img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
     margin-bottom: 5px;
+
 }
 
-#matchInfo .team .high-elo {
-    background-color: lightgreen;
+#matchInfo2 .team p {
+    margin: 0;
 }
 
-#matchInfo .team .low-elo {
-    background-color: lightcoral;
+#matchInfo2 .team.home {
+    justify-content: flex-start;
 }
 
-.header .menu-button:first-child {
-    margin-left: -200px;
+#matchInfo2 .team.away {
+    justify-content: flex-end;
 }
 
 .favorite-match {
@@ -182,13 +187,14 @@ button {
     background-color: white;
     padding: 10px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
 .favorite-match .team-logos {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 10px;
 }
 
 .favorite-match .team-names {

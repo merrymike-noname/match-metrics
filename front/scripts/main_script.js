@@ -63,8 +63,9 @@ document.addEventListener('DOMContentLoaded', function () {
         homeTeamLogo.style.height = '30px';
         awayTeamLogo.style.width = '30px';
         awayTeamLogo.style.height = '30px';
-        homeTeamLogo.style.marginRight = '20px !important';
-        awayTeamLogo.style.marginLeft = '20px !important';
+        homeTeamLogo.style.marginRight = '40px !important';
+        awayTeamLogo.style.marginLeft = '40px !important';
+        teamLogosDiv.style.justifyContent = 'space-between';
         teamLogosDiv.appendChild(homeTeamLogo);
         teamLogosDiv.appendChild(awayTeamLogo);
 
@@ -111,9 +112,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     predictionButton.addEventListener('click', function () {
-        const team1 = team1Input.value.trim();
-        const team2 = team2Input.value.trim();
-
+        const team1 = document.getElementById('team1').value.trim();
+        const team2 = document.getElementById('team2').value.trim();
         fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${team1}&awayTeam=${team2}`)
             .then(response => response.json())
             .then(matches => {
@@ -122,12 +122,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 matchInfoDiv.innerHTML = '';
                 matchInfoDiv.style.display = 'flex';
                 matchInfoDiv.style.flexDirection = 'column';
+                matchInfoDiv.style.visibility = 'visible';
 
                 if (matches.length > 0) {
                     const match = matches[0];
-
                     const matchDate = document.createElement('p');
-                    matchDate.textContent = `${new Date(match.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+                    matchDate.textContent = `${new Date(match.date).toLocaleDateString('en-US', {
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                    })}`;
                     matchDate.style.textAlign = 'center';
                     matchInfoDiv.appendChild(matchDate);
 
@@ -149,61 +151,44 @@ document.addEventListener('DOMContentLoaded', function () {
                     leagueDiv.style.display = 'flex';
                     leagueDiv.style.alignItems = 'center';
                     leagueDiv.style.justifyContent = 'center';
-
                     matchInfoDiv.appendChild(leagueDiv);
 
                     const matchLeague = document.createElement('p');
                     matchLeague.textContent = `${match.league}`;
                     leagueDiv.appendChild(matchLeague);
-
                     matchInfoDiv.appendChild(leagueDiv);
 
                     const teamsDiv = document.createElement('div');
-                    teamsDiv.style.display = 'flex';
-                    teamsDiv.style.justifyContent = 'space-between';
+                    teamsDiv.className = 'teams';
 
                     const matchHomeTeam = document.createElement('div');
-                    matchHomeTeam.style.display = 'flex';
-                    matchHomeTeam.style.alignItems = 'center';
-
+                    matchHomeTeam.className = 'team home';
                     const homeTeamLogo = document.createElement('img');
                     homeTeamLogo.src = `/front/resources/logos/${match.homeTeam.name.toLowerCase()}.png`;
                     homeTeamLogo.onerror = function () {
                         this.onerror = null;
                         this.src = '/front/resources/logos/default.png';
                     };
-                    homeTeamLogo.style.width = '30px';
-                    homeTeamLogo.style.height = '30px';
-                    homeTeamLogo.style.marginRight = '10px';
-                    homeTeamLogo.style.borderRadius = '50%';
                     matchHomeTeam.appendChild(homeTeamLogo);
 
                     const homeTeamName = document.createElement('p');
                     homeTeamName.textContent = `${match.homeTeam.name}`;
                     matchHomeTeam.appendChild(homeTeamName);
-
                     teamsDiv.appendChild(matchHomeTeam);
 
                     const matchAwayTeam = document.createElement('div');
-                    matchAwayTeam.style.display = 'flex';
-                    matchAwayTeam.style.alignItems = 'center';
-
+                    matchAwayTeam.className = 'team away';
                     const awayTeamLogo = document.createElement('img');
                     awayTeamLogo.src = `/front/resources/logos/${match.awayTeam.name.toLowerCase()}.png`;
                     awayTeamLogo.onerror = function () {
                         this.onerror = null;
                         this.src = '/front/resources/logos/default.png';
                     };
-                    awayTeamLogo.style.width = '30px';
-                    awayTeamLogo.style.height = '30px';
-                    awayTeamLogo.style.borderRadius = '50%';
-                    awayTeamLogo.style.marginRight = '10px';
                     matchAwayTeam.appendChild(awayTeamLogo);
 
                     const awayTeamName = document.createElement('p');
                     awayTeamName.textContent = `${match.awayTeam.name}`;
                     matchAwayTeam.appendChild(awayTeamName);
-
                     teamsDiv.appendChild(matchAwayTeam);
 
                     matchInfoDiv.appendChild(teamsDiv);
@@ -219,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     homeWinProbability.style.width = `${match.probability.homeTeamWin * 100}%`;
                     homeWinProbability.style.height = '100%';
                     homeWinProbability.style.position = 'relative';
+
                     const homeWinLabel = document.createElement('p');
                     homeWinLabel.textContent = `${(match.probability.homeTeamWin * 100).toFixed(1)}%`;
                     homeWinLabel.style.position = 'absolute';
@@ -234,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     drawProbability.style.width = `${match.probability.draw * 100}%`;
                     drawProbability.style.height = '100%';
                     drawProbability.style.position = 'relative';
+
                     const drawLabel = document.createElement('p');
                     drawLabel.textContent = `${(match.probability.draw * 100).toFixed(1)}%`;
                     drawLabel.style.position = 'absolute';
@@ -249,6 +236,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     awayWinProbability.style.width = `${match.probability.awayTeamWin * 100}%`;
                     awayWinProbability.style.height = '100%';
                     awayWinProbability.style.position = 'relative';
+
                     const awayWinLabel = document.createElement('p');
                     awayWinLabel.textContent = `${(match.probability.awayTeamWin * 100).toFixed(1)}%`;
                     awayWinLabel.style.position = 'absolute';
@@ -263,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     matchInfoDiv.style.backgroundColor = 'white';
                     matchInfoDiv.style.borderRadius = '10px';
                     matchInfoDiv.style.padding = '20px';
-
                 } else {
                     const noMatchFoundMessage = document.createElement('p');
                     noMatchFoundMessage.textContent = 'No match found for the given teams.';
@@ -273,9 +260,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 
+
     function appendTeamInfo(team, teamInfoDiv) {
-        const teamDiv = document.createElement('div');
-        teamDiv.className = 'teamInfo';
+        teamInfoDiv.innerHTML = '';
 
         const teamLogo = document.createElement('img');
         teamLogo.src = `/front/resources/logos/${team.name.toLowerCase()}.png`;
@@ -283,22 +270,22 @@ document.addEventListener('DOMContentLoaded', function () {
             this.onerror = null;
             this.src = '/front/resources/logos/default.png';
         };
-        teamDiv.appendChild(teamLogo);
+        teamInfoDiv.appendChild(teamLogo);
 
         const teamName = document.createElement('h2');
         teamName.textContent = team.name;
-        teamDiv.appendChild(teamName);
+        teamInfoDiv.appendChild(teamName);
 
         const teamCountry = document.createElement('p');
         teamCountry.textContent = `Country: ${team.country}`;
-        teamDiv.appendChild(teamCountry);
+        teamInfoDiv.appendChild(teamCountry);
 
         const teamElo = document.createElement('p');
         teamElo.textContent = `ELO: ${Math.round(team.elo)}`;
-        teamDiv.appendChild(teamElo);
-
-        teamInfoDiv.appendChild(teamDiv);
+        teamInfoDiv.appendChild(teamElo);
     }
+
+
 
     function suggestTeams(input, suggestions) {
         input.addEventListener('input', function () {
@@ -325,6 +312,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+$('button').click(function() {
+    $('#matchInfo, #matchInfo2').css('visibility', 'visible').hide().fadeIn();
+});
+
 $(document).ready(function() {
     var delay = 0;
     var animationSpeed = 10000;
@@ -346,4 +337,5 @@ $(document).ready(function() {
         }, animationSpeed);
         delay += 200;
     });
+
 });
