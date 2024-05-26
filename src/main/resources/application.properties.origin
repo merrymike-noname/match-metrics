@@ -11,3 +11,7 @@ spring.mvc.hiddenmethod.filter.enabled=true
 springdoc.api-docs.path=/matchmetrics-docs
 springdoc.swagger-ui.path=/swagger-ui-matchmetrics-docs.html
 springdoc.swagger-ui.operationsSorter=method
+
+api.url=http://api.clubelo.com/
+spring.app.jwtSecret=Hb7d++3tvUxn0qopTR3Nd0ZfZ5wfD0Zx5fofaPdSt0YOg9Rq0TN++pOEbfMci7Qf
+spring.app.jwtExpirationMinutes=1440
