@@ -4,7 +4,6 @@ import com.matchmetrics.security.entity.AuthenticationRequest;
 import com.matchmetrics.security.entity.AuthenticationResponse;
 import com.matchmetrics.security.entity.RegisterRequest;
 import com.matchmetrics.security.service.AuthenticationService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,10 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("matchmetrics/api/v0/auth")
-@RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
