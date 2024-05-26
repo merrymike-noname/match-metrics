@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/front/styles/admin.css">
+</head>
+<body>
+<div class="header">
+    <span class="title">Admin Panel</span>
+    <nav>
+        <a href="#" class="menu-button">Add Match</a>
+        <a href="#" class="menu-button">Delete Match</a>
+        <a href="#" class="menu-button">Search User</a>
+        <a href="#" class="menu-button">Ban User</a>
+        <a href="#" class="menu-button">Assign Admin</a>
+    </nav>
+    <a href="#" class="username">Admin</a>
+</div>
+
+<div class="container">
+    <div id="addMatchForm" class="form-container">
+        <h2>Add Match</h2>
+        <form id="addMatchFormData" action="#">
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date">
+            </div>
+            <div class="form-group">
+                <label for="league">League:</label>
+                <input type="text" id="league" name="league">
+            </div>
+            <div class="form-group">
+                <label for="homeTeam">Home Team:</label>
+                <input type="text" id="homeTeam" name="homeTeam">
+            </div>
+            <div class="form-group">
+                <label for="awayTeam">Away Team:</label>
+                <input type="text" id="awayTeam" name="awayTeam">
+            </div>
+            <div class="form-group">
+                <label for="homeTeamWin">Home Team Win Probability:</label>
+                <input type="number" id="homeTeamWin" name="homeTeamWin" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="draw">Draw Probability:</label>
+                <input type="number" id="draw" name="draw" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="awayTeamWin">Away Team Win Probability:</label>
+                <input type="number" id="awayTeamWin" name="awayTeamWin" step="0.01">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<div id="result"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const matchData = {
+            date: "2024-05-24",
+            league: "BUL",
+            homeTeam: "Arsenal",
+            awayTeam: "Dnipro",
+            homeTeamWin: 0.5,
+            draw: 0.3,
+            awayTeamWin: 0.2
+        };
+
+        fetch('http://localhost:8080/matchmetrics/api/v0/matches/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(matchData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>
