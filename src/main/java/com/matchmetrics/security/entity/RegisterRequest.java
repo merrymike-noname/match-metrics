@@ -1,16 +1,18 @@
 package com.matchmetrics.security.entity;
 
+import java.util.Objects;
+
 public class RegisterRequest {
     private String name;
     private String email;
     private String password;
-    private int favouriteTeamId;
+    private String favouriteTeam;
 
-    public RegisterRequest(String name, String email, String password, int favouriteTeamId) {
+    public RegisterRequest(String name, String email, String password, String favouriteTeam) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.favouriteTeamId = favouriteTeamId;
+        this.favouriteTeam = favouriteTeam;
     }
 
     public RegisterRequest() {
@@ -32,8 +34,8 @@ public class RegisterRequest {
         return this.password;
     }
 
-    public int getFavouriteTeamId() {
-        return this.favouriteTeamId;
+    public String getFavouriteTeam() {
+        return this.favouriteTeam;
     }
 
     public void setName(String name) {
@@ -48,54 +50,38 @@ public class RegisterRequest {
         this.password = password;
     }
 
-    public void setFavouriteTeamId(int favouriteTeamId) {
-        this.favouriteTeamId = favouriteTeamId;
+    public void setFavouriteTeam(String favouriteTeam) {
+        this.favouriteTeam = favouriteTeam;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) return true;
-        if (!(o instanceof RegisterRequest)) return false;
-        final RegisterRequest other = (RegisterRequest) o;
-        if (!other.canEqual((Object) this)) return false;
-        final Object this$name = this.getName();
-        final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) return false;
-        final Object this$email = this.getEmail();
-        final Object other$email = other.getEmail();
-        if (this$email == null ? other$email != null : !this$email.equals(other$email)) return false;
-        final Object this$password = this.getPassword();
-        final Object other$password = other.getPassword();
-        if (this$password == null ? other$password != null : !this$password.equals(other$password)) return false;
-        if (this.getFavouriteTeamId() != other.getFavouriteTeamId()) return false;
-        return true;
-    }
 
     protected boolean canEqual(final Object other) {
         return other instanceof RegisterRequest;
     }
 
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $email = this.getEmail();
-        result = result * PRIME + ($email == null ? 43 : $email.hashCode());
-        final Object $password = this.getPassword();
-        result = result * PRIME + ($password == null ? 43 : $password.hashCode());
-        result = result * PRIME + this.getFavouriteTeamId();
-        return result;
-    }
 
     public String toString() {
-        return "RegisterRequest(name=" + this.getName() + ", email=" + this.getEmail() + ", password=" + this.getPassword() + ", favouriteTeamId=" + this.getFavouriteTeamId() + ")";
+        return "RegisterRequest(name=" + this.getName() + ", email=" + this.getEmail() + ", password=" + this.getPassword() + ", favouriteTeamId=" + this.getFavouriteTeam() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RegisterRequest that = (RegisterRequest) o;
+        return Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(password, that.password) && Objects.equals(favouriteTeam, that.favouriteTeam);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, email, password, favouriteTeam);
     }
 
     public static class RegisterRequestBuilder {
         private String name;
         private String email;
         private String password;
-        private int favouriteTeamId;
+        private String favouriteTeam;
 
         RegisterRequestBuilder() {
         }
@@ -115,17 +101,17 @@ public class RegisterRequest {
             return this;
         }
 
-        public RegisterRequestBuilder favouriteTeamId(int favouriteTeamId) {
-            this.favouriteTeamId = favouriteTeamId;
+        public RegisterRequestBuilder favouriteTeam(String favouriteTeam) {
+            this.favouriteTeam = favouriteTeam;
             return this;
         }
 
         public RegisterRequest build() {
-            return new RegisterRequest(this.name, this.email, this.password, this.favouriteTeamId);
+            return new RegisterRequest(this.name, this.email, this.password, this.favouriteTeam);
         }
 
         public String toString() {
-            return "RegisterRequest.RegisterRequestBuilder(name=" + this.name + ", email=" + this.email + ", password=" + this.password + ", favouriteTeamId=" + this.favouriteTeamId + ")";
+            return "RegisterRequest.RegisterRequestBuilder(name=" + this.name + ", email=" + this.email + ", password=" + this.password + ", favouriteTeamId=" + this.favouriteTeam + ")";
         }
     }
 }

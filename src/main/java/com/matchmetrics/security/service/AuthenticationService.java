@@ -36,8 +36,8 @@ public class AuthenticationService {
             throw new RuntimeException("Email already exists");
         }
 
-        Team favouriteTeam = teamRepository.findById(request.getFavouriteTeamId())
-                .orElseThrow(() -> new TeamDoesNotExistException(request.getFavouriteTeamId()));
+        Team favouriteTeam = teamRepository.findTeamByName(request.getFavouriteTeam())
+                .orElseThrow(() -> new TeamDoesNotExistException(request.getFavouriteTeam()));
 
         var user = User.builder()
                 .name(request.getName())

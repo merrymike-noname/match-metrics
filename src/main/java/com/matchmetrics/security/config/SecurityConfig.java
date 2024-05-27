@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/matchmetrics/api/v0/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/favicon.ico").permitAll()
+                        .requestMatchers("/matchmetrics-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
