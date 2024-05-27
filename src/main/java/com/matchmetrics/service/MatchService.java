@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface MatchService {
     List<MatchGetDto> getAllMatches(Integer page, Integer perPage, String sortBy);
-    List<MatchGetDto> getMatchesByCriteria(String team, Boolean isHome, String date, String league,
+    List<MatchGetDto> getMatchesByCriteria(String homeTeam, String awayTeam, String date, String league,
                                            Integer page, Integer perPage, String sortBy);
     MatchGetDto getMatchById(int id);
     MatchGetDto addMatch(MatchAddUpdateDto match, BindingResult bindingResult);

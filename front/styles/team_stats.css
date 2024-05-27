@@ -1,0 +1,100 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    justify-content: center;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 20px;
+}
+
+.container {
+    margin: 20px auto;
+    width: 510px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.team-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 30px;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header .username:hover {
+    color: #ccc;
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+#teamInfoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#teamLogo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+.header .menu-button:first-child {
+    margin-left: -200px;
+}
+
+#teamInfo, #matchInfo {
+    display: none;
+}
+
+#teamName {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#teamInfo, #matchInfo {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: 10px 5px;
+    width: 30%;
+}

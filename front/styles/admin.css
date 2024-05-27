@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    justify-content: center;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header .menu-button:first-child {
+    margin-left: -200px;
+}
+
+.title {
+    font-size: 20px;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 30px;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+}
+
+.header .username:hover {
+    color: #ccc;
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+.container {
+    margin: 20px auto;
+    width: 300px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+#errorMessages {
+    color: red;
+    margin-top: 10px;
+}
