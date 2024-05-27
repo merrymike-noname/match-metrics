@@ -12,4 +12,6 @@ springdoc.api-docs.path=/matchmetrics-docs
 springdoc.swagger-ui.path=/swagger-ui-matchmetrics-docs.html
 springdoc.swagger-ui.operationsSorter=method
 
-api.url=
+api.url=http://api.clubelo.com/
+spring.app.jwtSecret=
+spring.app.jwtExpirationMinutes=1440
