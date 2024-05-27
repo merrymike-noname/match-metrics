@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers("/matchmetrics-docs/**").permitAll()
+                        .requestMatchers("/matchmetrics/api/v0/public/teams").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

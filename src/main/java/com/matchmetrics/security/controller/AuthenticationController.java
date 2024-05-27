@@ -5,11 +5,9 @@ import com.matchmetrics.security.entity.AuthenticationResponse;
 import com.matchmetrics.security.entity.RegisterRequest;
 import com.matchmetrics.security.service.AuthenticationService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("matchmetrics/api/v0/auth")
 public class AuthenticationController {

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let teams = [];
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all')
+    fetch('http://localhost:8080/matchmetrics/api/v0/public/teams')
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
@@ -36,11 +36,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const requestData = {
             name,
             email,
-            favoriteTeam,
+            favouriteTeam: favoriteTeam,
             password
         };
 
-        fetch('http://localhost:8080/matchmetrics/api/v0/user/register', {
+        fetch('http://localhost:8080/matchmetrics/api/v0/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -49,7 +49,8 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                if (data.token) {
+                    localStorage.setItem('authToken', data.token); // Сохранение токена в localStorage
                     window.location.href = 'login.html';
                 } else {
                     showError('Failed to register.');
