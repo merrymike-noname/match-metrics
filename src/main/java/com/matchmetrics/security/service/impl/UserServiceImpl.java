@@ -28,15 +28,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> createUser(User user, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
-        }
-        User createdUser = userRepository.save(user);
-        return ResponseEntity.ok(createdUser);
-    }
-
-    @Override
     public ResponseEntity<?> updateUser(String email, User userDetails, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(result.getAllErrors());

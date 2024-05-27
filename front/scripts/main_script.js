@@ -12,7 +12,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let teams = [];
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all')
+    const userEmail = localStorage.getItem('userEmail');
+    const token = localStorage.getItem('token');
+
+    if (!userEmail || !token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
@@ -21,25 +33,55 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => console.error('Error:', error));
 
-    fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=Girona`)
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/favouriteTeam/${userEmail}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
         .then(response => response.json())
-        .then(matches => {
-            if (matches.length > 0) {
-                displayMatch(matches[0]);
-            } else {
-                // If no home match is found, try to find an away match
-                return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=Girona`)
+        .then(favouriteTeam => {
+            if (favouriteTeam) {
+                console.log(favouriteTeam);
+                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${favouriteTeam.name}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
                     .then(response => response.json())
                     .then(matches => {
                         if (matches.length > 0) {
                             displayMatch(matches[0]);
                         } else {
-                            // If no match is found, display a message
-                            const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
-                            favoriteMatchDiv.textContent = 'No matches in the nearest time.';
+                            return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${favouriteTeam.name}`, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            })
+                                .then(response => response.json())
+                                .then(matches => {
+                                    if (matches.length > 0) {
+                                        displayMatch(matches[0]);
+                                    } else {
+                                        const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
+                                        favoriteMatchDiv.textContent = 'No matches in the nearest time.';
+                                    }
+                                });
                         }
-                    });
+                    })
+                    .catch(error => console.error('Error:', error));
             }
+        })
+        .catch(error => console.error('Error:', error));
+
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/name/${userEmail}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(response => response.text())
+        .then(name => {
+            const usernameLink = document.getElementById('username');
+            usernameLink.textContent = name;
         })
         .catch(error => console.error('Error:', error));
 
@@ -89,7 +131,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const team1InfoDiv = document.getElementById('team1Info');
             const team2InfoDiv = document.getElementById('team2Info');
             matchInfoDiv.innerHTML = '';
-            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team1}`)
+            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team1}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response => response.json())
                 .then(teams => {
                     team1InfoDiv.innerHTML = '';
@@ -97,7 +143,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => console.error('Error:', error));
 
-            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team2}`)
+            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team2}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
                 .then(response => response.json())
                 .then(teams => {
                     team2InfoDiv.innerHTML = '';
@@ -114,7 +164,11 @@ document.addEventListener('DOMContentLoaded', function () {
     predictionButton.addEventListener('click', function () {
         const team1 = document.getElementById('team1').value.trim();
         const team2 = document.getElementById('team2').value.trim();
-        fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${team1}&awayTeam=${team2}`)
+        fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${team1}&awayTeam=${team2}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(response => response.json())
             .then(matches => {
                 console.log(matches);
@@ -286,7 +340,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-
     function suggestTeams(input, suggestions) {
         input.addEventListener('input', function () {
             const inputValue = input.value.toLowerCase();
@@ -312,15 +365,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-$('button').click(function() {
+$('button').click(function () {
     $('#matchInfo, #matchInfo2').css('visibility', 'visible').hide().fadeIn();
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     var delay = 0;
     var animationSpeed = 10000;
 
-    $('.teamInfo').each(function() {
+    $('.teamInfo').each(function () {
         $(this).css({opacity: 0, left: "-=50px"});
         $(this).delay(delay).animate({
             opacity: 1,
@@ -329,7 +382,7 @@ $(document).ready(function() {
         delay += 200;
     });
 
-    $('.matchInfoDiv').each(function() {
+    $('.matchInfoDiv').each(function () {
         $(this).css({opacity: 0, left: "-=50px"});
         $(this).delay(delay).animate({
             opacity: 1,

@@ -10,7 +10,6 @@ import java.util.List;
 public interface UserService {
     List<User> getAllUsers();
     User getUserByEmail(String email);
-    ResponseEntity<?> createUser(User user, BindingResult result);
     ResponseEntity<?> updateUser(String email, User userDetails, BindingResult result);
     boolean deleteUser(String email);
     Team getFavouriteTeam(String email);

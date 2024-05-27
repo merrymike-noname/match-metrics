@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.token) {
+                    localStorage.setItem('userEmail', email);
                     localStorage.setItem('token', data.token);
                     window.location.href = 'compare.html';
                 } else {
