@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class TeamController {
         return teams;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public TeamGetDto createTeam(@Valid @RequestBody TeamNestedDto team, BindingResult bindingResult) {
         logger.info("Received request to add team: {}", team);
@@ -80,6 +82,7 @@ public class TeamController {
         return createdTeam;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public TeamGetDto updateTeam(@PathVariable int id, @Valid @RequestBody TeamNestedDto team,
                                  BindingResult bindingResult) {
@@ -89,6 +92,7 @@ public class TeamController {
         return updatedTeam;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public void deleteTeam(@PathVariable int id) {
         logger.info("Received request to delete team with ID: {}", id);

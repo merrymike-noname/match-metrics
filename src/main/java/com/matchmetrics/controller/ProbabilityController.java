@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ProbabilityController {
         this.probabilityService = probabilityService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
     public List<ProbabilityGetDto> getAllProbabilities(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -65,6 +67,7 @@ public class ProbabilityController {
         return createdProbability;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ProbabilityGetDto updateProbability(@PathVariable int id, @Valid @RequestBody ProbabilityGetDto probability,
                                                BindingResult bindingResult) {
@@ -74,6 +77,7 @@ public class ProbabilityController {
         return updatedProbability;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public void deleteProbability(@PathVariable int id) {
         logger.info("Received request to delete probability with ID: {}", id);
