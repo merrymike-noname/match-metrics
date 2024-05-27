@@ -186,6 +186,7 @@ public class MatchServiceImpl implements MatchService {
             logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);
         }
+
     }
 
     private Specification<Match> createSpecification(String homeTeam, String awayTeam, String date, String league) {
