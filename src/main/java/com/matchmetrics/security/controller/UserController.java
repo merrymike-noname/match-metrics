@@ -1,5 +1,6 @@
 package com.matchmetrics.security.controller;
 
+import com.matchmetrics.security.entity.RegisterRequest;
 import com.matchmetrics.security.entity.User;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.service.UserService;
@@ -11,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("matchmetrics/api/v0/users")
 public class UserController {
@@ -25,7 +25,6 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
         User user = userService.getUserByEmail(email);
@@ -37,7 +36,7 @@ public class UserController {
     }
 
     @PutMapping("/update/{email}")
-    public ResponseEntity<?> updateUser(@PathVariable String email, @RequestBody User userDetails, BindingResult result) {
+    public ResponseEntity<?> updateUser(@PathVariable String email, @RequestBody RegisterRequest userDetails, BindingResult result) {
         return userService.updateUser(email, userDetails, result);
     }
 
