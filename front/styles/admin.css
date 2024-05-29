@@ -90,3 +90,27 @@ button:hover {
     color: red;
     margin-top: 10px;
 }
+
+@media (max-width: 600px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .header .menu-button, .header .username, #logoutButton {
+        margin-right: 0;
+        margin-bottom: 10px;
+    }
+
+    .title {
+        font-size: 18px;
+    }
+
+    .container {
+        width: 90%;
+    }
+
+    input, button {
+        width: 100%;
+    }
+}

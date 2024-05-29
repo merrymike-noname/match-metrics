@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const favoriteTeamInput = document.getElementById('favoriteTeam');
     const successMessageDiv = document.getElementById('successMessage');
     const errorMessagesDiv = document.getElementById('errorMessages');
+    const logoutButton = document.getElementById('logoutButton');
+    const usernameSpan = document.getElementById('username');
 
     const token = localStorage.getItem('token');
     const userEmail = localStorage.getItem('userEmail');
@@ -37,8 +39,7 @@ document.addEventListener('DOMContentLoaded', function () {
             currentUserData = data;
             form.name.value = data.name;
             form.email.value = data.email;
-            console.log(data);
-            document.querySelector('.username').textContent = data.name;
+            usernameSpan.textContent = data.name;
 
             // Fetch the favorite team by ID
             fetch(`http://localhost:8080/matchmetrics/api/v0/teams/${data.favouriteTeam.id}`, {
@@ -108,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(data => {
                 if (data) {
                     showSuccess('Settings updated successfully.');
-                    currentUserData = requestData;
                 } else {
                     showError('Failed to update settings.');
                 }
@@ -119,6 +119,12 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
+    logoutButton.addEventListener('click', function () {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userEmail');
+        window.location.href = 'login.html';
+    });
+
     function showError(message) {
         const errorMessage = document.createElement('p');
         errorMessage.textContent = message;
@@ -126,9 +132,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function showSuccess(message) {
-        const successMessage = document.createElement('p');
-        successMessage.textContent = message;
-        successMessageDiv.appendChild(successMessage);
+        successMessageDiv.textContent = message;
         successMessageDiv.style.display = 'block';
     }
 
