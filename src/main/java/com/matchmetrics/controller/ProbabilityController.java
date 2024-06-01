@@ -11,7 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:63342")
+
 @RestController
 @RequestMapping("matchmetrics/api/v0/probabilities")
 public class ProbabilityController {

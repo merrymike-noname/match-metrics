@@ -13,9 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("matchmetrics/api/v0/teams")
 public class TeamController {
