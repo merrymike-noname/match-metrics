@@ -12,11 +12,25 @@ document.addEventListener('DOMContentLoaded', function () {
     let teams = [];
     let currentUserData = {};
 
+    if (!userEmail || !token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const checkForbidden = response => {
+        if (response.status === 403) {
+            window.location.href = 'login.html';
+            throw new Error('403 Forbidden');
+        }
+        return response;
+    };
+
     fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
@@ -29,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -41,12 +56,12 @@ document.addEventListener('DOMContentLoaded', function () {
             form.email.value = data.email;
             usernameSpan.textContent = data.name;
 
-            // Fetch the favorite team by ID
             fetch(`http://localhost:8080/matchmetrics/api/v0/teams/${data.favouriteTeam.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
+                .then(checkForbidden)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -100,6 +115,7 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(requestData)
         })
+            .then(checkForbidden)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');

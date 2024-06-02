@@ -13,16 +13,24 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    const checkForbidden = response => {
+        if (response.status === 403) {
+            window.location.href = 'login.html';
+            throw new Error('403 Forbidden');
+        }
+        return response;
+    };
+
     fetch(`http://localhost:8080/matchmetrics/api/v0/users/name/${userEmail}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => response.text())
         .then(name => {
             const usernameLink = document.getElementById('username');
             usernameLink.textContent = name;
-
         })
         .catch(error => console.error('Error:', error));
 
@@ -33,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => response.json())
         .then(userData => {
             favoriteTeam = userData.name;
@@ -49,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
@@ -65,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Authorization': `Bearer ${token}`
                 }
             })
+                .then(checkForbidden)
                 .then(response => response.json())
                 .then(teams => {
                     teamInfoDiv.style.display = 'block';
@@ -103,6 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             'Authorization': `Bearer ${token}`
                         }
                     })
+                        .then(checkForbidden)
                         .then(response => response.json())
                         .then(matches => {
                             if (matches.length > 0) {
@@ -113,6 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                         'Authorization': `Bearer ${token}`
                                     }
                                 })
+                                    .then(checkForbidden)
                                     .then(response => response.json())
                                     .then(matches => {
                                         if (matches.length > 0) {

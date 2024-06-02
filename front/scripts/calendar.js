@@ -8,11 +8,20 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
+    const checkForbidden = response => {
+        if (response.status === 403) {
+            window.location.href = 'login.html';
+            throw new Error('403 Forbidden');
+        }
+        return response;
+    };
+
     fetch(`http://localhost:8080/matchmetrics/api/v0/users/favouriteTeam/${userEmail}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => response.json())
         .then(favouriteTeam => {
             if (favouriteTeam) {
@@ -21,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         'Authorization': `Bearer ${token}`
                     }
                 })
+                    .then(checkForbidden)
                     .then(response => response.json())
                     .then(matches => {
                         if (matches.length > 0) {
@@ -31,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     'Authorization': `Bearer ${token}`
                                 }
                             })
+                                .then(checkForbidden)
                                 .then(response => response.json())
                                 .then(matches => {
                                     if (matches.length > 0) {
@@ -52,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
             'Authorization': `Bearer ${token}`
         }
     })
+        .then(checkForbidden)
         .then(response => response.text())
         .then(name => {
             const usernameLink = document.getElementById('username');
@@ -102,11 +114,12 @@ document.addEventListener('DOMContentLoaded', function () {
             matchesList.innerHTML = '';
             const selectedDate = dateStr;
 
-            fetch(`http://localhost:8080/matchmetrics/api/v0/matches?date=${selectedDate}?page=1&perPage=100`, {
+            fetch(`http://localhost:8080/matchmetrics/api/v0/matches?date=${selectedDate}&page=1&perPage=100`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
+                .then(checkForbidden)
                 .then(response => response.json())
                 .then(matches => {
                     if (matches.length > 0) {
