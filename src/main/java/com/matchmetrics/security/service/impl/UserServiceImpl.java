@@ -74,6 +74,14 @@ public class UserServiceImpl implements UserService {
         }).orElse(false);
     }
 
+    public ResponseEntity<?> makeUserAdmin(String email) {
+        return userRepository.findByEmail(email).map(user -> {
+            user.setRole(Role.ROLE_ADMIN);
+            User updatedUser = userRepository.save(user);
+            return ResponseEntity.ok(updatedUser);
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
     public Team getFavouriteTeam(String email) {
         return userRepository.findByEmail(email)
                 .map(User::getFavouriteTeam)

@@ -56,6 +56,28 @@ document.addEventListener('DOMContentLoaded', function () {
             form.email.value = data.email;
             usernameSpan.textContent = data.name;
 
+            if (currentUserData.role === 'ROLE_ADMIN') {
+                const adminPanelButtonContainer = document.createElement('div');
+                adminPanelButtonContainer.id = 'adminPanelButtonContainer';
+                adminPanelButtonContainer.style.position = 'fixed';
+                adminPanelButtonContainer.style.top = '60%';
+                adminPanelButtonContainer.style.left = '50%';
+                adminPanelButtonContainer.style.transform = 'translate(-50%, -50%)';
+                adminPanelButtonContainer.style.display = 'flex';
+                adminPanelButtonContainer.style.alignItems = 'center';
+                adminPanelButtonContainer.style.justifyContent = 'center';
+
+                const adminPanelButton = document.createElement('button');
+                adminPanelButton.textContent = 'Go to admin panel';
+                adminPanelButton.addEventListener('click', function () {
+                    window.location.href = 'admin.html';
+                });
+
+                adminPanelButtonContainer.appendChild(adminPanelButton);
+
+                document.body.appendChild(adminPanelButtonContainer);
+            }
+
             fetch(`http://localhost:8080/matchmetrics/api/v0/teams/${data.favouriteTeam.id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -179,4 +201,5 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
 });

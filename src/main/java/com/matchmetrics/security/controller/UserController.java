@@ -41,6 +41,12 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/admin/{email}")
+    public ResponseEntity<?> makeUserAdmin(@PathVariable String email) {
+        return userService.makeUserAdmin(email);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable String email) {
         boolean deleted = userService.deleteUser(email);

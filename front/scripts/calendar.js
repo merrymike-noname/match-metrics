@@ -74,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayMatch(match) {
         const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
-        favoriteMatchDiv.style.padding = '40px'; // Adjust padding as per the new style
+        favoriteMatchDiv.style.padding = '40px';
 
         const teamLogosDiv = favoriteMatchDiv.querySelector('.team-logos');
-        teamLogosDiv.innerHTML = ''; // Clear previous content
+        teamLogosDiv.innerHTML = '';
 
         const homeTeamLogo = document.createElement('img');
         homeTeamLogo.src = `/front/resources/logos/${match.homeTeam.name.toLowerCase()}.png`;
@@ -86,11 +86,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         homeTeamLogo.onerror = function () {
             this.onerror = null;
-            this.src = '/front/resources/countries/default.png';
+            this.src = '/front/resources/logos/default.png';
         };
         awayTeamLogo.onerror = function () {
             this.onerror = null;
-            this.src = '/front/resources/countries/default.png';
+            this.src = '/front/resources/logos/default.png';
         };
 
         homeTeamLogo.style.width = '60px';
@@ -136,12 +136,26 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (matches.length > 0) {
                         matches.forEach(match => {
                             const matchDiv = document.createElement('div');
-                            matchDiv.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name}`;
+
+                            const matchLink = document.createElement('a');
+                            matchLink.href = `compare.html?homeTeam=${encodeURIComponent(match.homeTeam.name)}&awayTeam=${encodeURIComponent(match.awayTeam.name)}`;
+
+                            const matchInfo = document.createElement('span');
+                            matchInfo.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name}`;
+
+                            matchLink.appendChild(matchInfo);
+
+                            matchDiv.appendChild(matchLink);
+
+                            matchDiv.addEventListener('click', function() {
+                                window.location.href = matchLink.href;
+                            });
+
 
                             const leagueLogo = document.createElement('img');
                             leagueLogo.src = `/front/resources/countries/${match.league.toLowerCase()}.png`;
-                            leagueLogo.style.width = '15px';
-                            leagueLogo.style.height = '15px';
+                            leagueLogo.style.width = '20px';
+                            leagueLogo.style.height = '20px';
                             leagueLogo.style.marginRight = '20px';
                             leagueLogo.style.float = 'left';
                             leagueLogo.style.borderRadius = '50%';
@@ -154,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                             matchesList.appendChild(matchDiv);
                         });
+
                     } else {
                         const noMatchesDiv = document.createElement('div');
                         noMatchesDiv.textContent = 'No matches found for this date.';

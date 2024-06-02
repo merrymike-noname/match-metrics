@@ -36,21 +36,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let teams = [];
 
-    fetch(`http://localhost:8080/matchmetrics/api/v0/users/favouriteTeam/${userEmail}`, {
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userEmail}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
         .then(checkForbidden)
         .then(response => response.json())
-        .then(userData => {
-            favoriteTeam = userData.name;
-            teamInput.value = favoriteTeam;
-            console.log(favoriteTeam);
+        .then(data => {
+            if (data) {
+                favoriteTeam = data.favouriteTeam.name;
+                teamInput.value = favoriteTeam;
+
+            }
         })
         .catch(error => console.error('Error:', error));
 
-    console.log(favoriteTeam);
     teamInput.value = favoriteTeam;
 
     fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {

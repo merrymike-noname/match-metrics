@@ -15,4 +15,5 @@ public interface UserService {
     boolean deleteUser(String email);
     Team getFavouriteTeam(String email);
     String getUserName(String email);
+    ResponseEntity<?> makeUserAdmin(String email);
 }

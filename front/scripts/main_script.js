@@ -10,6 +10,15 @@ document.addEventListener('DOMContentLoaded', function () {
     predictionButton.style.display = 'none';
     predictionButtonContainer.appendChild(predictionButton);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const homeTeam = urlParams.get('homeTeam');
+    const awayTeam = urlParams.get('awayTeam');
+
+    if (homeTeam && awayTeam) {
+        document.getElementById('team1').value = homeTeam;
+        document.getElementById('team2').value = awayTeam;
+    }
+
     let teams = [];
 
     const userEmail = localStorage.getItem('userEmail');
@@ -114,11 +123,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         homeTeamLogo.onerror = function () {
             this.onerror = null;
-            this.src = '/front/resources/countries/default.png';
+            this.src = '/front/resources/logos/default.png';
         };
         awayTeamLogo.onerror = function () {
             this.onerror = null;
-            this.src = '/front/resources/countries/default.png';
+            this.src = '/front/resources/logos/default.png';
         };
 
         homeTeamLogo.style.width = '60px';
