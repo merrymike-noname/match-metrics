@@ -16,16 +16,17 @@ document.addEventListener('DOMContentLoaded', function () {
         return response;
     };
 
-    fetch(`http://localhost:8080/matchmetrics/api/v0/users/favouriteTeam/${userEmail}`, {
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userEmail}`, {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     })
         .then(checkForbidden)
         .then(response => response.json())
-        .then(favouriteTeam => {
-            if (favouriteTeam) {
-                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${favouriteTeam.name}`, {
+        .then(data => {
+            if (data) {
+                console.log(data.favouriteTeam.name);
+                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${data.favouriteTeam.name}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (matches.length > 0) {
                             displayMatch(matches[0]);
                         } else {
-                            return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${favouriteTeam.name}`, {
+                            return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${data.favouriteTeam.name}`, {
                                 headers: {
                                     'Authorization': `Bearer ${token}`
                                 }
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .catch(error => console.error('Error:', error));
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error fetching user data:', error));
 
     fetch(`http://localhost:8080/matchmetrics/api/v0/users/name/${userEmail}`, {
         headers: {
@@ -73,12 +74,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function displayMatch(match) {
         const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
-        favoriteMatchDiv.style.padding = '40px';
+        favoriteMatchDiv.style.padding = '40px'; // Adjust padding as per the new style
+
         const teamLogosDiv = favoriteMatchDiv.querySelector('.team-logos');
+        teamLogosDiv.innerHTML = ''; // Clear previous content
+
         const homeTeamLogo = document.createElement('img');
         homeTeamLogo.src = `/front/resources/logos/${match.homeTeam.name.toLowerCase()}.png`;
         const awayTeamLogo = document.createElement('img');
         awayTeamLogo.src = `/front/resources/logos/${match.awayTeam.name.toLowerCase()}.png`;
+
         homeTeamLogo.onerror = function () {
             this.onerror = null;
             this.src = '/front/resources/countries/default.png';
@@ -87,25 +92,31 @@ document.addEventListener('DOMContentLoaded', function () {
             this.onerror = null;
             this.src = '/front/resources/countries/default.png';
         };
-        homeTeamLogo.style.width = '30px';
-        homeTeamLogo.style.height = '30px';
-        awayTeamLogo.style.width = '30px';
-        awayTeamLogo.style.height = '30px';
-        homeTeamLogo.style.marginRight = '40px';
-        awayTeamLogo.style.marginLeft = '40px';
+
+        homeTeamLogo.style.width = '60px';
+        homeTeamLogo.style.height = '60px';
+        awayTeamLogo.style.width = '60px';
+        awayTeamLogo.style.height = '60px';
+
+        homeTeamLogo.style.marginRight = '80px';
+        awayTeamLogo.style.marginLeft = '80px';
+
         teamLogosDiv.style.justifyContent = 'space-between';
         teamLogosDiv.appendChild(homeTeamLogo);
         teamLogosDiv.appendChild(awayTeamLogo);
 
         const teamNamesDiv = favoriteMatchDiv.querySelector('.team-names');
         teamNamesDiv.textContent = `${match.homeTeam.name} vs ${match.awayTeam.name}`;
-        teamNamesDiv.style.display = 'flex';
-        teamNamesDiv.style.alignItems = 'center';
-        teamNamesDiv.style.justifyContent = 'center';
 
         const matchDateDiv = favoriteMatchDiv.querySelector('.match-date');
-        matchDateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        matchDateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     }
+
 
     const datePicker = flatpickr('#datePicker', {
         defaultDate: new Date(),
@@ -152,6 +163,4 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(error => console.error('Error:', error));
         }
     });
-
-    datePicker.change();
 });

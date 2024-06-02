@@ -98,14 +98,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const requestData = {
-            name,
-            email,
+            name: name,
+            email: email,
             favouriteTeam: favoriteTeam
         };
 
         if (password) {
             requestData.password = password;
         }
+
+        console.log(requestData);
 
         fetch(`http://localhost:8080/matchmetrics/api/v0/users/update/${userEmail}`, {
             method: 'PUT',

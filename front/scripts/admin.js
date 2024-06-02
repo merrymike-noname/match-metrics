@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const addMatchForm = document.getElementById('addMatchForm');
     const deleteMatchForm = document.getElementById('deleteMatchForm');
     const searchUserForm = document.getElementById('searchUserForm');
-    const banUserForm = document.getElementById('banUserForm'); // Corrected ID
-    const assignAdminForm = document.getElementById('assignAdminForm'); // Corrected ID
+    const banUserForm = document.getElementById('banUserForm');
+    const assignAdminForm = document.getElementById('assignAdminForm');
     const resultDiv = document.getElementById('result');
 
     addMatchForm.addEventListener('submit', function (event) {
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 
-    banUserForm.addEventListener('submit', function (event) { // Corrected event listener
+    banUserForm.addEventListener('submit', function (event) {
         event.preventDefault();
         const userId = document.getElementById('userBanId').value; // Corrected ID
         fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userId}/ban`, {
@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .catch(error => console.error('Error:', error));
     });
 
-    assignAdminForm.addEventListener('submit', function (event) { // Corrected event listener
+    assignAdminForm.addEventListener('submit', function (event) {
         event.preventDefault();
         const userId = document.getElementById('userId').value;
         fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userId}/grantAdmin`, {
