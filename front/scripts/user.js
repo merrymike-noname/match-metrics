@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             requestData.password = password;
         }
 
-        console.log(requestData);
+        console.log('Request data:', JSON.stringify(requestData));
 
         fetch(`http://localhost:8080/matchmetrics/api/v0/users/update/${userEmail}`, {
             method: 'PUT',
@@ -142,15 +142,16 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(checkForbidden)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    return response.json().then(err => { throw new Error(err.message); });
                 }
                 return response.json();
             })
             .then(data => {
-                if (data) {
+                console.log('Response data:', data);
+                if (data.success) {
                     showSuccess('Settings updated successfully.');
                 } else {
-                    showError('Failed to update settings.');
+                    showError('Failed to update settings: ' + data.message);
                 }
             })
             .catch(error => {
@@ -201,5 +202,4 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-
 });

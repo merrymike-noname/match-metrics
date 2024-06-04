@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const resultDiv = document.getElementById('result');
     const emailsDatalist = document.getElementById('emails');
 
-    // Function to show a specific form and hide others
     function showForm(formId) {
         const forms = document.querySelectorAll('.form-container');
         forms.forEach(form => {
@@ -12,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById(formId).style.display = 'block';
     }
 
-    // Event listeners for navigation buttons
     document.getElementById('addMatchButton').addEventListener('click', function () {
         showForm('addMatchForm');
     });
@@ -26,41 +24,8 @@ document.addEventListener('DOMContentLoaded', function () {
         showForm('assignAdminForm');
     });
 
-    // Show the add match form by default
     showForm('addMatchForm');
 
-    // Fetch all users and populate the email datalist
-    function fetchAllUsers() {
-        fetch('http://localhost:8080/matchmetrics/api/v0/users/all', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (!Array.isArray(data)) {
-                    throw new Error('Data is not an array');
-                }
-                emailsDatalist.innerHTML = '';
-                data.forEach(user => {
-                    if (user.email) {
-                        const option = document.createElement('option');
-                        option.value = user.email;
-                        emailsDatalist.appendChild(option);
-                    }
-                });
-            })
-            .catch(error => console.error('Error:', error));
-    }
-
-    fetchAllUsers();
-
-    // Helper function to display messages
     function displayMessage(message, isSuccess = true) {
         resultDiv.textContent = message;
         resultDiv.style.color = isSuccess ? 'green' : 'red';
@@ -107,7 +72,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Delete Match
     const deleteMatchForm = document.getElementById('deleteMatchFormData');
     deleteMatchForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -131,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Ban User
     const banUserForm = document.getElementById('banUserFormData');
     banUserForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -155,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    // Assign Admin
     const assignAdminForm = document.getElementById('assignAdminFormData');
     assignAdminForm.addEventListener('submit', function (event) {
         event.preventDefault();

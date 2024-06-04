@@ -1,8 +1,6 @@
 package com.matchmetrics.security.service.impl;
 
-import com.matchmetrics.security.entity.RegisterRequest;
-import com.matchmetrics.security.entity.Role;
-import com.matchmetrics.security.entity.User;
+import com.matchmetrics.security.entity.*;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.repository.UserRepository;
 import com.matchmetrics.repository.TeamRepository;
@@ -24,7 +22,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl (UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.passwordEncoder = passwordEncoder;
@@ -38,9 +36,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElse(null);
     }
 
-    public ResponseEntity<?> updateUser(String email, RegisterRequest userDetails, BindingResult result) {
+    public UpdateUserResponse updateUser(String email, RegisterRequest userDetails, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
+            return new UpdateUserResponse(false, "Validation errors");
         }
 
         return userRepository.findByEmail(email).map(user -> {
@@ -63,8 +61,8 @@ public class UserServiceImpl implements UserService {
             }
 
             User updatedUser = userRepository.save(user);
-            return ResponseEntity.ok(updatedUser);
-        }).orElse(ResponseEntity.notFound().build());
+            return new UpdateUserResponse(true, "User updated successfully");
+        }).orElse(new UpdateUserResponse(false, "User not found"));
     }
 
     public boolean deleteUser(String email) {
@@ -74,12 +72,12 @@ public class UserServiceImpl implements UserService {
         }).orElse(false);
     }
 
-    public ResponseEntity<?> makeUserAdmin(String email) {
+    public MakeUserAdminResponse makeUserAdmin(String email) {
         return userRepository.findByEmail(email).map(user -> {
             user.setRole(Role.ROLE_ADMIN);
             User updatedUser = userRepository.save(user);
-            return ResponseEntity.ok(updatedUser);
-        }).orElse(ResponseEntity.notFound().build());
+            return new MakeUserAdminResponse(true, "User promoted to admin");
+        }).orElse(new MakeUserAdminResponse(false, "User not found"));
     }
 
     public Team getFavouriteTeam(String email) {

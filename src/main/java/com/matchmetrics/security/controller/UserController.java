@@ -1,6 +1,8 @@
 package com.matchmetrics.security.controller;
 
+import com.matchmetrics.security.entity.MakeUserAdminResponse;
 import com.matchmetrics.security.entity.RegisterRequest;
+import com.matchmetrics.security.entity.UpdateUserResponse;
 import com.matchmetrics.security.entity.User;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.service.UserService;
@@ -21,8 +23,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{email}")
@@ -36,14 +38,24 @@ public class UserController {
     }
 
     @PutMapping("/update/{email}")
-    public ResponseEntity<?> updateUser(@PathVariable String email, @RequestBody RegisterRequest userDetails, BindingResult result) {
-        return userService.updateUser(email, userDetails, result);
+    public ResponseEntity<UpdateUserResponse> updateUser(@PathVariable String email, @RequestBody RegisterRequest userDetails, BindingResult result) {
+        UpdateUserResponse response = userService.updateUser(email, userDetails, result);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/{email}")
-    public ResponseEntity<?> makeUserAdmin(@PathVariable String email) {
-        return userService.makeUserAdmin(email);
+    public ResponseEntity<MakeUserAdminResponse> makeUserAdmin(@PathVariable String email) {
+        MakeUserAdminResponse response = userService.makeUserAdmin(email);
+        if (response.isSuccess()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 
     @PreAuthorize("hasRole('ADMIN')")
