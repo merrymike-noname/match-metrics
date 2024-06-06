@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/{email}")
     public UserGetDto getUserByEmail(@PathVariable String email) {
-        return userService.getUserByEmail(email);;
+        return userService.getUserByEmail(email);
     }
 
     @PutMapping("/update/{email}")

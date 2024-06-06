@@ -1,21 +1,18 @@
 package com.matchmetrics.security.service;
 
-import com.matchmetrics.security.entity.MakeUserAdminResponse;
 import com.matchmetrics.security.entity.RegisterRequest;
-import com.matchmetrics.security.entity.UpdateUserResponse;
-import com.matchmetrics.security.entity.User;
+import com.matchmetrics.security.entity.dto.UserGetDto;
 import com.matchmetrics.entity.Team;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
 public interface UserService {
-    List<User> getAllUsers();
-    User getUserByEmail(String email);
-    UpdateUserResponse updateUser(String email, RegisterRequest userDetails, BindingResult result);
-    boolean deleteUser(String email);
+    List<UserGetDto> getAllUsers();
+    UserGetDto getUserByEmail(String email);
+    UserGetDto updateUser(String email, RegisterRequest userDetails, BindingResult result);
+    void deleteUser(String email);
     Team getFavouriteTeam(String email);
     String getUserName(String email);
-    MakeUserAdminResponse makeUserAdmin(String email);
+    UserGetDto makeUserAdmin(String email);
 }

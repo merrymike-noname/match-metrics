@@ -5,14 +5,16 @@ import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.repository.UserRepository;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.exception.TeamDoesNotExistException;
+import com.matchmetrics.security.entity.dto.UserGetDto;
 import com.matchmetrics.security.service.UserService;
+import com.matchmetrics.util.BindingResultInspector;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,26 +22,30 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TeamRepository teamRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BindingResultInspector bindingResultInspector;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder, BindingResultInspector bindingResultInspector) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.passwordEncoder = passwordEncoder;
+        this.bindingResultInspector = bindingResultInspector;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserGetDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserGetDto(user.getName(), user.getEmail(), user.getFavouriteTeam().getName(), user.getRole()))
+                .collect(Collectors.toList());
     }
 
-    public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
+    public UserGetDto getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .map(user -> new UserGetDto(user.getName(), user.getEmail(), user.getFavouriteTeam().getName(), user.getRole()))
+                .orElse(null);
     }
 
-    public UpdateUserResponse updateUser(String email, RegisterRequest userDetails, BindingResult result) {
-        if (result.hasErrors()) {
-            return new UpdateUserResponse(false, "Validation errors");
-        }
+    public UserGetDto updateUser(String email, RegisterRequest userDetails, BindingResult result) {
+        bindingResultInspector.checkBindingResult(result);
 
         return userRepository.findByEmail(email).map(user -> {
             if (userDetails.getName() != null && !userDetails.getName().isEmpty()) {
@@ -47,6 +53,7 @@ public class UserServiceImpl implements UserService {
             }
 
             if (userDetails.getEmail() != null && !userDetails.getEmail().isEmpty()) {
+                // todo: check if email is user's email
                 user.setEmail(userDetails.getEmail());
             }
 
@@ -61,23 +68,20 @@ public class UserServiceImpl implements UserService {
             }
 
             User updatedUser = userRepository.save(user);
-            return new UpdateUserResponse(true, "User updated successfully");
-        }).orElse(new UpdateUserResponse(false, "User not found"));
+            return new UserGetDto(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getFavouriteTeam().getName(), updatedUser.getRole());
+        }).orElse(null);
     }
 
-    public boolean deleteUser(String email) {
-        return userRepository.findByEmail(email).map(user -> {
-            userRepository.delete(user);
-            return true;
-        }).orElse(false);
+    public void deleteUser(String email) {
+        userRepository.findByEmail(email).ifPresent(userRepository::delete);
     }
 
-    public MakeUserAdminResponse makeUserAdmin(String email) {
+    public UserGetDto makeUserAdmin(String email) {
         return userRepository.findByEmail(email).map(user -> {
             user.setRole(Role.ROLE_ADMIN);
             User updatedUser = userRepository.save(user);
-            return new MakeUserAdminResponse(true, "User promoted to admin");
-        }).orElse(new MakeUserAdminResponse(false, "User not found"));
+            return new UserGetDto(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getFavouriteTeam().getName(), updatedUser.getRole());
+        }).orElse(null);
     }
 
     public Team getFavouriteTeam(String email) {
