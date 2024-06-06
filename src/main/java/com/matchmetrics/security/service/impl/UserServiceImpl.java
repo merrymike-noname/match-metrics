@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final TeamRepository teamRepository;
     private final PasswordEncoder passwordEncoder;
     private final BindingResultInspector bindingResultInspector;
+    private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder, BindingResultInspector bindingResultInspector) {
@@ -32,18 +35,24 @@ public class UserServiceImpl implements UserService {
         this.bindingResultInspector = bindingResultInspector;
     }
 
+    @Override
     public List<UserGetDto> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(user -> new UserGetDto(user.getName(), user.getEmail(), user.getFavouriteTeam().getName(), user.getRole()))
                 .collect(Collectors.toList());
     }
 
+    @Override
     public UserGetDto getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(user -> new UserGetDto(user.getName(), user.getEmail(), user.getFavouriteTeam().getName(), user.getRole()))
-                .orElse(null);
+                .orElseGet(() -> {
+                    logger.error("User with email {} not found", email);
+                    return null;
+                });
     }
 
+    @Override
     public UserGetDto updateUser(String email, RegisterRequest userDetails, BindingResult result) {
         bindingResultInspector.checkBindingResult(result);
 
@@ -53,7 +62,7 @@ public class UserServiceImpl implements UserService {
             }
 
             if (userDetails.getEmail() != null && !userDetails.getEmail().isEmpty()) {
-                // todo: check if email is user's email
+                // TODO: Check if email is user's email
                 user.setEmail(userDetails.getEmail());
             }
 
@@ -69,30 +78,49 @@ public class UserServiceImpl implements UserService {
 
             User updatedUser = userRepository.save(user);
             return new UserGetDto(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getFavouriteTeam().getName(), updatedUser.getRole());
-        }).orElse(null);
+        }).orElseGet(() -> {
+            logger.error("User with email {} not found", email);
+            return null;
+        });
     }
 
+    @Override
     public void deleteUser(String email) {
-        userRepository.findByEmail(email).ifPresent(userRepository::delete);
+        userRepository.findByEmail(email).ifPresentOrElse(
+                userRepository::delete,
+                () -> logger.error("User with email {} not found", email)
+        );
     }
 
+    @Override
+    public Team getFavouriteTeam(String email) {
+        return userRepository.findByEmail(email)
+                .map(User::getFavouriteTeam)
+                .orElseGet(() -> {
+                    logger.error("User with email {} not found", email);
+                    return null;
+                });
+    }
+
+    @Override
+    public String getUserName(String email) {
+        return userRepository.findByEmail(email)
+                .map(User::getName)
+                .orElseGet(() -> {
+                    logger.error("User with email {} not found", email);
+                    return null;
+                });
+    }
+
+    @Override
     public UserGetDto makeUserAdmin(String email) {
         return userRepository.findByEmail(email).map(user -> {
             user.setRole(Role.ROLE_ADMIN);
             User updatedUser = userRepository.save(user);
             return new UserGetDto(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getFavouriteTeam().getName(), updatedUser.getRole());
-        }).orElse(null);
-    }
-
-    public Team getFavouriteTeam(String email) {
-        return userRepository.findByEmail(email)
-                .map(User::getFavouriteTeam)
-                .orElse(null);
-    }
-
-    public String getUserName(String email) {
-        return userRepository.findByEmail(email)
-                .map(User::getName)
-                .orElse(null);
+        }).orElseGet(() -> {
+            logger.error("User with email {} not found", email);
+            return null;
+        });
     }
 }
