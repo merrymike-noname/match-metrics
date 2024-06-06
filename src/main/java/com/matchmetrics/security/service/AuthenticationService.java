@@ -4,6 +4,8 @@ import com.matchmetrics.entity.Team;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.security.entity.*;
+import com.matchmetrics.security.exception.EmailTakenException;
+import com.matchmetrics.security.exception.UserDoesNotExistException;
 import com.matchmetrics.security.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,8 +34,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
         if (repository.findByEmail(request.getEmail()).isPresent()) {
-            // todo custom exception
-            throw new RuntimeException("Email already exists");
+            throw new EmailTakenException(request.getEmail());
         }
 
         Team favouriteTeam = teamRepository.findTeamByName(request.getFavouriteTeam())
@@ -61,8 +62,7 @@ public class AuthenticationService {
                 )
         );
         var user = repository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User does not exist"));
-        //todo throw custom exception
+                .orElseThrow(() -> new UserDoesNotExistException(request.getEmail()));
 
         var jwt = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

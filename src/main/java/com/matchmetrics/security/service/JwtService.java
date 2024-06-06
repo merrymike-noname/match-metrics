@@ -71,16 +71,10 @@ public class JwtService {
                 .parseSignedClaims(token)
                 .getPayload();
         //todo add handling for these exceptions:
-//        } catch (ExpiredJwtException e) {
-//            // Throw or handle a custom Exception indicating JWT is expired.
-//        } catch (UnsupportedJwtException e) {
-//            // Throw or handle a custom Exception indicating JWT format is not supported.
-//        } catch (MalformedJwtException e) {
-//            // Throw or handle a custom Exception indicating JWT is malformed.
-//        } catch (IllegalArgumentException e) {
-//            // Throw or handle a custom Exception indicating JWT claim is empty.
+//        } catch (ExpiredJwtException | IllegalArgumentException
+//                 | MalformedJwtException | UnsupportedJwtException e) {
+//            throw e;
 //        }
-//        return null;
     }
 
     private Key key() {
