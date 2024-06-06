@@ -6,7 +6,6 @@ import com.matchmetrics.security.entity.UpdateUserResponse;
 import com.matchmetrics.security.entity.User;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,11 @@ import java.util.List;
 @RequestMapping("matchmetrics/api/v0/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/all")
