@@ -38,7 +38,10 @@ public class UserController {
     }
 
     @PutMapping("/update/{email}")
-    public ResponseEntity<UpdateUserResponse> updateUser(@PathVariable String email, @RequestBody RegisterRequest userDetails, BindingResult result) {
+    public ResponseEntity<UpdateUserResponse> updateUser(
+            @PathVariable String email,
+            @RequestBody RegisterRequest userDetails,
+            BindingResult result) {
         UpdateUserResponse response = userService.updateUser(email, userDetails, result);
         if (response.isSuccess()) {
             return ResponseEntity.ok(response);

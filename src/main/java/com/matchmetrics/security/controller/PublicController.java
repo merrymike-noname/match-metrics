@@ -2,18 +2,16 @@ package com.matchmetrics.security.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("matchmetrics/api/v0/public")
 public class PublicController {
 
-    @Value("${api.teams.url:http://localhost:8080/matchmetrics/api/v0/teams/all}")
+    @Value("${api.teams.url}")
     private String teamsApiUrl;
 
     @Value("${api.token}")
@@ -41,7 +39,8 @@ public class PublicController {
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving teams.");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error retrieving teams.");
         }
     }
 }
