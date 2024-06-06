@@ -6,24 +6,11 @@
 package com.matchmetrics.security.entity.dto;
 
 import com.matchmetrics.security.entity.Role;
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 public class UserGetDto {
-    @Column(name = "name")
-    @NotNull(message = "Name should not be null")
-    @NotBlank(message = "Name should not be blank")
-    @NotEmpty(message = "Name should not be empty")
+
     private String name;
 
-    @Column(name = "email", unique = true)
-    @Email(message = "Email should have valid format")
-    @NotNull(message = "Email should not be null")
-    @NotBlank(message = "Email should not be blank")
-    @NotEmpty(message = "Email should not be empty")
     private String email;
 
     private String favouriteTeam;
