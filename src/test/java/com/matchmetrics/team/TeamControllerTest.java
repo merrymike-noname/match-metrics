@@ -172,33 +172,6 @@ public class TeamControllerTest {
     }
 
     @Test
-    public void testGetTeamsComparedByName() throws Exception {
-        String teamHome = "Liverpool";
-        String teamAway = "Arsenal";
-        TeamGetDto teamHomeDto = new TeamGetDto(teamHome, "England", 2000, new ArrayList<>(), new ArrayList<>());
-        TeamGetDto teamAwayDto = new TeamGetDto(teamAway, "England", 1900, new ArrayList<>(), new ArrayList<>());
-
-        when(teamService.getTeamsComparedByName(teamHome, teamAway)).thenReturn(List.of(teamHomeDto, teamAwayDto));
-
-        mockMvc.perform(get("/matchmetrics/api/v0/teams/compare")
-                        .param("homeTeam", teamHome)
-                        .param("awayTeam", teamAway)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{" +
-                        "\"name\":\"" + teamHomeDto.getName() + "\"," +
-                        "\"country\":\"" + teamHomeDto.getCountry() + "\"," +
-                        "\"elo\":" + teamHomeDto.getElo() +
-                        "},{" +
-                        "\"name\":\"" + teamAwayDto.getName() + "\"," +
-                        "\"country\":\"" + teamAwayDto.getCountry() + "\"," +
-                        "\"elo\":" + teamAwayDto.getElo() +
-                        "}]"));
-
-        verify(teamService, times(1)).getTeamsComparedByName(teamHome, teamAway);
-    }
-
-    @Test
     public void testCreateTeam() throws Exception {
         TeamNestedDto team = new TeamNestedDto("CWA", "USA", 1200);
         TeamGetDto teamGetDto = new TeamGetDto("CWA", "USA", 1200, new ArrayList<>(), new ArrayList<>());

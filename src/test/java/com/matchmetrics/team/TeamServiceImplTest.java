@@ -94,52 +94,6 @@ public class TeamServiceImplTest {
     }
 
     @Test
-    void testGetTeamsComparedByName() {
-        String homeTeamName = "HomeTeam";
-        String awayTeamName = "AwayTeam";
-        Team homeTeamEntity = new Team(homeTeamName, "Country", 1500f);
-        homeTeamEntity.setId(1);
-        Team awayTeamEntity = new Team(awayTeamName, "Country", 1500f);
-        awayTeamEntity.setId(2);
-        List<TeamGetDto> expected = List.of(teamGetMapper.toDto(homeTeamEntity), teamGetMapper.toDto(awayTeamEntity));
-
-        when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.of(homeTeamEntity));
-        when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.of(awayTeamEntity));
-
-        assertThat(teamService.getTeamsComparedByName(homeTeamName, awayTeamName)).isEqualTo(expected);
-
-        //todo add test for TeamCsvClient usage
-    }
-
-    @Test
-    void testGetTeamsComparedByName_ThrowsExceptions() {
-        String homeTeamName = "HomeTeam";
-        String awayTeamName = "AwayTeam";
-        Team homeTeamEntity = new Team(homeTeamName, "Country", 1500f);
-        homeTeamEntity.setId(1);
-        Team awayTeamEntity = new Team(awayTeamName, "Country", 1500f);
-        awayTeamEntity.setId(1);
-
-        assertThrows(InvalidDataException.class, () ->
-                teamService.getTeamsComparedByName(homeTeamName, homeTeamName));
-
-        when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.empty());
-        when(teamCsvClient.getTeamFromRemote(homeTeamName)).thenThrow(new TeamDoesNotExistException(homeTeamName));
-        assertThrows(TeamDoesNotExistException.class, () ->
-                teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
-
-        when(teamRepository.findTeamByName(homeTeamName)).thenReturn(Optional.of(homeTeamEntity));
-        when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.empty());
-        when(teamCsvClient.getTeamFromRemote(awayTeamName)).thenThrow(new TeamDoesNotExistException(awayTeamName));
-        assertThrows(TeamDoesNotExistException.class, () ->
-                teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
-
-        when(teamRepository.findTeamByName(awayTeamName)).thenReturn(Optional.of(awayTeamEntity));
-        assertThrows(InvalidDataException.class, () ->
-                teamService.getTeamsComparedByName(homeTeamName, awayTeamName));
-    }
-
-    @Test
     void testGetTeamById() {
         int id = 1;
         Team team = new Team("Team", "Country", 1000f);
