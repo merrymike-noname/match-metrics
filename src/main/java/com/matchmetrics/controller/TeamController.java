@@ -61,16 +61,6 @@ public class TeamController {
         return teams;
     }
 
-    @GetMapping("/compare")
-    public List<TeamGetDto> getTeamsComparedByName(@RequestParam(name = "homeTeam") String homeTeamName,
-                                                   @RequestParam(name = "awayTeam") String awayTeamName
-    ) {
-        logger.info("Received request to compare teams: {} and {}", homeTeamName, awayTeamName);
-        List<TeamGetDto> teams = teamService.getTeamsComparedByName(homeTeamName, awayTeamName);
-        logger.info("Returning {} team stats", teams.size());
-        return teams;
-    }
-
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public TeamGetDto createTeam(@Valid @RequestBody TeamNestedDto team, BindingResult bindingResult) {

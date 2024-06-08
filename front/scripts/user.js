@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const logoutButton = document.getElementById('logoutButton');
     const usernameSpan = document.getElementById('username');
 
+
     const token = localStorage.getItem('token');
     const userEmail = localStorage.getItem('userEmail');
 
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const checkForbidden = response => {
         if (response.status === 403) {
-            window.location.href = 'login.html';
+            console.error('403 Forbidden:', response);
             throw new Error('403 Forbidden');
         }
         return response;
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
             teams = data.map(team => team.name);
             suggestTeams(favoriteTeamInput, teams);
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('Error fetching teams:', error));
 
     fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userEmail}`, {
         headers: {
@@ -55,6 +56,9 @@ document.addEventListener('DOMContentLoaded', function () {
             form.name.value = data.name;
             form.email.value = data.email;
             usernameSpan.textContent = data.name;
+            console.log('Current user data:', data.favouriteTeam);
+            form.favoriteTeam.value = data.favouriteTeam;
+            console.log('Current user data:', data);
 
             if (currentUserData.role === 'ROLE_ADMIN') {
                 const adminPanelButtonContainer = document.createElement('div');
@@ -77,31 +81,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 document.body.appendChild(adminPanelButtonContainer);
             }
-
-            fetch(`http://localhost:8080/matchmetrics/api/v0/teams/${data.favouriteTeam.id}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            })
-                .then(checkForbidden)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(teamData => {
-                    form.favoriteTeam.value = teamData.name;
-                })
-                .catch(error => console.error('Error fetching team data:', error));
         })
-        .catch(error => console.error('Error fetching user data:', error));
+
 
     form.addEventListener('submit', function (event) {
         event.preventDefault();
         const name = form.name.value.trim() || currentUserData.name;
         const email = form.email.value.trim() || currentUserData.email;
-        const favoriteTeam = form.favoriteTeam.value.trim() || currentUserData.favouriteTeam.name;
+        const favoriteTeam = form.favoriteTeam.value.trim() || currentUserData.favouriteTeam;
         const password = form.password.value.trim();
         const confirmPassword = form.confirmPassword.value.trim();
 
@@ -148,7 +135,15 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .then(data => {
                 console.log('Response data:', data);
-                if (data.success) {
+                if (data.name !== undefined && data.email !== undefined && data.favouriteTeam !== undefined) {
+                    currentUserData.name = data.name;
+                    currentUserData.email = data.email;
+                    currentUserData.favouriteTeam = data.favouriteTeam;
+
+                    form.name.value = data.name;
+                    form.email.value = data.email;
+                    form.favoriteTeam.value = data.favouriteTeam;
+                    usernameSpan.textContent = data.name;
                     showSuccess('Settings updated successfully.');
                 } else {
                     showError('Failed to update settings: ' + data.message);
@@ -160,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    logoutButton.addEventListener('click', function () {
+        logoutButton.addEventListener('click', function () {
         localStorage.removeItem('token');
         localStorage.removeItem('userEmail');
         window.location.href = 'login.html';

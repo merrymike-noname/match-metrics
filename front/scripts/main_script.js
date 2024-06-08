@@ -62,8 +62,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data) {
-                console.log(data.favouriteTeam.name);
-                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${data.favouriteTeam.name}`, {
+                console.log(data);
+                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${data.favouriteTeam}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (matches.length > 0) {
                             displayMatch(matches[0]);
                         } else {
-                            return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${data.favouriteTeam.name}`, {
+                            return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${data.favouriteTeam}`, {
                                 headers: {
                                     'Authorization': `Bearer ${token}`
                                 }

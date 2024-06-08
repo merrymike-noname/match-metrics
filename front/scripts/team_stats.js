@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(response => response.json())
         .then(data => {
             if (data) {
-                favoriteTeam = data.favouriteTeam.name;
+                console.log(data);
+                favoriteTeam = data.favouriteTeam;
                 teamInput.value = favoriteTeam;
 
             }
