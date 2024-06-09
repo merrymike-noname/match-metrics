@@ -28,7 +28,10 @@ public class UserServiceImpl implements UserService {
     private final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, TeamRepository teamRepository, PasswordEncoder passwordEncoder, BindingResultInspector bindingResultInspector) {
+    public UserServiceImpl(UserRepository userRepository,
+                           TeamRepository teamRepository,
+                           PasswordEncoder passwordEncoder,
+                           BindingResultInspector bindingResultInspector) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.passwordEncoder = passwordEncoder;
@@ -38,14 +41,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserGetDto> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> new UserGetDto(user.getName(), user.getEmail(), user.getFavouriteTeam().getName(), user.getRole()))
+                .map(user -> new UserGetDto(
+                        user.getName(), user.getEmail(),
+                        user.getFavouriteTeam().getName(),
+                        user.getRole()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserGetDto getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .map(user -> new UserGetDto(user.getName(), user.getEmail(), user.getFavouriteTeam().getName(), user.getRole()))
+                .map(user -> new UserGetDto(
+                        user.getName(), user.getEmail(),
+                        user.getFavouriteTeam().getName(),
+                        user.getRole()))
                 .orElseGet(() -> {
                     logger.error("User with email {} not found", email);
                     return null;
@@ -77,7 +86,10 @@ public class UserServiceImpl implements UserService {
             }
 
             User updatedUser = userRepository.save(user);
-            return new UserGetDto(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getFavouriteTeam().getName(), updatedUser.getRole());
+            return new UserGetDto(
+                    updatedUser.getName(), updatedUser.getEmail(),
+                    updatedUser.getFavouriteTeam().getName(),
+                    updatedUser.getRole());
         }).orElseGet(() -> {
             logger.error("User with email {} not found", email);
             return null;
@@ -117,7 +129,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).map(user -> {
             user.setRole(Role.ROLE_ADMIN);
             User updatedUser = userRepository.save(user);
-            return new UserGetDto(updatedUser.getName(), updatedUser.getEmail(), updatedUser.getFavouriteTeam().getName(), updatedUser.getRole());
+            return new UserGetDto(
+                    updatedUser.getName(), updatedUser.getEmail(),
+                    updatedUser.getFavouriteTeam().getName(),
+                    updatedUser.getRole());
         }).orElseGet(() -> {
             logger.error("User with email {} not found", email);
             return null;
