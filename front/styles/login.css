@@ -3,6 +3,7 @@ body {
     margin: 0;
     padding: 0;
     background-color: #f2f2f2;
+    font-size: 140%;
 }
 
 .header {
@@ -15,7 +16,7 @@ body {
 }
 
 .title {
-    font-size: 20px;
+    font-size: 28px;
 }
 
 .container {
@@ -77,3 +78,4 @@ button:hover {
 .register-text a:hover {
     text-decoration: underline;
 }
+

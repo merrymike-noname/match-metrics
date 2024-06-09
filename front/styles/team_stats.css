@@ -4,19 +4,65 @@ body {
     padding: 0;
     background-color: #f2f2f2;
     justify-content: center;
+    font-size: 140%;
 }
 
 .header {
     background-color: #333;
     color: #fff;
-    padding: 10px;
+    padding: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background-color: #444;
+}
+
+.header .menu-button:first-child {
+    margin-left: -100px;
 }
 
 .title {
-    font-size: 20px;
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.title:hover {
+    font-size: 30.8px;
+}
+
+.header nav {
+    display: flex;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 42px;
+    transition: all 0.3s ease;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.header .username:hover {
+    color: #ccc;
+    transform: scale(1.1);
 }
 
 .container {
@@ -38,29 +84,6 @@ body {
     text-align: center;
 }
 
-.header .menu-button {
-    color: #fff;
-    text-decoration: none;
-    margin-right: 30px;
-}
-
-.header .menu-button:hover {
-    color: #ccc;
-}
-
-.header .username {
-    color: #fff;
-    text-decoration: none;
-}
-
-.header .username:hover {
-    color: #ccc;
-}
-
-.header .menu-button.active {
-    color: #ff0;
-}
-
 #teamInfoContainer {
     display: flex;
     flex-direction: column;
@@ -74,10 +97,6 @@ body {
     width: 100px;
     height: 100px;
     margin: 0 auto;
-}
-
-.header .menu-button:first-child {
-    margin-left: -200px;
 }
 
 #teamInfo, #matchInfo {
@@ -98,3 +117,26 @@ body {
     margin: 10px 5px;
     width: 30%;
 }
+
+#teamInfo:hover, #matchInfo:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.team-input:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+    transform: scale(1.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#teamInfo:hover, #matchInfo:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+

@@ -4,10 +4,63 @@ document.addEventListener('DOMContentLoaded', function () {
     const teamInfoDiv = document.getElementById('teamInfo');
     const matchInfoDiv = document.getElementById('matchInfo');
 
-    let teams = [];
-    teamInput.value = 'Girona';
+    const userEmail = localStorage.getItem('userEmail');
+    const token = localStorage.getItem('token');
+    let favoriteTeam = 'Girona';
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all')
+    if (!userEmail || !token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const checkForbidden = response => {
+        if (response.status === 403) {
+            window.location.href = 'login.html';
+            throw new Error('403 Forbidden');
+        }
+        return response;
+    };
+
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/name/${userEmail}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(checkForbidden)
+        .then(response => response.text())
+        .then(name => {
+            const usernameLink = document.getElementById('username');
+            usernameLink.textContent = name;
+        })
+        .catch(error => console.error('Error:', error));
+
+    let teams = [];
+
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userEmail}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(checkForbidden)
+        .then(response => response.json())
+        .then(data => {
+            if (data) {
+                console.log(data);
+                favoriteTeam = data.favouriteTeam;
+                teamInput.value = favoriteTeam;
+
+            }
+        })
+        .catch(error => console.error('Error:', error));
+
+    teamInput.value = favoriteTeam;
+
+    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
@@ -19,7 +72,12 @@ document.addEventListener('DOMContentLoaded', function () {
     teamInput.addEventListener('input', function () {
         const teamName = teamInput.value.trim();
         if (teams.includes(teamName)) {
-            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${teamName}`)
+            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${teamName}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(checkForbidden)
                 .then(response => response.json())
                 .then(teams => {
                     teamInfoDiv.style.display = 'block';
@@ -53,13 +111,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     teamElo.textContent = `ELO: ${Math.round(team.elo)}`;
                     teamInfoDiv.appendChild(teamElo);
 
-                    fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${teamName}`)
+                    fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${teamName}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(checkForbidden)
                         .then(response => response.json())
                         .then(matches => {
                             if (matches.length > 0) {
                                 displayMatch(matches[0]);
                             } else {
-                                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${teamName}`)
+                                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${teamName}`, {
+                                    headers: {
+                                        'Authorization': `Bearer ${token}`
+                                    }
+                                })
+                                    .then(checkForbidden)
                                     .then(response => response.json())
                                     .then(matches => {
                                         if (matches.length > 0) {

@@ -1,7 +1,20 @@
 package com.matchmetrics.security.entity;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class AuthenticationRequest {
+    @Email(message = "Email should have valid format")
+    @NotNull(message = "Email should not be null")
+    @NotBlank(message = "Email should not be blank")
+    @NotEmpty(message = "Email should not be empty")
     private String email;
+
+    @NotNull(message = "Password should not be null")
+    @NotBlank(message = "Password should not be blank")
+    @NotEmpty(message = "Password should not be empty")
     private String password;
 
     public AuthenticationRequest(String email, String password) {

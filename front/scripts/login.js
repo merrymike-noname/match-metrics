@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             password
         };
 
-        fetch('http://localhost:8080/matchmetrics/api/v0/user/login', {
+        fetch('http://localhost:8080/matchmetrics/api/v0/auth/authenticate', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -28,8 +28,10 @@ document.addEventListener('DOMContentLoaded', function () {
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
-                    window.location.href = 'user.html';
+                if (data.token) {
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'compare.html';
                 } else {
                     showError('Invalid email or password.');
                 }

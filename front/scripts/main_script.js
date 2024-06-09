@@ -10,9 +10,39 @@ document.addEventListener('DOMContentLoaded', function () {
     predictionButton.style.display = 'none';
     predictionButtonContainer.appendChild(predictionButton);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const homeTeam = urlParams.get('homeTeam');
+    const awayTeam = urlParams.get('awayTeam');
+
+    if (homeTeam && awayTeam) {
+        document.getElementById('team1').value = homeTeam;
+        document.getElementById('team2').value = awayTeam;
+    }
+
     let teams = [];
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all')
+    const userEmail = localStorage.getItem('userEmail');
+    const token = localStorage.getItem('token');
+
+    if (!userEmail || !token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const checkForbidden = response => {
+        if (response.status === 403) {
+            window.location.href = 'login.html';
+            throw new Error('403 Forbidden');
+        }
+        return response;
+    };
+
+    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
             teams = data.map(team => team.name);
@@ -21,50 +51,93 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => console.error('Error:', error));
 
-    fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=Girona`)
+    console.log(userEmail)
+
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userEmail}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(checkForbidden)
         .then(response => response.json())
-        .then(matches => {
-            if (matches.length > 0) {
-                displayMatch(matches[0]);
-            } else {
-                // If no home match is found, try to find an away match
-                return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=Girona`)
+        .then(data => {
+            if (data) {
+                console.log(data);
+                fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${data.favouriteTeam}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                    .then(checkForbidden)
                     .then(response => response.json())
                     .then(matches => {
                         if (matches.length > 0) {
                             displayMatch(matches[0]);
                         } else {
-                            // If no match is found, display a message
-                            const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
-                            favoriteMatchDiv.textContent = 'No matches in the nearest time.';
+                            return fetch(`http://localhost:8080/matchmetrics/api/v0/matches?awayTeam=${data.favouriteTeam}`, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            })
+                                .then(checkForbidden)
+                                .then(response => response.json())
+                                .then(matches => {
+                                    if (matches.length > 0) {
+                                        displayMatch(matches[0]);
+                                    } else {
+                                        const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
+                                        favoriteMatchDiv.textContent = 'No matches in the nearest time.';
+                                    }
+                                });
                         }
-                    });
+                    })
+                    .catch(error => console.error('Error:', error));
             }
+        })
+        .catch(error => console.error('Error fetching user data:', error));
+
+    fetch(`http://localhost:8080/matchmetrics/api/v0/users/name/${userEmail}`, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+        .then(checkForbidden)
+        .then(response => response.text())
+        .then(name => {
+            const usernameLink = document.getElementById('username');
+            usernameLink.textContent = name;
         })
         .catch(error => console.error('Error:', error));
 
     function displayMatch(match) {
         const favoriteMatchDiv = document.getElementById('favoriteTeamNextMatch');
-        favoriteMatchDiv.padding = '40px';
+        favoriteMatchDiv.style.padding = '40px';
+
         const teamLogosDiv = favoriteMatchDiv.querySelector('.team-logos');
+        teamLogosDiv.innerHTML = '';
+
         const homeTeamLogo = document.createElement('img');
         homeTeamLogo.src = `/front/resources/logos/${match.homeTeam.name.toLowerCase()}.png`;
         const awayTeamLogo = document.createElement('img');
         awayTeamLogo.src = `/front/resources/logos/${match.awayTeam.name.toLowerCase()}.png`;
+
         homeTeamLogo.onerror = function () {
             this.onerror = null;
-            this.src = '/front/resources/countries/default.png';
+            this.src = '/front/resources/logos/default.png';
         };
         awayTeamLogo.onerror = function () {
             this.onerror = null;
-            this.src = '/front/resources/countries/default.png';
+            this.src = '/front/resources/logos/default.png';
         };
-        homeTeamLogo.style.width = '30px';
-        homeTeamLogo.style.height = '30px';
-        awayTeamLogo.style.width = '30px';
-        awayTeamLogo.style.height = '30px';
-        homeTeamLogo.style.marginRight = '40px !important';
-        awayTeamLogo.style.marginLeft = '40px !important';
+
+        homeTeamLogo.style.width = '60px';
+        homeTeamLogo.style.height = '60px';
+        awayTeamLogo.style.width = '60px';
+        awayTeamLogo.style.height = '60px';
+
+        homeTeamLogo.style.marginRight = '80px';
+        awayTeamLogo.style.marginLeft = '80px';
+
         teamLogosDiv.style.justifyContent = 'space-between';
         teamLogosDiv.appendChild(homeTeamLogo);
         teamLogosDiv.appendChild(awayTeamLogo);
@@ -76,8 +149,14 @@ document.addEventListener('DOMContentLoaded', function () {
         teamNamesDiv.style.justifyContent = 'center';
 
         const matchDateDiv = favoriteMatchDiv.querySelector('.match-date');
-        matchDateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        matchDateDiv.textContent = new Date(match.date).toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
     }
+
 
     forecastButton.addEventListener('click', function () {
         const team1 = team1Input.value.trim();
@@ -89,7 +168,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const team1InfoDiv = document.getElementById('team1Info');
             const team2InfoDiv = document.getElementById('team2Info');
             matchInfoDiv.innerHTML = '';
-            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team1}`)
+            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team1}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(checkForbidden)
                 .then(response => response.json())
                 .then(teams => {
                     team1InfoDiv.innerHTML = '';
@@ -97,7 +181,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .catch(error => console.error('Error:', error));
 
-            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team2}`)
+            fetch(`http://localhost:8080/matchmetrics/api/v0/teams?name=${team2}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+                .then(checkForbidden)
                 .then(response => response.json())
                 .then(teams => {
                     team2InfoDiv.innerHTML = '';
@@ -114,7 +203,12 @@ document.addEventListener('DOMContentLoaded', function () {
     predictionButton.addEventListener('click', function () {
         const team1 = document.getElementById('team1').value.trim();
         const team2 = document.getElementById('team2').value.trim();
-        fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${team1}&awayTeam=${team2}`)
+        fetch(`http://localhost:8080/matchmetrics/api/v0/matches?homeTeam=${team1}&awayTeam=${team2}`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+            .then(checkForbidden)
             .then(response => response.json())
             .then(matches => {
                 console.log(matches);
@@ -198,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     probabilityDiv.style.height = '20px';
                     probabilityDiv.style.width = '100%';
                     probabilityDiv.style.border = '1px solid black';
+                    probabilityDiv.style.fontSize= '16px';
 
                     const homeWinProbability = document.createElement('div');
                     homeWinProbability.style.backgroundColor = 'green';
@@ -286,7 +381,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-
     function suggestTeams(input, suggestions) {
         input.addEventListener('input', function () {
             const inputValue = input.value.toLowerCase();
@@ -312,15 +406,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-$('button').click(function() {
+$('button').click(function () {
     $('#matchInfo, #matchInfo2').css('visibility', 'visible').hide().fadeIn();
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     var delay = 0;
     var animationSpeed = 10000;
 
-    $('.teamInfo').each(function() {
+    $('.teamInfo').each(function () {
         $(this).css({opacity: 0, left: "-=50px"});
         $(this).delay(delay).animate({
             opacity: 1,
@@ -329,11 +423,10 @@ $(document).ready(function() {
         delay += 200;
     });
 
-    $('.matchInfoDiv').each(function() {
+    $('.matchInfoDiv').each(function () {
         $(this).css({opacity: 0, left: "-=50px"});
         $(this).delay(delay).animate({
-            opacity: 1,
-            left: "+=50px"
+            opacity: 1, left: "+=50px"
         }, animationSpeed);
         delay += 200;
     });

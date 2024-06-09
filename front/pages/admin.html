@@ -10,11 +10,10 @@
 <div class="header">
     <span class="title">Admin Panel</span>
     <nav>
-        <a href="#" class="menu-button">Add Match</a>
-        <a href="#" class="menu-button">Delete Match</a>
-        <a href="#" class="menu-button">Search User</a>
-        <a href="#" class="menu-button">Ban User</a>
-        <a href="#" class="menu-button">Assign Admin</a>
+        <a href="#" class="menu-button" id="addMatchButton">Add Match</a>
+        <a href="#" class="menu-button" id="deleteMatchButton">Delete Match</a>
+        <a href="#" class="menu-button" id="banUserButton">Ban User</a>
+        <a href="#" class="menu-button" id="assignAdminButton">Assign Admin</a>
     </nav>
     <a href="#" class="username">Admin</a>
 </div>
@@ -54,35 +53,45 @@
             <button type="submit">Submit</button>
         </form>
     </div>
+
+    <div id="deleteMatchForm" class="form-container" style="display: none;">
+        <h2>Delete Match</h2>
+        <form id="deleteMatchFormData" action="#">
+            <div class="form-group">
+                <label for="matchId">Match ID:</label>
+                <input type="text" id="matchId" name="matchId">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="banUserForm" class="form-container" style="display: none;">
+        <h2>Ban User</h2>
+        <form id="banUserFormData" action="#">
+            <div class="form-group">
+                <label for="userBanEmail">User Email:</label>
+                <input type="email" id="userBanEmail" name="userBanEmail" list="emails">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="assignAdminForm" class="form-container" style="display: none;">
+        <h2>Assign Admin</h2>
+        <form id="assignAdminFormData" action="#">
+            <div class="form-group">
+                <label for="userAdminEmail">User Email:</label>
+                <input type="email" id="userAdminEmail" name="userAdminEmail" list="emails">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <datalist id="emails"></datalist>
+
+    <div id="result"></div>
 </div>
 
-<div id="result"></div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const matchData = {
-            date: "2024-05-24",
-            league: "BUL",
-            homeTeam: "Arsenal",
-            awayTeam: "Dnipro",
-            homeTeamWin: 0.5,
-            draw: 0.3,
-            awayTeamWin: 0.2
-        };
-
-        fetch('http://localhost:8080/matchmetrics/api/v0/matches/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(matchData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => console.error('Error:', error));
-    });
-</script>
+<script src="/front/scripts/admin.js"></script>
 </body>
 </html>

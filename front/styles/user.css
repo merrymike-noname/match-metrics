@@ -4,46 +4,80 @@ body {
     padding: 0;
     background-color: #f2f2f2;
     justify-content: center;
+    font-size: 140%;
 }
 
 .header {
     background-color: #333;
     color: #fff;
-    padding: 10px;
+    padding: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background-color: #444;
 }
 
 .header .menu-button:first-child {
-    margin-left: -200px;
+    margin-left: 40px;
 }
 
 .title {
-    font-size: 20px;
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.title:hover {
+    font-size: 30.8px;
+}
+
+.header nav {
+    display: flex;
 }
 
 .header .menu-button {
     color: #fff;
     text-decoration: none;
-    margin-right: 30px;
+    margin-right: 42px;
+    transition: all 0.3s ease;
 }
 
 .header .menu-button:hover {
     color: #ccc;
+    transform: scale(1.1);
+}
+
+.header .menu-button.active {
+    color: #ff0;
 }
 
 .header .username {
     color: #fff;
     text-decoration: none;
+    margin-left: 20px;
+    transition: all 0.3s ease;
 }
 
 .header .username:hover {
     color: #ccc;
+    transform: scale(1.1);
 }
 
-.header .menu-button.active {
-    color: #ff0;
+#logoutButton {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: -390px;
+}
+
+#logoutButton:hover {
+    background-color: #ff6666;
 }
 
 .container {
@@ -90,3 +124,4 @@ button:hover {
     color: red;
     margin-top: 10px;
 }
+

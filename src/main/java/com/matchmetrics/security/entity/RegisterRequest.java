@@ -1,11 +1,32 @@
 package com.matchmetrics.security.entity;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 public class RegisterRequest {
+    @NotNull(message = "Name should not be null")
+    @NotBlank(message = "Name should not be blank")
+    @NotEmpty(message = "Name should not be empty")
     private String name;
+
+    @Email(message = "Email should have valid format")
+    @NotNull(message = "Email should not be null")
+    @NotBlank(message = "Email should not be blank")
+    @NotEmpty(message = "Email should not be empty")
     private String email;
+
+    @NotNull(message = "Password should not be null")
+    @NotBlank(message = "Password should not be blank")
+    @NotEmpty(message = "Password should not be empty")
     private String password;
+
+    @NotNull(message = "Favourite team should not be null")
+    @NotBlank(message = "Favourite team should not be blank")
+    @NotEmpty(message = "Favourite team should not be empty")
     private String favouriteTeam;
 
     public RegisterRequest(String name, String email, String password, String favouriteTeam) {

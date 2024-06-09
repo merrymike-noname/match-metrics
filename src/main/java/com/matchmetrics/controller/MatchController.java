@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class MatchController {
         return match;
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public MatchGetDto addMatch(@Valid @RequestBody MatchAddUpdateDto match, BindingResult result) {
         logger.info("Received request to add match: {}", match);
@@ -71,6 +72,7 @@ public class MatchController {
         return addedMatch;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public MatchGetDto updateMatch(@PathVariable int id, @Valid @RequestBody MatchAddUpdateDto match, BindingResult result) {
         logger.info("Received request to update match with ID {}: {}", id, match);
@@ -79,6 +81,7 @@ public class MatchController {
         return updatedMatch;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public void deleteMatch(@PathVariable int id) {
         logger.info("Received request to delete match with ID: {}", id);
