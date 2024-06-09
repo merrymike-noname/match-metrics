@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const adminPanelButtonContainer = document.createElement('div');
                 adminPanelButtonContainer.id = 'adminPanelButtonContainer';
                 adminPanelButtonContainer.style.position = 'fixed';
-                adminPanelButtonContainer.style.top = '70%';
+                adminPanelButtonContainer.style.top = '62%';
                 adminPanelButtonContainer.style.left = '50%';
                 adminPanelButtonContainer.style.transform = 'translate(-50%, -50%)';
                 adminPanelButtonContainer.style.display = 'flex';
