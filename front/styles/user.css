@@ -22,7 +22,7 @@ body {
 }
 
 .header .menu-button:first-child {
-    margin-left: -180px;
+    margin-left: 40px;
 }
 
 .title {
@@ -57,6 +57,7 @@ body {
 .header .username {
     color: #fff;
     text-decoration: none;
+    margin-left: 20px;
     transition: all 0.3s ease;
 }
 
@@ -72,13 +73,12 @@ body {
     padding: 10px 20px;
     cursor: pointer;
     border-radius: 5px;
-    margin-right: -450px;
+    margin-right: -390px;
 }
 
 #logoutButton:hover {
     background-color: #ff6666;
 }
-
 
 .container {
     margin: 20px auto;
