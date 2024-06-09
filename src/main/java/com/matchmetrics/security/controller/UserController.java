@@ -4,6 +4,7 @@ import com.matchmetrics.security.entity.RegisterRequest;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.entity.dto.UserGetDto;
 import com.matchmetrics.security.service.UserService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindingResult;
@@ -39,7 +40,7 @@ public class UserController {
     @PutMapping("/update/{email}")
     public UserGetDto updateUser(
             @PathVariable String email,
-            @RequestBody RegisterRequest userDetails,
+            @Valid @RequestBody RegisterRequest userDetails,
             BindingResult result) {
         logger.info("Updating user with email: {}", email);
         return userService.updateUser(email, userDetails, result);

@@ -7,10 +7,12 @@ import com.matchmetrics.security.entity.*;
 import com.matchmetrics.security.exception.EmailTakenException;
 import com.matchmetrics.security.exception.UserDoesNotExistException;
 import com.matchmetrics.security.repository.UserRepository;
+import com.matchmetrics.util.BindingResultInspector;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 @Service
 public class AuthenticationService {
@@ -19,20 +21,26 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final BindingResultInspector bindingResultInspector;
 
     public AuthenticationService(UserRepository repository,
                                  TeamRepository teamRepository,
                                  PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
-                                 AuthenticationManager authenticationManager) {
+                                 AuthenticationManager authenticationManager,
+                                 BindingResultInspector bindingResultInspector) {
         this.repository = repository;
         this.teamRepository = teamRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.bindingResultInspector = bindingResultInspector;
     }
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse register(RegisterRequest request,
+                                           BindingResult bindingResult) {
+        bindingResultInspector.checkBindingResult(bindingResult);
+
         if (repository.findByEmail(request.getEmail()).isPresent()) {
             throw new EmailTakenException(request.getEmail());
         }
@@ -54,7 +62,10 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request,
+                                               BindingResult bindingResult) {
+        bindingResultInspector.checkBindingResult(bindingResult);
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
