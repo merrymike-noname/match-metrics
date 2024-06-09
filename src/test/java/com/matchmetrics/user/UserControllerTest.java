@@ -1,11 +1,11 @@
 package com.matchmetrics.user;
 
-import com.matchmetrics.controller.TeamController;
 import com.matchmetrics.controller.controller_advice.GlobalExceptionHandler;
 import com.matchmetrics.entity.Team;
 import com.matchmetrics.security.controller.UserController;
 import com.matchmetrics.security.entity.RegisterRequest;
 import com.matchmetrics.security.entity.Role;
+import com.matchmetrics.security.entity.UserUpdateRequest;
 import com.matchmetrics.security.entity.dto.UserGetDto;
 import com.matchmetrics.security.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,7 +96,7 @@ public class UserControllerTest {
         RegisterRequest request = new RegisterRequest();
         UserGetDto updatedUser = new UserGetDto("John Doe", email, "Team A", Role.ROLE_USER);
 
-        when(userService.updateUser(eq(email), any(RegisterRequest.class), any(BindingResult.class))).thenReturn(updatedUser);
+        when(userService.updateUser(eq(email), any(UserUpdateRequest.class), any(BindingResult.class))).thenReturn(updatedUser);
 
         mockMvc.perform(put("/matchmetrics/api/v0/users/update/{email}", email)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -109,7 +109,7 @@ public class UserControllerTest {
                         "\"favouriteTeam\":\"" + updatedUser.getFavouriteTeam() + "\"" +
                         "}"));
 
-        verify(userService, times(1)).updateUser(eq(email), any(RegisterRequest.class), any(BindingResult.class));
+        verify(userService, times(1)).updateUser(eq(email), any(UserUpdateRequest.class), any(BindingResult.class));
     }
 
     @Test

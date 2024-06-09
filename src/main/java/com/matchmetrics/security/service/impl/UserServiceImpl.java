@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserGetDto updateUser(String email, RegisterRequest userDetails, BindingResult result) {
+    public UserGetDto updateUser(String email, UserUpdateRequest userDetails, BindingResult result) {
         bindingResultInspector.checkBindingResult(result);
 
         return userRepository.findByEmail(email).map(user -> {
@@ -90,7 +90,15 @@ public class UserServiceImpl implements UserService {
                     throw new EmailTakenException(userDetails.getEmail());
                 }
                 user.setEmail(userDetails.getEmail());
-                user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+
+                if (userDetails.getPassword() == null ||
+                        userDetails.getPassword().isEmpty() ||
+                        userDetails.getPassword().isBlank()
+                ) {
+                    user.setPassword(currentUser.getPassword());
+                } else {
+                    user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
+                }
 
                 Team favouriteTeam = teamRepository.findTeamByName(userDetails.getFavouriteTeam())
                         .orElseThrow(() -> new TeamDoesNotExistException(userDetails.getFavouriteTeam()));

@@ -2,6 +2,7 @@ package com.matchmetrics.security.controller;
 
 import com.matchmetrics.security.entity.RegisterRequest;
 import com.matchmetrics.entity.Team;
+import com.matchmetrics.security.entity.UserUpdateRequest;
 import com.matchmetrics.security.entity.dto.UserGetDto;
 import com.matchmetrics.security.service.UserService;
 import jakarta.validation.Valid;
@@ -40,7 +41,7 @@ public class UserController {
     @PutMapping("/update/{email}")
     public UserGetDto updateUser(
             @PathVariable String email,
-            @Valid @RequestBody RegisterRequest userDetails,
+            @Valid @RequestBody UserUpdateRequest userDetails,
             BindingResult result) {
         logger.info("Updating user with email: {}", email);
         return userService.updateUser(email, userDetails, result);
