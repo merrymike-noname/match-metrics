@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class MatchController {
 
     @GetMapping()
     public List<MatchGetDto> getMatchesByCriteria(
-            @RequestParam(name = "team", required = false) String team,
-            @RequestParam(name = "isHome", required = false) Boolean isHome,
+            @RequestParam(name = "homeTeam", required = false) String homeTeam,
+            @RequestParam(name = "awayTeam", required = false) String awayTeam,
             @RequestParam(name = "date", required = false) String date,
             @RequestParam(name = "league", required = false) String league,
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
@@ -46,11 +47,11 @@ public class MatchController {
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
         logger.info("Received request to get matches by criteria: " +
-                "team={}, isHome={}, date={}, league={}", team, isHome, date, league);
+                "homeTeam={}, awayTeam={}, date={}, league={}", homeTeam, awayTeam, date, league);
         List<MatchGetDto> matches =
-                matchService.getMatchesByCriteria(team, isHome, date, league, page - 1, perPage, sortBy);
+                matchService.getMatchesByCriteria(homeTeam, awayTeam, date, league, page - 1, perPage, sortBy);
         logger.info("Returning {} matches by criteria: " +
-                "team={}, isHome={}, date={}, league={}", matches.size(), team, isHome, date, league);
+                "homeTeam={}, awayTeam={}, date={}, league={}", matches.size(), homeTeam, awayTeam, date, league);
         return matches;
     }
 
@@ -62,7 +63,7 @@ public class MatchController {
         return match;
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public MatchGetDto addMatch(@Valid @RequestBody MatchAddUpdateDto match, BindingResult result) {
         logger.info("Received request to add match: {}", match);
@@ -71,6 +72,7 @@ public class MatchController {
         return addedMatch;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public MatchGetDto updateMatch(@PathVariable int id, @Valid @RequestBody MatchAddUpdateDto match, BindingResult result) {
         logger.info("Received request to update match with ID {}: {}", id, match);
@@ -79,6 +81,7 @@ public class MatchController {
         return updatedMatch;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public void deleteMatch(@PathVariable int id) {
         logger.info("Received request to delete match with ID: {}", id);

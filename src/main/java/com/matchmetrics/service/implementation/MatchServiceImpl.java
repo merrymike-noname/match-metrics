@@ -79,16 +79,16 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     public List<MatchGetDto> getMatchesByCriteria(
-            String team, Boolean isHome, String date, String league,
+            String homeTeam, String awayTeam, String date, String league,
             Integer page, Integer perPage, String sortBy
     ) {
         Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Match.class);
-        Specification<Match> spec = createSpecification(team, isHome, date, league);
+        Specification<Match> spec = createSpecification(homeTeam, awayTeam, date, league);
         Page<Match> matches = matchRepository.findAll(spec, pageable);
 
         if (matches.isEmpty()) {
-            logger.warn("No matches found with the given criteria. Team: {}, IsHome: {}, Date: {}, League: {}",
-                    team, isHome, date, league);
+            logger.warn("No matches found with the given criteria. HomeTeam: {}, AwayTeam: {}, Date: {}, League: {}",
+                    homeTeam, awayTeam, date, league);
         }
 
         return matches.getContent().stream()
@@ -186,28 +186,19 @@ public class MatchServiceImpl implements MatchService {
             logger.error("Match with ID {} not found", id);
             throw new MatchDoesNotExistException(id);
         }
+
     }
 
-    private Specification<Match> createSpecification(String team, Boolean isHome, String date, String league) {
+    private Specification<Match> createSpecification(String homeTeam, String awayTeam, String date, String league) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            Join<Match, Team> homeTeam = root.join("homeTeam", JoinType.LEFT);
-            Join<Match, Team> awayTeam = root.join("awayTeam", JoinType.LEFT);
-            if (team != null) {
-                predicates.add(
-                        criteriaBuilder.or(
-                                criteriaBuilder.equal(homeTeam.get("name"), team),
-                                criteriaBuilder.equal(awayTeam.get("name"), team)
-                        )
-                );
-                if (isHome != null) {
-                    predicates.clear();
-                    if (isHome) {
-                        predicates.add(criteriaBuilder.equal(homeTeam.get("name"), team));
-                    } else {
-                        predicates.add(criteriaBuilder.equal(awayTeam.get("name"), team));
-                    }
-                }
+            Join<Match, Team> homeTeamJoin = root.join("homeTeam", JoinType.LEFT);
+            Join<Match, Team> awayTeamJoin = root.join("awayTeam", JoinType.LEFT);
+            if (homeTeam != null) {
+                predicates.add(criteriaBuilder.equal(homeTeamJoin.get("name"), homeTeam));
+            }
+            if (awayTeam != null) {
+                predicates.add(criteriaBuilder.equal(awayTeamJoin.get("name"), awayTeam));
             }
             if (date != null) {
                 predicates.add(criteriaBuilder.equal(root.get("date"), dateParser.convertStringToDate(date)));

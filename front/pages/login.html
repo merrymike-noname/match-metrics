@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/front/styles/login.css">
+</head>
+<body>
+<div class="header">
+    <span class="title">Match Metrics</span>
+</div>
+
+<div class="container">
+    <p class="description">We are a team that gathers statistics and information about football matches and teams.
+        Here you can get predictions for upcoming matches and always know everything about your favorite football team!</p>
+    <form id="loginForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password">
+        </div>
+        <button type="submit">Login</button>
+        <div id="loginErrorMessages"></div>
+    </form>
+    <p class="register-text">Haven't registered yet? <a href="register.html">Register here</a>.</p>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="/front/scripts/login.js"></script>
+</body>
+</html>

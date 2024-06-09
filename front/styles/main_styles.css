@@ -1,49 +1,108 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f2f2f2;
+    transition: all 0.3s ease;
+    font-size: 140%;
 }
 
 .header {
     background-color: #333;
     color: #fff;
-    padding: 10px;
+    padding: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background-color: #444;
+}
+
+.header .menu-button:first-child {
+    margin-left: -100px;
 }
 
 .title {
-    font-size: 20px;
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.title:hover {
+    font-size: 30.8px;
+}
+
+.header nav {
+    display: flex;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 42px;
+    transition: all 0.3s ease;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.header .username:hover {
+    color: #ccc;
+    transform: scale(1.1);
 }
 
 .container {
-    margin: 20px auto;
-    width: 510px;
+    margin: 28px auto;
+    width: 714px;
     text-align: center;
     display: flex;
     align-items: center;
+    transition: all 0.3s ease;
 }
 
 .team-input {
-    padding: 10px;
+    padding: 14px;
     border: 1px solid #ccc;
-    border-radius: 20px;
-    margin-left: 10px;
-    margin-right: 10px;
-    width: 50%;
+    border-radius: 30px;
+    margin-left: 14px;
+    margin-right: 14px;
+    width: 70%;
     box-sizing: border-box;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.team-input:hover {
+    transform: scale(1.05);
 }
 
 button {
-    padding: 10px 20px;
+    padding: 14px 28px;
     background-color: #333;
     color: #fff;
     border: none;
-    border-radius: 20px;
+    border-radius: 28px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+    transform: scale(1.1);
 }
 
 #matchInfo {
@@ -51,35 +110,129 @@ button {
     justify-content: space-between;
     margin: 20px auto;
     width: 510px;
+    visibility: hidden;
 }
 
-#matchInfo .team {
+#team1Info, #team2Info {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: calc(50% - 10px);
+    margin: 0 5px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 45%;
+    transition: all 0.3s ease;
 }
 
-#matchInfo .team img {
-    width: 50px;
-    height: 50px;
+#team1Info:hover, #team2Info:hover {
+    transform: scale(1.05);
+}
+
+#team1Info img, #team2Info img {
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+#team1Info h2, #team2Info h2, #team1Info p, #team2Info p {
+    text-align: center;
+    word-wrap: break-word;
+    transition: all 0.3s ease;
+}
+
+#predictionButtonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#predictionButtonContainer button {
+    width: 30%;
+    padding: 10px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#predictionButtonContainer button:hover {
+    background-color: #444;
+
+}
+
+#matchInfo2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+    width: 510px;
+    visibility: hidden;
+    transform: scale(1.1);
+}
+
+#matchInfo2 .teams {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    transform: scale(1.05);
+}
+
+#matchInfo2 .team {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    transform: scale(1.05);
+}
+
+#matchInfo2 .team:hover {
+    transform: scale(1.05);
+}
+
+#matchInfo2 .team img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    margin-bottom: 5px;
+}
+
+#matchInfo2 .team p {
+    transition: all 0.3s ease;
+    transform: scale(1.05);
+}
+
+.favorite-match {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background-color: white;
+    padding: 28px;
+    width: 252px;
+    height: 126px;
+    border-radius: 16px;
+    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.favorite-match:hover {
+    transform: scale(1.05);
+}
+
+.favorite-match .team-logos {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 10px;
 }
 
-#matchInfo .team h2 {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-#matchInfo .team p {
-    margin-bottom: 5px;
-}
-
-#matchInfo .team .high-elo {
-    background-color: lightgreen;
-}
-
-#matchInfo .team .low-elo {
-    background-color: lightcoral;
+.favorite-match .team-names {
+    display: flex;
+    justify-content: space-between;
 }

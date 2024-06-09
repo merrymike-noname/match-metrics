@@ -1,0 +1,142 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    justify-content: center;
+    font-size: 140%;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background-color: #444;
+}
+
+.header .menu-button:first-child {
+    margin-left: -100px;
+}
+
+.title {
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.title:hover {
+    font-size: 30.8px;
+}
+
+.header nav {
+    display: flex;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 42px;
+    transition: all 0.3s ease;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.header .username:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.container {
+    margin: 20px auto;
+    width: 510px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.team-input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#teamInfoContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+}
+
+#teamLogo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+}
+
+#teamInfo, #matchInfo {
+    display: none;
+}
+
+#teamName {
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#teamInfo, #matchInfo {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    margin: 10px 5px;
+    width: 30%;
+}
+
+#teamInfo:hover, #matchInfo:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.team-input:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+    transform: scale(1.1);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#teamInfo:hover, #matchInfo:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+

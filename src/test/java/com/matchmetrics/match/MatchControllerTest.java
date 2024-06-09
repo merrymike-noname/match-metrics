@@ -130,26 +130,25 @@ public class MatchControllerTest {
 
     @Test
     public void testGetMatchesByCriteria_isHome() throws Exception {
-        String team = "Test1";
-        Boolean isHome = true;
+        String homeTeamName = "Test1";
+        String awayTeamName = "Test2";
         String date = "2022-01-01";
         String league = "LeagueA";
         int page = 1;
         int perPage = 3;
         String sortBy = "default";
 
-        TeamNestedDto homeTeam = new TeamNestedDto("Test1", "LeagueA", 1500);
-        TeamNestedDto awayTeam = new TeamNestedDto("Test2", "LeagueB", 1400);
+        TeamNestedDto homeTeam = new TeamNestedDto(homeTeamName, "LeagueA", 1500);
+        TeamNestedDto awayTeam = new TeamNestedDto(awayTeamName, "LeagueB", 1400);
         ProbabilityGetDto probability = new ProbabilityGetDto(0.4f, 0.3f, 0.3f);
         MatchGetDto match1 = new MatchGetDto(new SimpleDateFormat("yyyy-MM-dd").parse(date), "LeagueA", homeTeam, awayTeam, probability);
-        MatchGetDto match2 = new MatchGetDto(new SimpleDateFormat("yyyy-MM-dd").parse(date), "LeagueA", awayTeam, homeTeam, probability);
 
-        when(matchService.getMatchesByCriteria(eq(team), eq(isHome), any(), eq(league), eq(page - 1), eq(perPage), eq(sortBy)))
+        when(matchService.getMatchesByCriteria(eq(homeTeamName), eq(awayTeamName), any(), eq(league), eq(page - 1), eq(perPage), eq(sortBy)))
                 .thenReturn(List.of(match1));
 
         mockMvc.perform(get("/matchmetrics/api/v0/matches")
-                        .param("team", team)
-                        .param("isHome", isHome.toString())
+                        .param("homeTeam", homeTeamName)
+                        .param("awayTeam", awayTeamName)
                         .param("league", league)
                         .param("page", Integer.toString(page))
                         .param("perPage", Integer.toString(perPage))
@@ -264,17 +263,19 @@ public class MatchControllerTest {
 
     @Test
     public void testGetMatchesByCriteria_teamAndLeague() throws Exception {
-        String team = "Test1";
+        String homeTeamName = "Test1";
+        String awayTeamName = "Test2";
         String league = "LeagueA";
         int page = 1;
         int perPage = 3;
         String sortBy = "default";
 
-        when(matchService.getMatchesByCriteria(eq(team), any(), any(), eq(league), anyInt(), anyInt(), anyString()))
+        when(matchService.getMatchesByCriteria(eq(homeTeamName), eq(awayTeamName), any(), eq(league), anyInt(), anyInt(), anyString()))
                 .thenReturn(List.of(new MatchGetDto()));
 
         mockMvc.perform(get("/matchmetrics/api/v0/matches")
-                        .param("team", team)
+                        .param("homeTeam", homeTeamName)
+                        .param("awayTeam", awayTeamName)
                         .param("league", league)
                         .param("page", Integer.toString(page))
                         .param("perPage", Integer.toString(perPage))

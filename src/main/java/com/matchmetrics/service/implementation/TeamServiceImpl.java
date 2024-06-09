@@ -83,43 +83,6 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public List<TeamGetDto> getTeamsComparedByName(String homeTeamName, String awayTeamName) {
-        if (homeTeamName.equals(awayTeamName)) {
-            logger.error("Team names are the same: {}", homeTeamName);
-            throw new InvalidDataException("Team names are the same");
-        }
-
-        Optional<Team> homeTeamEntity = teamRepository.findTeamByName(homeTeamName);
-        Optional<Team> awayTeamEntity = teamRepository.findTeamByName(awayTeamName);
-
-        if (homeTeamEntity.isEmpty()) {
-            TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(homeTeamName);
-            Team homeTeamSaved = teamRepository.save(teamNestedMapper.toEntity(teamFromRemote));
-            homeTeamSaved.setHomeMatches(new ArrayList<>());
-            homeTeamSaved.setAwayMatches(new ArrayList<>());
-            homeTeamEntity = Optional.of(homeTeamSaved);
-        }
-
-        if (awayTeamEntity.isEmpty()) {
-            TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(awayTeamName);
-            Team awayTeamSaved = teamRepository.save(teamNestedMapper.toEntity(teamFromRemote));
-            awayTeamSaved.setHomeMatches(new ArrayList<>());
-            awayTeamSaved.setAwayMatches(new ArrayList<>());
-            awayTeamEntity = Optional.of(awayTeamSaved);
-        }
-
-        if (homeTeamEntity.get().getId() == awayTeamEntity.get().getId()) {
-            logger.error("Teams are the same: {}", homeTeamName);
-            throw new InvalidDataException("Teams are the same");
-        }
-
-        TeamGetDto teamHomeDto = teamGetMapper.toDto(homeTeamEntity.get());
-        TeamGetDto teamAwayDto = teamGetMapper.toDto(awayTeamEntity.get());
-
-        return List.of(teamHomeDto, teamAwayDto);
-    }
-
-    @Override
     public TeamGetDto getTeamById(int id) {
         Optional<Team> team = teamRepository.findById(id);
         if (team.isEmpty()) {

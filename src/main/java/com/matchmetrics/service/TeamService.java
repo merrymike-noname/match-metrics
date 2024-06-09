@@ -13,7 +13,6 @@ public interface TeamService {
                                   Integer page, Integer perPage, String sortBy);
     TeamGetDto createTeam(TeamNestedDto team, BindingResult bindingResult);
     TeamGetDto updateTeam(int id, TeamNestedDto team, BindingResult bindingResult);
-    List<TeamGetDto> getTeamsComparedByName(String teamHome, String teamAway);
     void deleteTeam(int id);
 }
 

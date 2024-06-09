@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/front/styles/admin.css">
+</head>
+<body>
+<div class="header">
+    <span class="title">Admin Panel</span>
+    <nav>
+        <a href="#" class="menu-button" id="addMatchButton">Add Match</a>
+        <a href="#" class="menu-button" id="deleteMatchButton">Delete Match</a>
+        <a href="#" class="menu-button" id="banUserButton">Ban User</a>
+        <a href="#" class="menu-button" id="assignAdminButton">Assign Admin</a>
+    </nav>
+    <a href="#" class="username">Admin</a>
+</div>
+
+<div class="container">
+    <div id="addMatchForm" class="form-container">
+        <h2>Add Match</h2>
+        <form id="addMatchFormData" action="#">
+            <div class="form-group">
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date">
+            </div>
+            <div class="form-group">
+                <label for="league">League:</label>
+                <input type="text" id="league" name="league">
+            </div>
+            <div class="form-group">
+                <label for="homeTeam">Home Team:</label>
+                <input type="text" id="homeTeam" name="homeTeam">
+            </div>
+            <div class="form-group">
+                <label for="awayTeam">Away Team:</label>
+                <input type="text" id="awayTeam" name="awayTeam">
+            </div>
+            <div class="form-group">
+                <label for="homeTeamWin">Home Team Win Probability:</label>
+                <input type="number" id="homeTeamWin" name="homeTeamWin" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="draw">Draw Probability:</label>
+                <input type="number" id="draw" name="draw" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="awayTeamWin">Away Team Win Probability:</label>
+                <input type="number" id="awayTeamWin" name="awayTeamWin" step="0.01">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="deleteMatchForm" class="form-container" style="display: none;">
+        <h2>Delete Match</h2>
+        <form id="deleteMatchFormData" action="#">
+            <div class="form-group">
+                <label for="matchId">Match ID:</label>
+                <input type="text" id="matchId" name="matchId">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="banUserForm" class="form-container" style="display: none;">
+        <h2>Ban User</h2>
+        <form id="banUserFormData" action="#">
+            <div class="form-group">
+                <label for="userBanEmail">User Email:</label>
+                <input type="email" id="userBanEmail" name="userBanEmail" list="emails">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <div id="assignAdminForm" class="form-container" style="display: none;">
+        <h2>Assign Admin</h2>
+        <form id="assignAdminFormData" action="#">
+            <div class="form-group">
+                <label for="userAdminEmail">User Email:</label>
+                <input type="email" id="userAdminEmail" name="userAdminEmail" list="emails">
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <datalist id="emails"></datalist>
+
+    <div id="result"></div>
+</div>
+
+<script src="/front/scripts/admin.js"></script>
+</body>
+</html>

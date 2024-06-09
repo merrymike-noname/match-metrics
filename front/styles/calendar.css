@@ -1,0 +1,158 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    font-size: 140%;
+}
+
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.header:hover {
+    background-color: #444;
+}
+
+.header .menu-button:first-child {
+    margin-left: -100px;
+}
+
+.title {
+    font-size: 28px;
+    transition: all 0.3s ease;
+}
+
+.title:hover {
+    font-size: 30.8px;
+}
+
+.header nav {
+    display: flex;
+}
+
+.header .menu-button {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 42px;
+    transition: all 0.3s ease;
+}
+
+.header .menu-button:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.header .menu-button.active {
+    color: #ff0;
+}
+
+.header .username {
+    color: #fff;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.header .username:hover {
+    color: #ccc;
+    transform: scale(1.1);
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px auto;
+}
+
+#datePicker {
+    margin-bottom: 20px;
+}
+
+#matchesList {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+    width: 30%;
+    transition: all 0.3s ease;
+}
+
+#matchesList div {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+#matchesList div:hover {
+    transform: scale(1.05);
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background-color: #444;
+    transform: scale(1.1);
+}
+
+.favorite-match {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background-color: white;
+    padding: 28px;
+    width: 252px;
+    height: 126px;
+    border-radius: 16px;
+    box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.favorite-match:hover {
+    transform: scale(1.05);
+}
+
+.favorite-match .team-logos {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.favorite-match .team-names {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.favorite-match .team-names:hover {
+    transform: scale(1.05);
+}
+
+.favorite-match .match-date {
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
