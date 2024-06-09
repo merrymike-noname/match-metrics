@@ -7,6 +7,7 @@ package com.matchmetrics.controller.controller_advice;
 
 import com.matchmetrics.entity.ApiErrorResponse;
 import com.matchmetrics.exception.*;
+import com.matchmetrics.security.exception.ActionRestrictedException;
 import com.matchmetrics.security.exception.EmailTakenException;
 import com.matchmetrics.security.exception.UserDoesNotExistException;
 import org.springframework.http.HttpStatus;
@@ -161,6 +162,19 @@ public class GlobalExceptionHandler {
                 ((ServletWebRequest) request).getRequest().getRequestURI()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ActionRestrictedException.class)
+    public ResponseEntity<ApiErrorResponse> handleInvalidProbabilityException
+            (ActionRestrictedException e, WebRequest request) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                e.getMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
 //    @ExceptionHandler(ExpiredJwtException.class)

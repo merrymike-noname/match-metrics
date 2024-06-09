@@ -2,6 +2,9 @@ package com.matchmetrics.security.service.impl;
 
 import com.matchmetrics.security.entity.*;
 import com.matchmetrics.entity.Team;
+import com.matchmetrics.security.exception.ActionRestrictedException;
+import com.matchmetrics.security.exception.EmailTakenException;
+import com.matchmetrics.security.exception.UserDoesNotExistException;
 import com.matchmetrics.security.repository.UserRepository;
 import com.matchmetrics.repository.TeamRepository;
 import com.matchmetrics.exception.TeamDoesNotExistException;
@@ -9,12 +12,16 @@ import com.matchmetrics.security.entity.dto.UserGetDto;
 import com.matchmetrics.security.service.UserService;
 import com.matchmetrics.util.BindingResultInspector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +64,7 @@ public class UserServiceImpl implements UserService {
                         user.getRole()))
                 .orElseGet(() -> {
                     logger.error("User with email {} not found", email);
-                    return null;
+                    throw new UserDoesNotExistException(email);
                 });
     }
 
@@ -66,33 +73,41 @@ public class UserServiceImpl implements UserService {
         bindingResultInspector.checkBindingResult(result);
 
         return userRepository.findByEmail(email).map(user -> {
-            if (userDetails.getName() != null && !userDetails.getName().isEmpty()) {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            User currentUser = (User) authentication.getPrincipal();
+            String currentUserEmail = currentUser.getEmail();
+            Collection<? extends GrantedAuthority> roles = authentication.getAuthorities();
+
+            boolean isAdmin = roles.stream()
+                    .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+
+            if (currentUserEmail.equals(email) || isAdmin) {
                 user.setName(userDetails.getName());
-            }
 
-            if (userDetails.getEmail() != null && !userDetails.getEmail().isEmpty()) {
-                // TODO: Check if email is user's email
+                if (!userDetails.getEmail().equals(email) &&
+                        userRepository.findByEmail(userDetails.getEmail()).isPresent()) {
+                    throw new EmailTakenException(userDetails.getEmail());
+                }
                 user.setEmail(userDetails.getEmail());
-            }
-
-            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-            }
 
-            if (userDetails.getFavouriteTeam() != null && !userDetails.getFavouriteTeam().isEmpty()) {
                 Team favouriteTeam = teamRepository.findTeamByName(userDetails.getFavouriteTeam())
                         .orElseThrow(() -> new TeamDoesNotExistException(userDetails.getFavouriteTeam()));
                 user.setFavouriteTeam(favouriteTeam);
+
+                User updatedUser = userRepository.save(user);
+                return new UserGetDto(
+                        updatedUser.getName(), updatedUser.getEmail(),
+                        updatedUser.getFavouriteTeam().getName(),
+                        updatedUser.getRole());
+            } else {
+                throw new ActionRestrictedException(currentUserEmail);
             }
 
-            User updatedUser = userRepository.save(user);
-            return new UserGetDto(
-                    updatedUser.getName(), updatedUser.getEmail(),
-                    updatedUser.getFavouriteTeam().getName(),
-                    updatedUser.getRole());
         }).orElseGet(() -> {
             logger.error("User with email {} not found", email);
-            return null;
+            throw new UserDoesNotExistException(email);
         });
     }
 
@@ -110,7 +125,7 @@ public class UserServiceImpl implements UserService {
                 .map(User::getFavouriteTeam)
                 .orElseGet(() -> {
                     logger.error("User with email {} not found", email);
-                    return null;
+                    throw new UserDoesNotExistException(email);
                 });
     }
 
@@ -120,7 +135,7 @@ public class UserServiceImpl implements UserService {
                 .map(User::getName)
                 .orElseGet(() -> {
                     logger.error("User with email {} not found", email);
-                    return null;
+                    throw new UserDoesNotExistException(email);
                 });
     }
 
@@ -135,7 +150,7 @@ public class UserServiceImpl implements UserService {
                     updatedUser.getRole());
         }).orElseGet(() -> {
             logger.error("User with email {} not found", email);
-            return null;
+            throw new UserDoesNotExistException(email);
         });
     }
 }
