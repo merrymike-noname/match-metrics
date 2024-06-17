@@ -37,6 +37,15 @@ public class TeamController {
         return teams;
     }
 
+    @GetMapping("/names")
+    public List<String> getAllTeamNames(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
+    ) {
+        return teamService.getAllTeamNames(page, perPage, sortBy);
+    }
+
     @GetMapping("/{id}")
     public TeamGetDto getTeamById(@PathVariable int id) {
         logger.info("Received request to get team by ID: {}", id);

@@ -6,7 +6,6 @@ import com.matchmetrics.entity.dto.team.TeamGetDto;
 import com.matchmetrics.entity.dto.team.TeamNestedDto;
 import com.matchmetrics.entity.mapper.team.TeamGetMapper;
 import com.matchmetrics.entity.mapper.team.TeamNestedMapper;
-import com.matchmetrics.exception.InvalidDataException;
 import com.matchmetrics.exception.TeamAlreadyExistsException;
 import com.matchmetrics.exception.TeamDoesNotExistException;
 import com.matchmetrics.repository.TeamRepository;
@@ -61,6 +60,14 @@ public class TeamServiceImpl implements TeamService {
         return teamRepository.findAll(pageable).getContent().stream()
                 .map(teamGetMapper::toDto).collect(Collectors.toList());
     }
+
+    @Override
+    public List<String> getAllTeamNames(Integer page, Integer perPage, String sortBy) {
+        Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Team.class);
+        Page<String> pageTeamNames = teamRepository.findAllTeamNames(pageable);
+        return pageTeamNames.getContent();
+    }
+
 
     @Override
     public List<TeamGetDto> getTeamsByCriteria(String name, String country,
