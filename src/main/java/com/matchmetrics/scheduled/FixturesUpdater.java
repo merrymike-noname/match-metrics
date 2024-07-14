@@ -16,16 +16,12 @@ import com.matchmetrics.util.validator.ProbabilityValidator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.ResourceAccessException;
 
 import java.util.*;
 
 @Component
-public class ScheduledDatabaseUpdater {
+public class FixturesUpdater {
 
     private final FixturesCsvClient fixturesCsvClient;
     private final TeamCsvClient teamCsvClient;
@@ -36,15 +32,16 @@ public class ScheduledDatabaseUpdater {
 
     private final MatchRepository matchRepository;
     private final TeamRepository teamRepository;
-    private final Logger logger = LoggerFactory.getLogger(ScheduledDatabaseUpdater.class);
+    private final Logger logger = LoggerFactory.getLogger(FixturesUpdater.class);
 
-    public ScheduledDatabaseUpdater(FixturesCsvClient fixturesCsvClient,
-                                    TeamCsvClient teamCsvClient,
-                                    ProbabilityValidator probabilityValidator,
-                                    MatchAddUpdateMapper addUpdateMapper,
-                                    TeamNestedMapper teamNestedMapper, ProbabilityGetMapper probabilityGetMapper,
-                                    MatchRepository matchRepository,
-                                    TeamRepository teamRepository) {
+    public FixturesUpdater(FixturesCsvClient fixturesCsvClient,
+                           TeamCsvClient teamCsvClient,
+                           ProbabilityValidator probabilityValidator,
+                           MatchAddUpdateMapper addUpdateMapper,
+                           TeamNestedMapper teamNestedMapper,
+                           ProbabilityGetMapper probabilityGetMapper,
+                           MatchRepository matchRepository,
+                           TeamRepository teamRepository) {
         this.fixturesCsvClient = fixturesCsvClient;
         this.teamCsvClient = teamCsvClient;
         this.probabilityValidator = probabilityValidator;
@@ -55,10 +52,10 @@ public class ScheduledDatabaseUpdater {
         this.teamRepository = teamRepository;
     }
 
-    @Scheduled(cron = "0 30 3 * * *")
-    @Retryable(value = { ResourceAccessException.class }, maxAttempts = 5, backoff = @Backoff(delay = 5000))
+    //@Scheduled(cron = "0 30 3 * * *")
+    //@Retryable(value = { ResourceAccessException.class }, maxAttempts = 10, backoff = @Backoff(delay = 5000))
     @Transactional
-    public void updateDatabase() {
+    public void updateFixtures() {
         logger.info("Database update started");
         Date today = new Date();
         List<Match> allMatchesOld = matchRepository.findAll();
@@ -84,20 +81,18 @@ public class ScheduledDatabaseUpdater {
 
         logger.info("Updating teams elo");
         updateTeamInfo(teamsToUpdate);
+
+        logger.info("Database update finished");
     }
 
     @Transactional
     protected void persistNewMatches(List<MatchAddUpdateDto> allMatchesNew) {
-        int teamRequest = 0;
         for (MatchAddUpdateDto m : allMatchesNew) {
             Optional<Team> homeTeamOptional = teamRepository.findTeamByName(m.getHomeTeam().getName());
             if (homeTeamOptional.isEmpty()) {
                 TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(m.getHomeTeam().getName());
                 Team homeTeam = teamRepository.save(teamNestedMapper.toEntity(teamFromRemote));
                 homeTeamOptional = Optional.of(homeTeam);
-
-                teamRequest++;
-                logger.info("Request #: {}", teamRequest);
             }
 
             Optional<Team> awayTeamOptional = teamRepository.findTeamByName(m.getAwayTeam().getName());
@@ -105,9 +100,6 @@ public class ScheduledDatabaseUpdater {
                 TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(m.getAwayTeam().getName());
                 Team awayTeam = teamRepository.save(teamNestedMapper.toEntity(teamFromRemote));
                 awayTeamOptional = Optional.of(awayTeam);
-
-                teamRequest++;
-                logger.info("Request #: {}", teamRequest);
             }
 
             probabilityValidator.validateProbability(m.getProbability());
@@ -125,6 +117,7 @@ public class ScheduledDatabaseUpdater {
 
     @Transactional
     protected void updateTeamInfo(List<Team> teamsToUpdate) {
+        logger.info("Teams to update list size: {}", teamsToUpdate.size());
         for (Team teamToUpdate : teamsToUpdate) {
             TeamNestedDto teamFromRemote = teamCsvClient.getTeamFromRemote(teamToUpdate.getName());
             if (teamToUpdate.getElo() != teamFromRemote.getElo()) {
