@@ -20,15 +20,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -188,6 +189,47 @@ public class TeamServiceImplTest {
 
         when(teamRepository.existsById(id)).thenReturn(false);
         assertThrows(TeamDoesNotExistException.class, () -> teamService.deleteTeam(id));
+    }
+
+    @Test
+    void testGetAllTeamNames() {
+        int page = 1;
+        int perPage = 5;
+        String sortBy = "name";
+        List<String> teamNames = List.of("TeamA", "TeamB", "TeamC");
+
+        Page<String> pageTeamNames = new PageImpl<>(teamNames, PageRequest.of(0, perPage, Sort.by(sortBy)), teamNames.size());
+
+        when(teamRepository.findAllTeamNames(any(Pageable.class))).thenReturn(pageTeamNames);
+
+        List<String> result = teamService.getAllTeamNames(page, perPage, sortBy);
+
+        assertThat(result).isEqualTo(teamNames);
+        verify(teamRepository, times(1)).findAllTeamNames(any(Pageable.class));
+    }
+
+    @Test
+    void testGetAllTeamNames_2() {
+        int page = 1;
+        int perPage = 5;
+        String sortBy = "name";
+
+        List<Team> teams = Arrays.asList(
+                new Team("BTeam", "CountryB", 1300.0f),
+                new Team("ATeam", "CountryA", 1200.0f),
+                new Team("CTeam", "CountryC", 1400.0f)
+        );
+
+        List<String> teamNames = teams.stream().map(Team::getName).collect(Collectors.toList());
+
+        Page<String> pageTeamNames = new PageImpl<>(teamNames, PageRequest.of(0, perPage, Sort.by(sortBy)), teamNames.size());
+
+        when(teamRepository.findAllTeamNames(any(Pageable.class))).thenReturn(pageTeamNames);
+
+        List<String> result = teamService.getAllTeamNames(1, 5, "name");
+
+        assertThat(result).isEqualTo(teamNames);
+        verify(teamRepository, times(1)).findAllTeamNames(any(Pageable.class));
     }
 
 }
