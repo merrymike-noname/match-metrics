@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("matchmetrics/api/v0/auth")
 public class AuthenticationController {
