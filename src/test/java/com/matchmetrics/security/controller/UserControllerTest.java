@@ -131,4 +131,47 @@ public class UserControllerTest {
         verify(userService, times(1)).makeUserAdmin("john@example.com");
     }
 
+    @Test
+    public void testDeleteUser() throws Exception {
+        doNothing().when(userService).deleteUser("john@example.com");
+
+        mockMvc.perform(delete("/matchmetrics/api/v0/users/delete/john@example.com")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(userService, times(1)).deleteUser("john@example.com");
+    }
+
+    @Test
+    public void testGetFavouriteTeam() throws Exception {
+        Team team = new Team("Team A", "USA", 1200);
+
+        when(userService.getFavouriteTeam("john@example.com")).thenReturn(team);
+
+        mockMvc.perform(get("/matchmetrics/api/v0/users/favouriteTeam/john@example.com")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{" +
+                                          "\"name\":\"" + team.getName() + "\"," +
+                                          "\"country\":\"" + team.getCountry() + "\"," +
+                                          "\"elo\":" + team.getElo() +
+                                          "}"));
+
+        verify(userService, times(1)).getFavouriteTeam("john@example.com");
+    }
+
+    @Test
+    public void testGetUserName() throws Exception {
+        String userName = "John Doe";
+
+        when(userService.getUserName("john@example.com")).thenReturn(userName);
+
+        mockMvc.perform(get("/matchmetrics/api/v0/users/name/john@example.com")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(userName));
+
+        verify(userService, times(1)).getUserName("john@example.com");
+    }
+
 }
