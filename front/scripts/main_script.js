@@ -51,6 +51,21 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => console.error('Error:', error));
 
+    // fetch('http://localhost:8080/matchmetrics/api/v0/teams/names', {
+    //     headers: {
+    //         'Authorization': `Bearer ${token}`
+    //     }
+    // })
+    //     .then(checkForbidden)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log(data);
+    //         teams = data;
+    //         suggestTeams(team1Input, teams);
+    //         suggestTeams(team2Input, teams);
+    //     })
+    //     .catch(error => console.error('Error:', error));
+
     console.log(userEmail)
 
     fetch(`http://localhost:8080/matchmetrics/api/v0/users/${userEmail}`, {

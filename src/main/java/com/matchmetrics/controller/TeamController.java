@@ -40,10 +40,12 @@ public class TeamController {
     @GetMapping("/names")
     public List<String> getAllTeamNames(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
-            @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
+            @RequestParam(name = "perPage", required = false, defaultValue = "100") Integer perPage,
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
-        return teamService.getAllTeamNames(page - 1, perPage, sortBy);
+        List<String> teamNames = teamService.getAllTeamNames(page - 1, perPage, sortBy);
+        logger.info("Returning team names controller: {}", teamNames);
+        return teamNames;
     }
 
     @GetMapping("/{id}")

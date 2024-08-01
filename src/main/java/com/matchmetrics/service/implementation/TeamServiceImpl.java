@@ -65,6 +65,7 @@ public class TeamServiceImpl implements TeamService {
     public List<String> getAllTeamNames(Integer page, Integer perPage, String sortBy) {
         Pageable pageable = pageableCreator.createPageable(page, perPage, sortBy, Team.class);
         Page<String> pageTeamNames = teamRepository.findAllTeamNames(pageable);
+        logger.info("Returning team names service: {}", pageTeamNames.getContent());
         return pageTeamNames.getContent();
     }
 
