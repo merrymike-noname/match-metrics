@@ -43,7 +43,7 @@ public class TeamController {
             @RequestParam(name = "perPage", required = false, defaultValue = "3") Integer perPage,
             @RequestParam(name = "sortBy", required = false, defaultValue = "default") String sortBy
     ) {
-        return teamService.getAllTeamNames(page, perPage, sortBy);
+        return teamService.getAllTeamNames(page - 1, perPage, sortBy);
     }
 
     @GetMapping("/{id}")
