@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
     fetch('http://localhost:8080/matchmetrics/api/v0/public/teams')
         .then(response => response.json())
         .then(data => {
-            teams = data.map(team => team.name);
+            teams = data;
             suggestTeams(favoriteTeamInput, teams);
         })
         .catch(error => console.error('Error:', error));

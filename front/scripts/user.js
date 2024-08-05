@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return response;
     };
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
+    fetch('http://localhost:8080/matchmetrics/api/v0/teams/names?&perPage=10000', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
-            teams = data.map(team => team.name);
+            teams = data;
             suggestTeams(favoriteTeamInput, teams);
         })
         .catch(error => console.error('Error fetching teams:', error));

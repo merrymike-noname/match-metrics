@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return response;
     };
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
+    fetch('http://localhost:8080/matchmetrics/api/v0/teams/names?&perPage=10000', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -45,26 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
-            teams = data.map(team => team.name);
+            console.log(data);
+            teams = data;
             suggestTeams(team1Input, teams);
             suggestTeams(team2Input, teams);
         })
         .catch(error => console.error('Error:', error));
-
-    // fetch('http://localhost:8080/matchmetrics/api/v0/teams/names', {
-    //     headers: {
-    //         'Authorization': `Bearer ${token}`
-    //     }
-    // })
-    //     .then(checkForbidden)
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         console.log(data);
-    //         teams = data;
-    //         suggestTeams(team1Input, teams);
-    //         suggestTeams(team2Input, teams);
-    //     })
-    //     .catch(error => console.error('Error:', error));
 
     console.log(userEmail)
 

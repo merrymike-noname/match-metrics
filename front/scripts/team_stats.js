@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     teamInput.value = favoriteTeam;
 
-    fetch('http://localhost:8080/matchmetrics/api/v0/teams/all?page=1&perPage=10000', {
+    fetch('http://localhost:8080/matchmetrics/api/v0/teams/names?&perPage=10000', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(checkForbidden)
         .then(response => response.json())
         .then(data => {
-            teams = data.map(team => team.name);
+            teams = data;
             suggestTeams(teamInput, teams);
             teamInput.dispatchEvent(new Event('input'));
         })
